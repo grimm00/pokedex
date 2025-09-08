@@ -42,11 +42,11 @@
   - Migration scripts
 
 - [ ] **API Development**
-  - RESTful endpoints design
-  - Pokemon CRUD operations
-  - Search and filtering
+  - Flask-RESTful endpoints design
+  - Pokemon CRUD operations with SQLAlchemy
+  - Search and filtering with Flask-SQLAlchemy
   - Pagination implementation
-  - Error handling and validation
+  - Error handling and validation with Marshmallow
 
 - [ ] **External Integrations**
   - PokeAPI integration
@@ -176,11 +176,12 @@
 ## Technology Recommendations
 
 ### Backend Stack
-- **Language**: TypeScript/Node.js or Python/FastAPI
-- **Framework**: Express.js or FastAPI
-- **Database**: PostgreSQL with Prisma ORM
+- **Language**: Python
+- **Framework**: Flask with Flask-RESTful
+- **Database**: PostgreSQL with SQLAlchemy ORM
 - **Caching**: Redis
-- **API**: RESTful with OpenAPI documentation
+- **API**: RESTful with Flask-RESTX (Swagger documentation)
+- **Testing**: pytest + Flask-Testing
 
 ### Frontend Stack
 - **Framework**: React with TypeScript

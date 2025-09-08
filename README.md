@@ -29,7 +29,7 @@ pokedex/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher)
+- Python (v3.9 or higher)
 - Docker and Docker Compose
 - Git
 - Your preferred code editor
@@ -75,7 +75,7 @@ pokedex/
 *To be determined based on learning goals and requirements*
 
 **Recommended Stack:**
-- **Backend**: Node.js + TypeScript + Express + Prisma
+- **Backend**: Python + Flask + SQLAlchemy
 - **Frontend**: React + TypeScript + Vite
 - **Database**: PostgreSQL
 - **Deployment**: AWS (ECS + RDS + CloudFront)

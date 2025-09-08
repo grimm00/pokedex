@@ -59,10 +59,10 @@ A comprehensive Pokedex application designed as a learning project to master the
 
 ## Technology Stack Options
 
-### Option A: Modern Web Stack
-- **Backend**: Node.js + Express + TypeScript
+### Option A: Python Web Stack
+- **Backend**: Python + Flask + SQLAlchemy
 - **Frontend**: React + TypeScript + Vite
-- **Database**: PostgreSQL + Prisma ORM
+- **Database**: PostgreSQL + SQLAlchemy ORM
 - **Deployment**: Docker + Kubernetes
 
 ### Option B: Full-Stack Framework
@@ -70,11 +70,11 @@ A comprehensive Pokedex application designed as a learning project to master the
 - **Database**: Supabase or PlanetScale
 - **Deployment**: Vercel or Netlify
 
-### Option C: Microservices
-- **Backend**: Go/Python microservices
+### Option C: Python Microservices
+- **Backend**: Python + FastAPI/Flask microservices
 - **Frontend**: React SPA
 - **API Gateway**: Kong or AWS API Gateway
-- **Message Queue**: RabbitMQ or Apache Kafka
+- **Message Queue**: Celery + Redis/RabbitMQ
 
 ## Learning Milestones
 

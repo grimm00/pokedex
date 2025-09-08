@@ -38,11 +38,18 @@ The assistant read the existing files (`predesign.txt` and `rules.txt`) and crea
 3. **technology-comparison.md** - Technology decision matrix (later deleted by user)
 
 ### Technology Recommendation
-The assistant recommended the **Full-Stack JavaScript path**:
+The assistant initially recommended the **Full-Stack JavaScript path**:
 - **Backend**: Node.js + TypeScript + Express + Prisma
 - **Frontend**: React + TypeScript + Vite
 - **Database**: PostgreSQL
 - **Deployment**: AWS (ECS + RDS + CloudFront)
+
+### Technology Stack Update (Current Session)
+User requested to switch to **Python/Flask stack** as Python is their most-used language:
+- **Backend**: Python + Flask + SQLAlchemy
+- **Frontend**: React + TypeScript + Vite (unchanged)
+- **Database**: PostgreSQL (unchanged)
+- **Deployment**: AWS (ECS + RDS + CloudFront) (unchanged)
 
 ### Follow-up Request
 User requested:
@@ -91,11 +98,22 @@ complete development cycle from backend to frontend to CI/CD.
 
 ## Files Created/Modified
 
+### Initial Session:
 - ✅ `admin/brainstorming.md` - Initial technical planning
 - ✅ `admin/roadmap.md` - 10-week development plan
 - ✅ `admin/chat-log-001.md` - This conversation log
 - ✅ `README.md` - Project overview and setup
 - ❌ `admin/technology-comparison.md` - Deleted by user
+
+### Current Session (Technology Stack Update):
+- ✅ `README.md` - Updated to reflect Python/Flask stack
+- ✅ `admin/brainstorming.md` - Updated technology options for Python
+- ✅ `admin/roadmap.md` - Updated with Python/Flask specific tasks
+- ✅ `requirements.txt` - Python dependencies for Flask application
+- ✅ `backend/app.py` - Main Flask application entry point
+- ✅ `backend/models/` - Database models (Pokemon, User)
+- ✅ `backend/routes/` - API route definitions
+- ✅ `admin/chat-log-001.md` - Updated with current session details
 
 ## User's Learning Goals
 
