@@ -1,0 +1,27 @@
+# Environment Variables Template
+# Copy this to .env in your project root
+
+# Database Configuration
+DATABASE_URL=postgresql://localhost/pokedex_dev
+TEST_DATABASE_URL=postgresql://localhost/pokedex_test
+
+# Flask Configuration
+SECRET_KEY=your-super-secret-key-change-this-in-production
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+# JWT Configuration
+JWT_SECRET_KEY=your-jwt-secret-key-change-this-in-production
+JWT_ACCESS_TOKEN_EXPIRES=3600
+JWT_REFRESH_TOKEN_EXPIRES=2592000
+
+# External APIs
+POKEAPI_BASE_URL=https://pokeapi.co/api/v2
+
+# Redis Configuration (for caching)
+REDIS_URL=redis://localhost:6379/0
+
+# API Configuration
+API_VERSION=v1
+API_TITLE=Pokedex API
+API_DESCRIPTION=A comprehensive Pokemon API for learning full-stack development
