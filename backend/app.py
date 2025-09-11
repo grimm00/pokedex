@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_restx import Api as RestXApi
@@ -8,6 +7,7 @@ from flask_jwt_extended import JWTManager
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
+from backend.database import db
 
 # Load environment variables
 load_dotenv()
@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 
-    'postgresql://localhost/pokedex_dev'
+    'sqlite:///pokedex_dev.db'
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -29,7 +29,7 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 
 # Initialize extensions
-db = SQLAlchemy(app)
+db.init_app(app)
 migrate = Migrate(app, db)
 CORS(app)
 jwt = JWTManager(app)

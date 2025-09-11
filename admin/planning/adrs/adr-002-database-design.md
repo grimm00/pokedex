@@ -10,10 +10,10 @@ We need to design the database schema for the Pokedex project, including Pokemon
 We will use the following database design approach:
 
 ### **Database Technology**
-- **Primary Database**: PostgreSQL
+- **Primary Database**: SQLite (due to enterprise machine restrictions)
 - **ORM**: SQLAlchemy
 - **Migrations**: Flask-Migrate
-- **Caching**: Redis (for Pokemon data caching)
+- **Caching**: Redis (for Pokemon data caching) - Future enhancement
 
 ### **Schema Design Principles**
 1. **Hybrid Approach**: Relational tables for structured data, JSON fields for flexible Pokemon data
@@ -31,8 +31,8 @@ CREATE TABLE users (
     email VARCHAR(120) UNIQUE NOT NULL,
     password_hash VARCHAR(128) NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
@@ -52,12 +52,12 @@ CREATE TABLE pokemon (
     height INTEGER,  -- in decimeters
     weight INTEGER,  -- in hectograms
     base_experience INTEGER,
-    types JSONB,  -- Store as JSON array
-    abilities JSONB,  -- Store as JSON array
-    stats JSONB,  -- Store as JSON object
-    sprites JSONB,  -- Store as JSON object
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    types JSON,  -- Store as JSON array (SQLite JSON)
+    abilities JSON,  -- Store as JSON array (SQLite JSON)
+    stats JSON,  -- Store as JSON object (SQLite JSON)
+    sprites JSON,  -- Store as JSON object (SQLite JSON)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
@@ -73,7 +73,7 @@ CREATE TABLE user_pokemon (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     pokemon_id INTEGER REFERENCES pokemon(pokemon_id) ON DELETE CASCADE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, pokemon_id)
 );
 ```
@@ -109,7 +109,7 @@ CREATE TABLE user_pokemon (
 **Benefits:**
 - **Flexibility**: Easy to add new Pokemon attributes
 - **PokeAPI Compatibility**: Maintains external API data structure
-- **Query Performance**: JSONB allows efficient querying
+- **Query Performance**: SQLite JSON functions allow efficient querying
 - **Storage Efficiency**: Single table vs multiple related tables
 
 ### **User Data Storage**
@@ -141,8 +141,7 @@ CREATE INDEX idx_users_email ON users(email);
 -- Pokemon table
 CREATE INDEX idx_pokemon_pokemon_id ON pokemon(pokemon_id);
 CREATE INDEX idx_pokemon_name ON pokemon(name);
-CREATE INDEX idx_pokemon_types ON pokemon USING GIN(types);
-CREATE INDEX idx_pokemon_abilities ON pokemon USING GIN(abilities);
+-- Note: SQLite doesn't support GIN indexes, but JSON functions are still efficient
 
 -- User Pokemon table
 CREATE INDEX idx_user_pokemon_user_id ON user_pokemon(user_id);
@@ -151,7 +150,7 @@ CREATE INDEX idx_user_pokemon_pokemon_id ON user_pokemon(pokemon_id);
 
 **Index Types:**
 - **B-tree**: Standard indexes for equality and range queries
-- **GIN**: Generalized Inverted Index for JSONB fields
+- **JSON Functions**: SQLite's built-in JSON functions for querying JSON fields
 - **Composite**: Multi-column indexes for common query patterns
 
 ## Query Patterns
@@ -166,19 +165,19 @@ WHERE up.user_id = ?;
 -- Search Pokemon by name
 SELECT * FROM pokemon WHERE name ILIKE '%pikachu%';
 
--- Filter Pokemon by type
-SELECT * FROM pokemon WHERE types @> '["electric"]';
+-- Filter Pokemon by type (SQLite JSON functions)
+SELECT * FROM pokemon WHERE json_extract(types, '$[0]') = 'electric';
 
--- Get Pokemon with specific ability
-SELECT * FROM pokemon WHERE abilities @> '["static"]';
+-- Get Pokemon with specific ability (SQLite JSON functions)
+SELECT * FROM pokemon WHERE json_extract(abilities, '$[0]') = 'static';
 
--- Get Pokemon by stat range
-SELECT * FROM pokemon WHERE (stats->>'attack')::int > 100;
+-- Get Pokemon by stat range (SQLite JSON functions)
+SELECT * FROM pokemon WHERE json_extract(stats, '$.attack') > 100;
 ```
 
 **Query Optimization:**
-- **JSONB Operators**: `@>` for contains, `->>` for value extraction
-- **ILIKE**: Case-insensitive text search
+- **SQLite JSON Functions**: `json_extract()` for value extraction
+- **LIKE**: Case-insensitive text search (SQLite doesn't have ILIKE)
 - **Type Casting**: Convert JSON values to appropriate types
 - **Joins**: Efficient relationship queries
 
@@ -224,9 +223,9 @@ def seed_pokemon_data():
 - **Connection Pooling**: Reuse database connections
 
 ### **Storage Optimization**
-- **JSONB Compression**: PostgreSQL compresses JSONB data
+- **SQLite JSON Storage**: Efficient JSON storage and querying
 - **Index Size**: Monitor index growth and performance
-- **Partitioning**: Consider table partitioning for large datasets
+- **Database Size**: SQLite databases are single files, easy to manage
 
 ## Security Considerations
 

@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.app import db
+from backend.database import db
 from backend.models.user import User, UserPokemon
 from backend.models.pokemon import Pokemon
 

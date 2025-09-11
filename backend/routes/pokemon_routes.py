@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, abort
-from backend.app import db
+from backend.database import db
 from backend.models.pokemon import Pokemon
 import requests
 import os

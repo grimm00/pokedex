@@ -6,7 +6,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_jwt
 )
-from backend.app import db
+from backend.database import db
 from backend.models.user import User
 from datetime import datetime, timezone, timedelta
 
