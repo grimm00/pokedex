@@ -8,12 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Public repository preparation
-- CONTRIBUTING.md guidelines
-- LICENSE file
-- Updated README.md with current project status
+- Performance testing with real data (planned)
+- API documentation with Swagger/OpenAPI (planned)
+- Frontend development (planned)
 
-## [0.2.0] - 2025-09-12
+## [0.2.0] - 2025-09-12 - **RELEASED** 🎉
 
 ### Added
 - PokeAPI integration with real Pokemon data
