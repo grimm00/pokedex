@@ -183,4 +183,8 @@ By the end of this project, you should have:
 
 ---
 
+## 👨‍💻 Author
+
+**grimm00** - [GitHub](https://github.com/grimm00)
+
 *This project is part of a DevOps apprenticeship program focused on learning the complete development lifecycle.*
