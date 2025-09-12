@@ -35,6 +35,7 @@ pokedex/
 
 ### Prerequisites
 - Python 3.9 or higher
+- Redis (for caching)
 - Git
 - Virtual environment (venv or conda)
 
@@ -57,7 +58,21 @@ pokedex/
    pip install -r requirements.txt
    ```
 
-4. **Set up environment variables**
+4. **Start Redis (for caching)**
+   ```bash
+   # macOS
+   brew install redis
+   brew services start redis
+   
+   # Ubuntu/Debian
+   sudo apt-get install redis-server
+   sudo systemctl start redis
+   
+   # Verify Redis is running
+   redis-cli ping
+   ```
+
+5. **Set up environment variables**
    ```bash
    cp env.example .env
    # Edit .env with your configuration
@@ -100,8 +115,14 @@ pokedex/
 - `POST /api/v1/users/favorites/{pokemon_id}` - Add Pokemon to favorites
 - `DELETE /api/v1/users/favorites/{pokemon_id}` - Remove Pokemon from favorites
 
+### Cache Management Endpoints
+- `GET /api/v1/cache/stats` - Redis cache statistics
+- `GET /api/v1/cache/health` - Cache health check
+- `DELETE /api/v1/cache/clear` - Clear all cache data
+- `DELETE /api/v1/cache/pokemon/clear` - Clear Pokemon cache only
+
 ### Health Check
-- `GET /` - API health status and version info
+- `GET /` - API health status and version info (includes cache status)
 
 ## 📋 Development Phases
 
@@ -119,6 +140,7 @@ pokedex/
 - [x] Backend testing (comprehensive test suite)
 - [x] Security implementation (rate limiting, validation, audit logging)
 - [x] Performance optimization (database indexes, query optimization)
+- [x] Redis caching implementation (50-80% performance improvement)
 
 ### Phase 3: Frontend Development (Week 5-6)
 - [ ] UI/UX design

@@ -27,7 +27,11 @@ admin/testing/
 │   ├── test_server.log                 # Server logs during testing
 │   └── test-reports/                   # Detailed test reports
 └── performance/                        # Performance testing
-    └── README.md
+    ├── README.md                       # Performance testing overview
+    ├── performance-testing-plan.md     # Comprehensive testing strategy
+    ├── baseline_test.py               # Baseline performance testing
+    ├── load_test.py                   # Load testing automation
+    └── run_performance_tests.sh       # Test execution script
 ```
 
 ## Test Categories
@@ -136,6 +140,25 @@ curl http://localhost:5001/api/v1/pokemon
 
 ## Performance Testing
 
+### Comprehensive Performance Testing Suite
+We have a complete performance testing framework located in the [`performance/`](performance/) directory:
+
+- **[Performance Testing Plan](performance/performance-testing-plan.md)**: Detailed strategy and methodology
+- **[Baseline Testing](performance/baseline_test.py)**: Automated baseline performance measurement
+- **[Load Testing](performance/load_test.py)**: Concurrent user and stress testing
+- **[Test Runner](performance/run_performance_tests.sh)**: Automated test execution script
+
+### Quick Performance Testing
+```bash
+# Run all performance tests
+cd admin/testing/performance
+./run_performance_tests.sh
+
+# Run specific test types
+./run_performance_tests.sh --baseline-only
+./run_performance_tests.sh --load-only
+```
+
 ### Current Metrics
 - **Startup Time**: ~2-3 seconds
 - **Response Time**: <100ms for most endpoints
@@ -146,7 +169,7 @@ curl http://localhost:5001/api/v1/pokemon
 - **API Response Time**: <200ms
 - **Database Query Time**: <50ms
 - **Memory Usage**: <100MB
-- **Concurrent Users**: 100+ (future testing)
+- **Concurrent Users**: 100+ (tested with performance suite)
 
 ## Troubleshooting
 

@@ -13,15 +13,20 @@ import os
 # Security logger
 security_logger = logging.getLogger('security')
 
+# Global limiter instance (will be set by create_limiter)
+limiter = None
+
 def create_limiter(app):
     """Create and configure Flask-Limiter instance"""
-    return Limiter(
+    global limiter
+    limiter = Limiter(
         app=app,
         key_func=get_remote_address,
         default_limits=["100 per minute"],
         storage_uri="memory://",  # Use in-memory storage for development
         strategy="fixed-window"
     )
+    return limiter
 
 def setup_security_headers(app):
     """Add security headers to all responses"""

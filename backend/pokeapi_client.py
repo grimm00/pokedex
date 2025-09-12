@@ -9,6 +9,7 @@ import logging
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from backend.models.audit_log import log_system_event, AuditAction
+from backend.cache import pokeapi_cache, cache_manager
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -123,9 +124,18 @@ class PokeAPIClient:
             raise PokeAPIError(f"Request failed: {str(e)}")
     
     def get_pokemon(self, pokemon_id: int) -> Dict[str, Any]:
-        """Get Pokemon data by ID or name"""
+        """Get Pokemon data by ID or name with caching"""
+        # Check cache first
+        cached_data = pokeapi_cache.get_pokemon_data(pokemon_id)
+        if cached_data:
+            logger.debug(f"Cache HIT for Pokemon {pokemon_id}")
+            return cached_data
+        
         try:
             data = self._make_request(f"pokemon/{pokemon_id}")
+            
+            # Cache the result for 24 hours
+            pokeapi_cache.cache_pokemon_data(pokemon_id, data, ttl=86400)
             
             # Log successful Pokemon fetch
             log_system_event(
@@ -134,7 +144,8 @@ class PokeAPIClient:
                     'api': 'pokeapi',
                     'endpoint': f'pokemon/{pokemon_id}',
                     'pokemon_name': data.get('name'),
-                    'success': True
+                    'success': True,
+                    'cached': False
                 }
             )
             

@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse, abort
 from backend.database import db
 from backend.models.pokemon import Pokemon
+from backend.cache import pokemon_cache, cache_manager
 import requests
 import os
 
@@ -8,13 +9,26 @@ class PokemonList(Resource):
     """Handle GET /api/pokemon and POST /api/pokemon"""
     
     def get(self):
-        """Get all Pokemon with optional pagination and search"""
+        """Get all Pokemon with optional pagination and search (with caching)"""
         from flask import request
         # Use request.args for GET parameters instead of reqparse
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 20, type=int)
         search = request.args.get('search', type=str)
         pokemon_type = request.args.get('type', type=str)
+        
+        # Create cache parameters
+        cache_params = {
+            'page': page,
+            'per_page': per_page,
+            'search': search,
+            'type': pokemon_type
+        }
+        
+        # Check cache first
+        cached_result = pokemon_cache.get_pokemon_list(cache_params)
+        if cached_result:
+            return cached_result
         
         # Build query
         query = Pokemon.query
@@ -36,7 +50,7 @@ class PokemonList(Resource):
             error_out=False
         )
         
-        return {
+        result = {
             'pokemon': [pokemon.to_dict() for pokemon in pokemon_paginated.items],
             'pagination': {
                 'page': page,
@@ -47,6 +61,11 @@ class PokemonList(Resource):
                 'has_prev': pokemon_paginated.has_prev
             }
         }
+        
+        # Cache the result for 5 minutes
+        pokemon_cache.cache_pokemon_list(cache_params, result, ttl=300)
+        
+        return result
     
     def post(self):
         """Create a new Pokemon from PokeAPI data"""
@@ -91,12 +110,22 @@ class PokemonDetail(Resource):
     """Handle GET /api/pokemon/<id>, PUT /api/pokemon/<id>, DELETE /api/pokemon/<id>"""
     
     def get(self, pokemon_id):
-        """Get a specific Pokemon by PokeAPI ID"""
+        """Get a specific Pokemon by PokeAPI ID (with caching)"""
+        # Check cache first
+        cached_pokemon = pokemon_cache.get_pokemon(pokemon_id)
+        if cached_pokemon:
+            return cached_pokemon
+        
         pokemon = Pokemon.query.filter_by(pokemon_id=pokemon_id).first()
         if not pokemon:
             abort(404, message=f'Pokemon with ID {pokemon_id} not found')
         
-        return pokemon.to_dict()
+        result = pokemon.to_dict()
+        
+        # Cache the result for 1 hour
+        pokemon_cache.cache_pokemon(pokemon_id, result, ttl=3600)
+        
+        return result
     
     def put(self, pokemon_id):
         """Update a Pokemon (fetch fresh data from PokeAPI)"""

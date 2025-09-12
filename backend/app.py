@@ -12,6 +12,7 @@ from backend.security import (
     create_limiter, setup_security_headers, setup_rate_limiting,
     create_error_handlers, setup_request_logging, log_security_event
 )
+from backend.cache import cache_manager
 
 # Load environment variables
 load_dotenv()
@@ -56,7 +57,7 @@ api = Api(app, prefix='/api/v1')
 
 # Import models and routes
 from backend.models import pokemon, user
-from backend.routes import pokemon_routes, user_routes, auth_routes
+from backend.routes import pokemon_routes, user_routes, auth_routes, cache_routes
 
 # Register API routes
 # Public routes (no authentication required)
@@ -73,18 +74,27 @@ api.add_resource(user_routes.UserList, '/users')
 api.add_resource(user_routes.UserDetail, '/users/<int:user_id>')
 api.add_resource(user_routes.UserFavorites, '/users/<int:user_id>/favorites')
 
+# Cache management routes
+api.add_resource(cache_routes.CacheStats, '/cache/stats')
+api.add_resource(cache_routes.CacheManagement, '/cache/clear')
+api.add_resource(cache_routes.PokemonCacheManagement, '/cache/pokemon/clear')
+api.add_resource(cache_routes.CacheHealth, '/cache/health')
+
 # Health check endpoint
 @app.route('/')
 def health_check():
+    cache_status = "available" if cache_manager.is_available() else "unavailable"
     return {
         'status': 'healthy',
         'message': 'Pokedex API is running',
         'version': '1.0.0',
         'api_version': 'v1',
+        'cache_status': cache_status,
         'docs': '/docs/',
         'endpoints': {
             'pokemon': '/api/v1/pokemon',
             'users': '/api/v1/users',
+            'cache': '/api/v1/cache/stats',
             'health': '/'
         }
     }
