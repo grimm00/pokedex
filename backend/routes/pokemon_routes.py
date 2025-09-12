@@ -9,27 +9,26 @@ class PokemonList(Resource):
     
     def get(self):
         """Get all Pokemon with optional pagination and search"""
-        parser = reqparse.RequestParser()
-        parser.add_argument('page', type=int, default=1, help='Page number')
-        parser.add_argument('per_page', type=int, default=20, help='Items per page')
-        parser.add_argument('search', type=str, help='Search by name')
-        parser.add_argument('type', type=str, help='Filter by Pokemon type')
-        args = parser.parse_args()
+        from flask import request
+        # Use request.args for GET parameters instead of reqparse
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 20, type=int)
+        search = request.args.get('search', type=str)
+        pokemon_type = request.args.get('type', type=str)
         
         # Build query
         query = Pokemon.query
         
         # Apply search filter
-        if args['search']:
-            query = query.filter(Pokemon.name.ilike(f"%{args['search']}%"))
+        if search:
+            query = query.filter(Pokemon.name.ilike(f"%{search}%"))
         
         # Apply type filter (would need to implement JSON querying)
-        if args['type']:
-            query = query.filter(Pokemon.types.contains([args['type']]))
+        if pokemon_type:
+            query = query.filter(Pokemon.types.contains([pokemon_type]))
         
         # Apply pagination
-        page = args['page']
-        per_page = min(args['per_page'], 100)  # Limit max items per page
+        per_page = min(per_page, 100)  # Limit max items per page
         
         pokemon_paginated = query.paginate(
             page=page, 

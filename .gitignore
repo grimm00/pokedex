@@ -149,6 +149,13 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 
+# But allow example database files for documentation
+!example.db
+!sample.db
+
+# Instance folder (Flask default for databases)
+instance/
+
 # Logs
 logs/
 *.log

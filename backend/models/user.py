@@ -13,8 +13,35 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     
-    # Relationship to user's favorite pokemon
-    favorite_pokemon = db.relationship('UserPokemon', backref='user', lazy=True)
+    # Relationship to user's favorite pokemon through junction table
+    favorite_pokemon = db.relationship('UserPokemon', backref='user', lazy=True, cascade='all, delete-orphan')
+    
+    # Convenience property to get Pokemon objects directly
+    @property
+    def favorites(self):
+        """Get Pokemon objects that this user has favorited"""
+        from backend.models.pokemon import Pokemon
+        return db.session.query(Pokemon).join(UserPokemon).filter(UserPokemon.user_id == self.id).all()
+    
+    def add_favorite(self, pokemon):
+        """Add a Pokemon to user's favorites"""
+        if not self.has_favorite(pokemon):
+            user_pokemon = UserPokemon(user_id=self.id, pokemon_id=pokemon.pokemon_id)
+            db.session.add(user_pokemon)
+            return True
+        return False
+    
+    def remove_favorite(self, pokemon):
+        """Remove a Pokemon from user's favorites"""
+        user_pokemon = UserPokemon.query.filter_by(user_id=self.id, pokemon_id=pokemon.pokemon_id).first()
+        if user_pokemon:
+            db.session.delete(user_pokemon)
+            return True
+        return False
+    
+    def has_favorite(self, pokemon):
+        """Check if user has favorited a Pokemon"""
+        return UserPokemon.query.filter_by(user_id=self.id, pokemon_id=pokemon.pokemon_id).first() is not None
     
     def set_password(self, password):
         """Hash and set password"""

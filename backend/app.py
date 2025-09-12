@@ -2,12 +2,16 @@ from flask import Flask
 from flask_restful import Api
 from flask_migrate import Migrate
 from flask_cors import CORS
-from flask_restx import Api as RestXApi
+# from flask_restx import Api as RestXApi  # Removed - using Flask-RESTful instead
 from flask_jwt_extended import JWTManager
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
 from backend.database import db
+from backend.security import (
+    create_limiter, setup_security_headers, setup_rate_limiting,
+    create_error_handlers, setup_request_logging, log_security_event
+)
 
 # Load environment variables
 load_dotenv()
@@ -31,21 +35,24 @@ app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 # Initialize extensions
 db.init_app(app)
 migrate = Migrate(app, db)
-CORS(app)
+CORS(app, origins=[
+    'http://localhost:3000',  # React dev server
+    'http://localhost:5173',  # Vite dev server
+    'https://pokedex.example.com'  # Production domain
+])
 jwt = JWTManager(app)
+
+# Initialize security features
+limiter = create_limiter(app)
+setup_security_headers(app)
+setup_rate_limiting(limiter)
+create_error_handlers(app)
+setup_request_logging(app)
 
 # Initialize Flask-RESTful API with versioning
 api = Api(app, prefix='/api/v1')
 
-# Initialize Flask-RESTX for documentation
-restx_api = RestXApi(
-    app, 
-    version='1.0', 
-    title='Pokedex API v1',
-    description='A comprehensive Pokemon API for learning full-stack development',
-    doc='/docs/',
-    prefix='/api/v1'
-)
+# Flask-RESTX removed - using Flask-RESTful with manual documentation
 
 # Import models and routes
 from backend.models import pokemon, user

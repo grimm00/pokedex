@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse, abort
+from flask import current_app
 from flask_jwt_extended import (
     create_access_token, 
     create_refresh_token,
@@ -8,6 +9,7 @@ from flask_jwt_extended import (
 )
 from backend.database import db
 from backend.models.user import User
+from backend.security import validate_input, VALIDATION_RULES, log_security_event
 from datetime import datetime, timezone, timedelta
 
 class AuthRegister(Resource):
@@ -15,6 +17,10 @@ class AuthRegister(Resource):
     
     def post(self):
         """Register a new user"""
+        # Apply rate limiting
+        limiter = current_app.extensions.get('limiter')
+        if limiter:
+            limiter.limit("5 per minute")(lambda: None)()
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True, help='Username is required')
         parser.add_argument('email', type=str, required=True, help='Email is required')
