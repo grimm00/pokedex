@@ -17,15 +17,19 @@ admin/testing/
 ├── README.md                           # This file
 ├── quick-reference.md                  # Quick testing commands
 ├── test-scripts/                       # Executable test scripts
-│   ├── README.md
 │   ├── test_app.py                     # Main integration test script
+│   ├── test_app_with_data.py           # Test with seeded data
 │   └── run_test.sh                     # Test execution script
 ├── test-data/                          # Test data and fixtures
-│   └── README.md
-├── test-results/                       # Test execution results
-│   ├── test-execution-summary.md       # Latest test results
-│   ├── test_server.log                 # Server logs during testing
-│   └── test-reports/                   # Detailed test reports
+│   └── (future test data files)
+├── results/                            # Test execution results
+│   ├── integration/                    # Integration test results
+│   │   └── test-execution-summary.md   # Latest test results
+│   └── performance/                    # Performance test results
+│       ├── baseline_test_results.json  # Baseline performance data
+│       ├── load_test_results.json      # Load testing data
+│       ├── logs/                       # Performance test logs
+│       └── reports/                    # Performance test reports
 └── performance/                        # Performance testing
     ├── README.md                       # Performance testing overview
     ├── performance-testing-plan.md     # Comprehensive testing strategy
@@ -85,6 +89,86 @@ admin/testing/
 - Migration scripts
 - Data constraints and validation
 
+## Test Scripts
+
+### `test_app.py`
+**Purpose**: SQLite-based test application for validating Flask-RESTful API and JWT authentication
+
+**Features**:
+- Temporary SQLite database (no external dependencies)
+- All Flask-RESTful routes and models
+- JWT authentication system
+- Background execution support
+- Comprehensive error handling
+
+**Usage**:
+```bash
+# Direct execution
+python admin/testing/test-scripts/test_app.py
+
+# Background execution
+cd admin/testing/test-scripts/
+./run_test.sh
+```
+
+### `test_app_with_data.py`
+**Purpose**: Test application with seeded Pokemon data for realistic testing
+
+**Features**:
+- Uses main database with 50 seeded Pokemon
+- Tests with real data scenarios
+- Validates API performance with actual data
+- Comprehensive endpoint testing
+
+**Usage**:
+```bash
+# Run with seeded data
+python admin/testing/test-scripts/test_app_with_data.py
+```
+
+### `run_test.sh`
+**Purpose**: Background test runner with proper process management
+
+**Features**:
+- Kills existing test processes
+- Runs server in background with `nohup`
+- Redirects output to log file
+- Provides PID for process management
+- Port conflict resolution (uses 5001)
+
+**Usage**:
+```bash
+# Start test server
+cd admin/testing/test-scripts/
+./run_test.sh
+
+# Stop test server
+kill <PID>
+
+# View logs
+tail -f test_server.log
+```
+
+## Test Data Management
+
+### Test Database
+- **Type**: SQLite (temporary)
+- **Location**: `/tmp/tmpXXXXXX` (auto-generated)
+- **Cleanup**: Automatic after test completion
+- **Isolation**: Each test run uses a fresh database
+
+### Sample Data
+- **Users**: Test users with various roles
+- **Pokemon**: Sample Pokemon data for testing
+- **Relationships**: User-Pokemon favorites for relationship testing
+
+### Future Test Data (Planned)
+- **Sample Pokemon Data**: Realistic test data from PokeAPI
+- **Test User Accounts**: Predefined users with different roles
+- **Database Fixtures**: Seed data for consistent testing
+- **Mock Responses**: Simulated API responses for offline testing
+- **Performance Test Data**: Large datasets for load testing
+
 ## Test Execution
 
 ### Quick Test (Recommended)
@@ -107,23 +191,10 @@ curl http://localhost:5001/api/version
 curl http://localhost:5001/api/v1/pokemon
 ```
 
-## Test Data Management
-
-### Test Database
-- **Type**: SQLite (temporary)
-- **Location**: `/tmp/tmpXXXXXX` (auto-generated)
-- **Cleanup**: Automatic after test completion
-- **Isolation**: Each test run uses a fresh database
-
-### Sample Data
-- **Users**: Test users with various roles
-- **Pokemon**: Sample Pokemon data for testing
-- **Relationships**: User-Pokemon favorites for relationship testing
-
 ## Test Results
 
 ### Current Status: ✅ PASSING
-**Last Updated**: 2025-09-11
+**Last Updated**: 2025-09-12
 **Test Coverage**: 100% of implemented features
 **Database**: SQLite working perfectly
 **API Endpoints**: All functional
@@ -289,6 +360,6 @@ def test_user_creation():
 
 ---
 
-**Last Updated**: 2025-09-11  
+**Last Updated**: 2025-09-12  
 **Maintained By**: AI Assistant  
 **Test Environment**: macOS 24.6.0, Python 3.13, Flask 2.3.3

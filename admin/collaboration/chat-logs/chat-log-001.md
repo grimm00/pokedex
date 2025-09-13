@@ -17,11 +17,11 @@ The user requested help with a Pokedex project idea for learning, mentioning the
 - Wants organized documentation
 - `admin/` folder for collaboration when not in chat
 - `docs/` folder for codebase documentation and learning materials
-- `rules.txt` folder to evolve with project rules
+- `rules.md` file to evolve with project rules
 - Currently in brainstorming phase, looking for roadmap agreement
 
 ### Assistant's Response
-The assistant read the existing files (`predesign.txt` and `rules.txt`) and created comprehensive planning documents:
+The assistant read the existing files (`predesign.txt` and `rules.md`) and created comprehensive planning documents:
 
 1. **brainstorming.md** - Comprehensive brainstorming covering:
    - Learning objectives and technical considerations

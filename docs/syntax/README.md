@@ -199,9 +199,9 @@ return {
 ## Related Documentation
 
 - **[Backend Overview](../backend-overview.md)** - High-level architecture
-- **[Security Implementation Summary](../security-implementation-summary.md)** - Security features
-- **[API Versioning Strategy](../api-versioning-strategy.md)** - API versioning
-- **[Development Environment Setup](../development-environment-setup.md)** - Setup instructions
+- **[Security Implementation Summary](../admin/technical/security/summary.md)** - Security features
+- **[API Versioning Strategy](../admin/technical/guides/api-versioning-strategy.md)** - API versioning
+- **[Development Environment Setup](../admin/technical/setup/development-environment-setup.md)** - Setup instructions
 
 This syntax help documentation provides comprehensive learning resources for understanding the Pokedex project codebase.
 

@@ -67,7 +67,7 @@ Created environment template and explained the benefits of using .env files for 
 ### **Documentation**:
 - ✅ `docs/README.md` - User-facing documentation index
 - ✅ `admin/README.md` - Admin directory overview
-- ✅ `admin/planning/brainstorming.md` - Moved from root
+- ✅ `admin/planning/planning-notes/brainstorming.md` - Moved from root
 - ✅ `admin/planning/roadmap.md` - Moved from root
 - ✅ `admin/planning/adrs/adr-001-technology-stack.md` - Moved from root
 - ✅ `admin/collaboration/chat-logs/chat-log-001.md` - Moved from root

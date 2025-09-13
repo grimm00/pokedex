@@ -1,5 +1,5 @@
 Pokedex app: I want to create a pokedex as a part of a learning project to learn all of the things about the devlopment cycle, from backend to frontend
-to ci/cd. I am a devops apprentice and wish to be able to speak intelligentaly about each part of this process.
+to ci/cd. I am a devops apprentice and wish to be able to speak intelligently about each part of this process.
 
 I want to collaborate with you from the onset. I want to create a lot of organized documentation. admin/ will be a folder
 where we will engage with one another, especially if I'm not in the chat itself and need to make longer prompts, while a docs

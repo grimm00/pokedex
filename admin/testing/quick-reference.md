@@ -133,9 +133,9 @@ cat admin/testing/test-scripts/test_server.log
 ## 📚 Documentation
 
 - [Testing Overview](README.md)
-- [Test Scripts](test-scripts/README.md)
-- [Test Results](test-results/test-execution-summary.md)
-- [Test Data](test-data/README.md)
+- [Test Scripts](test-scripts/) - Test execution scripts
+- [Test Results](results/integration/test-execution-summary.md)
+- [Test Data](test-data/) - Test data and fixtures
 - [Performance](performance/README.md)
 
 

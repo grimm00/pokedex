@@ -199,3 +199,6 @@ coverage.xml
 
 # Profiling data
 .prof
+
+# Docker test script (keep in repo)
+# test-docker.sh

@@ -12,7 +12,7 @@ This directory contains internal project management, planning, and collaboration
 ### Collaboration
 - [Chat Logs](collaboration/chat-logs/) - AI collaboration session records
 - [Meeting Notes](collaboration/meetings/) - Team meeting notes and decisions
-- [Project Rules](collaboration/rules.txt) - Development guidelines and best practices
+- [Project Rules](collaboration/rules.md) - Development guidelines and best practices
 
 ### Technical Documentation
 - [File Structure Learning](technical/file-structure-learning.md) - Backend file explanations

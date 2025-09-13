@@ -28,10 +28,22 @@ pokedex/
 │   └── pokemon_seeder.py    # Data seeding system
 ├── migrations/              # Database migrations (Flask-Migrate)
 ├── instance/                # SQLite database (not in git)
-└── requirements.txt         # Python dependencies
+├── requirements.txt         # Python dependencies
+├── Dockerfile              # Container configuration
+├── docker-compose.yml      # Multi-container setup
+├── .dockerignore           # Docker build exclusions
+└── test-docker.sh          # Docker setup test script
 ```
 
 ## 🚀 Getting Started
+
+### Setup Options
+
+We provide three different ways to set up the development environment:
+
+1. **Automated Setup** (Recommended): One-command setup with automatic dependency installation
+2. **Docker Setup**: Containerized environment for consistent development
+3. **Manual Setup**: Step-by-step setup for full control
 
 ### Prerequisites
 - Python 3.9 or higher
@@ -41,6 +53,26 @@ pokedex/
 
 ### Quick Start
 
+#### Option 1: Automated Setup (Recommended)
+```bash
+git clone https://github.com/yourusername/pokedex.git
+cd pokedex
+./setup.sh
+```
+
+#### Option 2: Docker Setup
+```bash
+git clone https://github.com/yourusername/pokedex.git
+cd pokedex
+docker-compose up
+```
+
+**Test Docker Setup:**
+```bash
+./test-docker.sh
+```
+
+#### Option 3: Manual Setup
 1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/pokedex.git
@@ -182,9 +214,9 @@ pokedex/
 
 ## 📚 Learning Resources
 
-- [Project Brainstorming](./admin/brainstorming.md) - Initial ideas and technical considerations
-- [Development Roadmap](./admin/roadmap.md) - Detailed 10-week development plan
-- [Development Rules](./admin/rules.txt) - Project guidelines and best practices
+- [Project Brainstorming](./admin/planning/planning-notes/brainstorming.md) - Initial ideas and technical considerations
+- [Development Roadmap](./admin/planning/roadmap.md) - Detailed 10-week development plan
+- [Development Rules](./admin/collaboration/rules.md) - Project guidelines and best practices
 
 ## 🤝 Contributing
 

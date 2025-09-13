@@ -1,3 +1,0 @@
-- One file or chunk of a file at a time except for planning and documentation purposes.
-
-- md files should always be considered for communicating topics related to planning/design

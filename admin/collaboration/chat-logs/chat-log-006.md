@@ -113,7 +113,7 @@ curl http://localhost:5000/api/v1/cache/stats  # ✅ Working
 ## 📚 Documentation Created
 
 ### 1. Technical Implementation Guide
-- **File**: `admin/technical/redis-caching-guide.md`
+- **File**: `admin/technical/guides/redis-caching-guide.md`
 - **Content**: 60+ page comprehensive guide
 - **Includes**: Architecture, configuration, usage, monitoring, troubleshooting
 

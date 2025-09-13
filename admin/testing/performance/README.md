@@ -208,8 +208,8 @@ def get_pokemon_list():
 
 ## 📚 Related Documentation
 
-- [Test Results](../test-results/test-execution-summary.md)
-- [Test Scripts](../test-scripts/README.md)
+- [Test Results](../results/integration/test-execution-summary.md)
+- [Test Scripts](../test-scripts/) - Test execution scripts
 - [Testing Overview](../README.md)
 - [Database Design](../../planning/adrs/adr-002-database-design.md)
 - [Technology Stack](../../planning/adrs/adr-001-technology-stack.md)
