@@ -5,8 +5,8 @@ Provides endpoints for cache statistics and management
 
 from flask_restful import Resource
 from flask import jsonify
-from backend.cache import cache_manager, pokemon_cache, pokeapi_cache, get_cache_stats, clear_all_cache
-from backend.security import limiter
+from backend.services.cache import cache_manager, pokemon_cache, pokeapi_cache, get_cache_stats, clear_all_cache
+from backend.services.security import limiter
 import logging
 
 # Cache logger

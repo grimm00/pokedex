@@ -45,7 +45,21 @@ This document explains the purpose and structure of each file in our Flask backe
 - Allows importing models from the models directory
 - Required for `from backend.models import pokemon, user`
 
-### 5. `backend/models/pokemon.py` ✅ CREATED
+### 5. `backend/services/` ✅ CREATED
+**Purpose**: Business logic services directory
+**What it does**:
+- Contains core business logic and external integrations
+- Separates concerns from routes and models
+- Houses cache, security, and external API clients
+
+### 6. `backend/utils/` ✅ CREATED
+**Purpose**: Utility scripts and tools directory
+**What it does**:
+- Contains data seeding and maintenance scripts
+- Houses development and deployment utilities
+- Separates utility code from core application logic
+
+### 7. `backend/models/pokemon.py` ✅ CREATED
 **Purpose**: Pokemon database model
 **What it does**:
 - Defines the Pokemon table structure

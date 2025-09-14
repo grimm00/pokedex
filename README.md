@@ -22,10 +22,16 @@ pokedex/
 │   └── collaboration/       # Chat logs and collaboration history
 ├── backend/                 # Flask REST API
 │   ├── models/              # SQLAlchemy models (Pokemon, User, Audit)
-│   ├── routes/              # API endpoints (auth, pokemon, users)
-│   ├── security.py          # Security features and rate limiting
-│   ├── pokeapi_client.py    # PokeAPI integration client
-│   └── pokemon_seeder.py    # Data seeding system
+│   ├── routes/              # API endpoints (auth, pokemon, users, cache)
+│   ├── services/            # Business logic services
+│   │   ├── cache.py         # Redis caching system
+│   │   ├── security.py      # Security features and rate limiting
+│   │   └── pokeapi_client.py # PokeAPI integration client
+│   ├── utils/               # Utility scripts and tools
+│   │   ├── pokemon_seeder.py # Data seeding logic
+│   │   └── seed_pokemon.py  # CLI entry point for seeding
+│   ├── app.py               # Main Flask application
+│   └── database.py          # Database configuration
 ├── migrations/              # Database migrations (Flask-Migrate)
 ├── instance/                # SQLite database (not in git)
 ├── requirements.txt         # Python dependencies

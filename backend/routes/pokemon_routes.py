@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, abort
 from backend.database import db
 from backend.models.pokemon import Pokemon
-from backend.cache import pokemon_cache, cache_manager
+from backend.services.cache import pokemon_cache, cache_manager
 import requests
 import os
 

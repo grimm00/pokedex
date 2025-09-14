@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from backend.database import db
 from backend.models.pokemon import Pokemon
 from backend.models.audit_log import log_system_event, AuditAction
-from backend.pokeapi_client import PokeAPIClient, PokeAPIError
+from backend.services.pokeapi_client import PokeAPIClient, PokeAPIError
 
 # Configure logging
 logger = logging.getLogger(__name__)

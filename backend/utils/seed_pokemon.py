@@ -9,8 +9,8 @@ import argparse
 import logging
 from backend.app import app
 from backend.database import db
-from backend.pokemon_seeder import pokemon_seeder
-from backend.pokeapi_client import pokeapi_client
+from backend.utils.pokemon_seeder import pokemon_seeder
+from backend.services.pokeapi_client import pokeapi_client
 
 # Configure logging
 logging.basicConfig(

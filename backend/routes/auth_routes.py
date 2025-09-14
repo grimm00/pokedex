@@ -9,7 +9,7 @@ from flask_jwt_extended import (
 )
 from backend.database import db
 from backend.models.user import User
-from backend.security import validate_input, VALIDATION_RULES, log_security_event
+from backend.services.security import validate_input, VALIDATION_RULES, log_security_event
 from datetime import datetime, timezone, timedelta
 
 class AuthRegister(Resource):
