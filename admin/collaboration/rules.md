@@ -1,0 +1,145 @@
+# Collaboration Rules and Guidelines
+
+**Last Updated**: 2025-09-12  
+**Purpose**: Central guidelines for AI collaboration and project development  
+**Status**: Active - Reference for all project interactions
+
+## 🎯 **Core Collaboration Principles**
+
+### **File Management**
+- **One file or chunk at a time** except for planning and documentation purposes
+- **Always consider markdown files** for communicating topics related to planning/design
+- **Maintain organized documentation** structure with clear hierarchies
+- **Create backups** before major structural changes
+- **Update references** when moving or renaming files
+
+### **Project Structure Guidelines**
+- **`admin/`** - Project management, planning, and collaboration
+- **`docs/`** - Codebase documentation and learning materials
+- **`backend/`** - Application code and implementation
+- **Root level** - Essential project files (README, requirements, etc.)
+
+### **Documentation Standards**
+- **Use markdown** for all documentation files
+- **Include README.md** in each major directory
+- **Provide clear navigation** between related documents
+- **Maintain consistent formatting** across all files
+- **Update references** when restructuring
+
+## 🤖 **AI Assistant Guidelines**
+
+### **Code Changes**
+- **Edit existing files** rather than creating new ones when possible
+- **Make incremental changes** with clear explanations
+- **Test changes** before proceeding to next steps
+- **Document modifications** in appropriate files
+
+### **Project Management**
+- **Follow the roadmap** and ADRs for strategic decisions
+- **Update progress documentation** after major milestones
+- **Maintain context** across conversation sessions
+- **Reference specific folders** when working on large projects
+
+### **User Interaction**
+- **Ask for confirmation** before major structural changes
+- **Explain reasoning** behind recommendations
+- **Provide clear options** when multiple approaches exist
+- **Respect user preferences** and learning objectives
+- **Provide commands for user to run** instead of running npm/servers directly
+- **Let user handle all server startup** and npm commands
+
+## 📋 **Development Workflow**
+
+### **Planning Phase**
+1. **Review existing documentation** and ADRs
+2. **Identify requirements** and constraints
+3. **Propose solutions** with clear trade-offs
+4. **Get user approval** before implementation
+
+### **Implementation Phase**
+1. **Make incremental changes** with clear explanations
+2. **Test functionality** after each change
+3. **Update documentation** to reflect changes
+4. **Maintain project structure** and organization
+
+### **Documentation Phase**
+1. **Update relevant documentation** files
+2. **Create or update README** files as needed
+3. **Ensure all references** are current and working
+4. **Maintain clear navigation** between documents
+
+## 🔄 **Project Evolution Guidelines**
+
+### **When to Restructure**
+- **Multiple similar files** in same directory
+- **Deep nesting** that makes navigation difficult
+- **Redundant documentation** across multiple files
+- **User requests** for better organization
+
+### **How to Restructure**
+1. **Analyze current structure** and identify issues
+2. **Propose consolidation plan** with clear benefits
+3. **Create backups** before making changes
+4. **Implement systematically** with user approval
+5. **Update all references** to new locations
+
+### **Maintaining Quality**
+- **Keep core files** in logical locations
+- **Preserve important content** during reorganization
+- **Maintain clear navigation** between related documents
+- **Update references** to ensure all links work
+
+## 📚 **Documentation Hierarchy**
+
+### **Strategic Level**
+- **Roadmap** - High-level project phases
+- **ADRs** - Architecture Decision Records
+- **Rules** - This file (collaboration guidelines)
+
+### **Planning Level**
+- **Progress Documentation** - Current status and achievements
+- **Database Planning** - Database design and migration
+- **Planning Notes** - Brainstorming and considerations
+
+### **Implementation Level**
+- **Technical Guides** - Implementation details
+- **Testing Documentation** - Testing strategies and results
+- **Collaboration Logs** - Chat logs and decision history
+
+### **Reference Level**
+- **Syntax Guides** - Code explanations and learning
+- **API Documentation** - Endpoint references
+- **Setup Guides** - Environment and configuration
+
+## 🚀 **Best Practices**
+
+### **File Organization**
+- **Group related files** in subdirectories
+- **Use descriptive names** for files and directories
+- **Maintain consistent structure** across similar directories
+- **Create clear entry points** (README files)
+
+### **Content Management**
+- **Keep content current** and relevant
+- **Remove outdated information** when updating
+- **Cross-reference related documents** appropriately
+- **Maintain clear separation** between different types of content
+
+### **Collaboration**
+- **Respect user preferences** and learning style
+- **Provide clear explanations** for technical decisions
+- **Maintain project momentum** while ensuring quality
+- **Document decisions** and reasoning for future reference
+
+## 📝 **Change Log**
+
+### **2025-09-12**
+- **Initial comprehensive rules** created
+- **Expanded from basic guidelines** to full collaboration framework
+- **Added project structure guidelines** and documentation standards
+- **Included AI assistant guidelines** and development workflow
+- **Established documentation hierarchy** and best practices
+
+---
+
+**This file serves as the central reference for all project collaboration and should be consulted for any structural or process decisions.**

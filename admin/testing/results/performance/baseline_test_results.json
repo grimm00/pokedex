@@ -1,0 +1,72 @@
+{
+  "/": {
+    "endpoint": "/",
+    "iterations": 5,
+    "success_count": 5,
+    "error_count": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 1.6031265258789062,
+    "min_response_time": 1.413106918334961,
+    "max_response_time": 1.7848014831542969,
+    "median_response_time": 1.6849040985107422,
+    "p95_response_time": 1.7848014831542969,
+    "p99_response_time": 1.7848014831542969,
+    "response_times": [
+      1.6849040985107422,
+      1.4140605926513672,
+      1.7848014831542969,
+      1.413106918334961,
+      1.718759536743164
+    ]
+  },
+  "/api/v1/pokemon": {
+    "endpoint": "/api/v1/pokemon",
+    "iterations": 10,
+    "success_count": 10,
+    "error_count": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 2.0240068435668945,
+    "min_response_time": 1.817941665649414,
+    "max_response_time": 2.361774444580078,
+    "median_response_time": 1.9540786743164062,
+    "p95_response_time": 2.361774444580078,
+    "p99_response_time": 2.361774444580078,
+    "response_times": [
+      2.1479129791259766,
+      2.218008041381836,
+      1.9500255584716797,
+      1.9152164459228516,
+      2.0258426666259766,
+      1.9421577453613281,
+      2.361774444580078,
+      1.9030570983886719,
+      1.817941665649414,
+      1.9581317901611328
+    ]
+  },
+  "/api/v1/pokemon/1": {
+    "endpoint": "/api/v1/pokemon/1",
+    "iterations": 10,
+    "success_count": 10,
+    "error_count": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 1.72119140625,
+    "min_response_time": 1.4050006866455078,
+    "max_response_time": 2.088785171508789,
+    "median_response_time": 1.6934871673583984,
+    "p95_response_time": 2.088785171508789,
+    "p99_response_time": 2.088785171508789,
+    "response_times": [
+      1.9137859344482422,
+      1.7080307006835938,
+      1.6660690307617188,
+      1.7311573028564453,
+      1.6789436340332031,
+      1.4050006866455078,
+      1.9848346710205078,
+      2.088785171508789,
+      1.5001296997070312,
+      1.535177230834961
+    ]
+  }
+}

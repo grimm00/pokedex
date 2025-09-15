@@ -1,0 +1,5 @@
+---
+description: Read admin/rules.md, admin/roadmap, and adrs
+globs:
+alwaysApply: true
+---

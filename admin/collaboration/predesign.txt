@@ -1,0 +1,11 @@
+Pokedex app: I want to create a pokedex as a part of a learning project to learn all of the things about the devlopment cycle, from backend to frontend
+to ci/cd. I am a devops apprentice and wish to be able to speak intelligently about each part of this process.
+
+I want to collaborate with you from the onset. I want to create a lot of organized documentation. admin/ will be a folder
+where we will engage with one another, especially if I'm not in the chat itself and need to make longer prompts, while a docs
+folder is where we will keep documents about our codebase as well as structured learning material/reflections.
+
+A rule.txt folder will evolve overtime and be set of rules that should be kept in mind when going through this project.
+
+First, I'm looking to get an idea of what we need to think about when it comes to making this pokedex, then we can 
+agree on a roadmap for our project. Essentially, this is just brainstorming phase.

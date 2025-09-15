@@ -1,0 +1,402 @@
+[
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.9211044311523438,
+    "success": false,
+    "timestamp": 1757716719.049979,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.2923221588134766,
+    "success": false,
+    "timestamp": 1757716719.050217,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.486156463623047,
+    "success": false,
+    "timestamp": 1757716719.051015,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 4.675865173339844,
+    "success": false,
+    "timestamp": 1757716719.050434,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 4.793882369995117,
+    "success": false,
+    "timestamp": 1757716719.050605,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.0798912048339844,
+    "success": false,
+    "timestamp": 1757716719.052926,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.429889678955078,
+    "success": false,
+    "timestamp": 1757716719.053536,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.0879974365234375,
+    "success": false,
+    "timestamp": 1757716719.054529,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.014087677001953,
+    "success": false,
+    "timestamp": 1757716719.055145,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.2241344451904297,
+    "success": false,
+    "timestamp": 1757716719.056043,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.870798110961914,
+    "success": false,
+    "timestamp": 1757716719.056996,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 4.642009735107422,
+    "success": false,
+    "timestamp": 1757716719.055438,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.142118453979492,
+    "success": false,
+    "timestamp": 1757716719.057647,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.3791065216064453,
+    "success": false,
+    "timestamp": 1757716719.058194,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.3012161254882812,
+    "success": false,
+    "timestamp": 1757716719.0598998,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.1180381774902344,
+    "success": false,
+    "timestamp": 1757716719.059291,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.505064010620117,
+    "success": false,
+    "timestamp": 1757716719.060815,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.4182071685791016,
+    "success": false,
+    "timestamp": 1757716719.060104,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.4611949920654297,
+    "success": false,
+    "timestamp": 1757716719.061596,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.7048587799072266,
+    "success": false,
+    "timestamp": 1757716719.062432,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.001689910888672,
+    "success": false,
+    "timestamp": 1757716719.06223,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.566099166870117,
+    "success": false,
+    "timestamp": 1757716719.063346,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.3020973205566406,
+    "success": false,
+    "timestamp": 1757716719.0635478,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.5347938537597656,
+    "success": false,
+    "timestamp": 1757716719.064089,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.5529861450195312,
+    "success": false,
+    "timestamp": 1757716719.065168,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.1816959381103516,
+    "success": false,
+    "timestamp": 1757716719.065251,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.042936325073242,
+    "success": false,
+    "timestamp": 1757716719.065941,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.6597976684570312,
+    "success": false,
+    "timestamp": 1757716719.066873,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.5610198974609375,
+    "success": false,
+    "timestamp": 1757716719.067749,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 4.005193710327148,
+    "success": false,
+    "timestamp": 1757716719.0676548,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.6630630493164062,
+    "success": false,
+    "timestamp": 1757716719.0690079,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 4.37617301940918,
+    "success": false,
+    "timestamp": 1757716719.06846,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.8290023803710938,
+    "success": false,
+    "timestamp": 1757716719.069561,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.7310848236083984,
+    "success": false,
+    "timestamp": 1757716719.071337,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.9082298278808594,
+    "success": false,
+    "timestamp": 1757716719.0716858,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.192258834838867,
+    "success": false,
+    "timestamp": 1757716719.0728588,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.9370784759521484,
+    "success": false,
+    "timestamp": 1757716719.072692,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.3490657806396484,
+    "success": false,
+    "timestamp": 1757716719.073417,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.9702186584472656,
+    "success": false,
+    "timestamp": 1757716719.0740879,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.100156784057617,
+    "success": false,
+    "timestamp": 1757716719.0746188,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.5619735717773438,
+    "success": false,
+    "timestamp": 1757716719.0750751,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.1752586364746094,
+    "success": false,
+    "timestamp": 1757716719.0756538,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.452850341796875,
+    "success": false,
+    "timestamp": 1757716719.0768042,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.9778480529785156,
+    "success": false,
+    "timestamp": 1757716719.077748,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 4.227161407470703,
+    "success": false,
+    "timestamp": 1757716719.077121,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.9020309448242188,
+    "success": false,
+    "timestamp": 1757716719.078851,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.4770965576171875,
+    "success": false,
+    "timestamp": 1757716719.0786638,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.2541751861572266,
+    "success": false,
+    "timestamp": 1757716719.0792818,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 2.4290084838867188,
+    "success": false,
+    "timestamp": 1757716719.081372,
+    "error": null
+  },
+  {
+    "endpoint": "/api/v1/pokemon",
+    "status_code": 429,
+    "response_time": 3.1108856201171875,
+    "success": false,
+    "timestamp": 1757716719.080756,
+    "error": null
+  }
+]
