@@ -29,6 +29,7 @@ This directory contains comprehensive technical documentation for the Pokedex pr
 - [Data Protection](security/) - Data security measures
 
 ### **Setup & Configuration**
+- [Environment Setup Guide](environment-setup-guide.md) - Complete environment setup with WSL troubleshooting
 - [Development Environment Setup](setup/) - Local development setup
 - [Environment Configuration](env-template.txt) - Environment variables template
 - [File Structure Learning](file-structure-learning.md) - Project structure explanation

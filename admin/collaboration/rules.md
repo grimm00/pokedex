@@ -48,6 +48,14 @@
 - **Provide commands for user to run** instead of running npm/servers directly
 - **Let user handle all server startup** and npm commands
 
+### **Terminal Command Limitations (Temporary Fix)**
+- **Avoid running npm commands** - User will handle all npm install, npm run dev, etc.
+- **Avoid running server commands** - User will start/stop Flask, React dev servers
+- **Focus on file operations** - Reading, editing, creating files works well
+- **Use simple commands** - Basic file operations, directory listing, etc.
+- **Provide clear instructions** - Give user exact commands to run when needed
+- **Work around limitations** - Use file operations and provide user with commands to execute
+
 ## 📋 **Development Workflow**
 
 ### **Planning Phase**

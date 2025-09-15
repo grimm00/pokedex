@@ -1,5 +1,5 @@
 # Git
-.git
+.git/
 .gitignore
 
 # Python
@@ -66,18 +66,18 @@ coverage.xml
 *.cover
 .hypothesis/
 
-# Documentation
-admin/
-docs/
-*.md
-!README.md
-
 # Development files
 .env
 .env.local
 .env.development
 .env.test
 .env.production
+
+# Documentation (exclude from Docker image)
+admin/
+docs/
+*.md
+!README.md
 
 # Backup files
 *_backup_*
@@ -96,13 +96,16 @@ temp/
 *.tmp
 *.temp
 
-# Node modules (if any)
+# Node modules
 node_modules/
 
-# Docker
-Dockerfile
-docker-compose.yml
-.dockerignore
+# Frontend build artifacts
+frontend/dist/
+frontend/build/
+
+# Portable Node.js installation (not needed in Docker)
+node-v20.19.5-linux-x64/
+node-v20.19.5-linux-x64.tar.xz
 
 # Health check dependency (installed in Dockerfile)
 # curl

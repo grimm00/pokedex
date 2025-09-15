@@ -168,12 +168,18 @@ temp/
 # Redis dump files
 dump.rdb
 
-# Node modules (if we add frontend later)
+# Node modules
 node_modules/
+
+# Portable Node.js installation (WSL workaround)
+node-v20.19.5-linux-x64/
+node-v20.19.5-linux-x64.tar.xz
 
 # Build artifacts
 build/
 dist/
+frontend/dist/
+frontend/build/
 
 # Local configuration files
 config/local.py
