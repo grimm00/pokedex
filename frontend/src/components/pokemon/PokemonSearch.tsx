@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { usePokemonStore } from '@/store/pokemonStore'
 
 interface PokemonSearchProps {
@@ -12,6 +12,12 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
     const [availableTypes, setAvailableTypes] = useState<string[]>([])
     const [isSearching, setIsSearching] = useState(false)
     const { getPokemonTypes } = usePokemonStore()
+    const onSearchRef = useRef(onSearch)
+    
+    // Keep the ref updated with the latest onSearch function
+    useEffect(() => {
+        onSearchRef.current = onSearch
+    }, [onSearch])
 
     // Load available types on component mount
     useEffect(() => {
@@ -26,17 +32,22 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
         loadTypes()
     }, []) // Remove getPokemonTypes from dependencies to prevent infinite loop
 
-    // Debounced search effect
+    // Debounced search effect - only trigger when user actually types
     useEffect(() => {
+        // Don't trigger search on initial mount when both are empty/default
+        if (searchTerm === '' && selectedType === 'all') {
+            return
+        }
+
         const timeoutId = setTimeout(() => {
             setIsSearching(true)
-            onSearch(searchTerm, selectedType)
+            onSearchRef.current(searchTerm, selectedType) // Use ref to get latest function
             // Reset searching state after a short delay
             setTimeout(() => setIsSearching(false), 500)
         }, 300) // 300ms debounce
 
         return () => clearTimeout(timeoutId)
-    }, [searchTerm, selectedType, onSearch]) // Keep onSearch in dependencies since it's now memoized
+    }, [searchTerm, selectedType]) // Remove onSearch from dependencies
 
     const handleClear = () => {
         setSearchTerm('')

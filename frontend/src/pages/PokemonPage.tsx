@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { PokemonCard } from '@/components/pokemon/PokemonCard'
 import { PokemonModal } from '@/components/pokemon/PokemonModal'
 import { PokemonSearch } from '@/components/pokemon/PokemonSearch'
@@ -21,11 +21,15 @@ export const PokemonPage: React.FC = () => {
 
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const hasFetched = useRef(false)
 
   // Fetch Pokemon data on component mount
   useEffect(() => {
-    fetchPokemon()
-  }, []) // Remove fetchPokemon from dependencies to prevent infinite loop
+    if (!hasFetched.current) {
+      hasFetched.current = true
+      fetchPokemon()
+    }
+  }, []) // Empty dependency array - only run once on mount
 
   console.log('Pokemon data:', pokemon)
 
@@ -51,7 +55,7 @@ export const PokemonPage: React.FC = () => {
     } catch (error) {
       console.error('Search failed:', error)
     }
-  }, [fetchPokemon])
+  }, []) // Remove fetchPokemon dependency to prevent circular dependency
 
   const handleClearSearch = useCallback(async () => {
     try {
@@ -59,7 +63,7 @@ export const PokemonPage: React.FC = () => {
     } catch (error) {
       console.error('Clear search failed:', error)
     }
-  }, [fetchPokemon])
+  }, []) // Remove fetchPokemon dependency to prevent circular dependency
 
   // Handle ESC key to close modal
   useEffect(() => {
