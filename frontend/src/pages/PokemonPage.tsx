@@ -44,7 +44,8 @@ export const PokemonPage: React.FC = () => {
     setSelectedPokemon(null)
   }
 
-  const handleSearch = useCallback(async (searchTerm: string, selectedType: string) => {
+  // Use refs to store stable function references
+  const handleSearchRef = useRef(async (searchTerm: string, selectedType: string) => {
     try {
       const params = {
         search: searchTerm || undefined,
@@ -55,15 +56,48 @@ export const PokemonPage: React.FC = () => {
     } catch (error) {
       console.error('Search failed:', error)
     }
-  }, []) // Remove fetchPokemon dependency to prevent circular dependency
+  })
 
-  const handleClearSearch = useCallback(async () => {
+  const handleClearSearchRef = useRef(async () => {
     try {
       await fetchPokemon()
     } catch (error) {
       console.error('Clear search failed:', error)
     }
-  }, []) // Remove fetchPokemon dependency to prevent circular dependency
+  })
+
+  // Update refs when fetchPokemon changes
+  useEffect(() => {
+    handleSearchRef.current = async (searchTerm: string, selectedType: string) => {
+      try {
+        const params = {
+          search: searchTerm || undefined,
+          type: selectedType !== 'all' ? selectedType : undefined,
+          page: 1
+        }
+        await fetchPokemon(params)
+      } catch (error) {
+        console.error('Search failed:', error)
+      }
+    }
+
+    handleClearSearchRef.current = async () => {
+      try {
+        await fetchPokemon()
+      } catch (error) {
+        console.error('Clear search failed:', error)
+      }
+    }
+  }, [fetchPokemon])
+
+  // Stable function references that don't change
+  const handleSearch = useCallback((searchTerm: string, selectedType: string) => {
+    handleSearchRef.current(searchTerm, selectedType)
+  }, [])
+
+  const handleClearSearch = useCallback(() => {
+    handleClearSearchRef.current()
+  }, [])
 
   // Handle ESC key to close modal
   useEffect(() => {
