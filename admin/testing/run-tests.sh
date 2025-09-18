@@ -39,8 +39,17 @@ run_backend_tests() {
     print_status "Running backend tests..."
     
     if command_exists python3; then
-        cd "$(dirname "$0")/test-scripts"
-        python3 test_backend_updated.py
+        # Get the directory where this script is located
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        cd "$SCRIPT_DIR/test-scripts"
+        
+        # Check if requests is installed
+        if ! python3 -c "import requests" 2>/dev/null; then
+            print_status "Installing requests module..."
+            pip3 install --user requests || pip3 install --break-system-packages requests
+        fi
+        
+        python3 test_app_running.py
         print_success "Backend tests completed"
     else
         print_error "Python3 not found. Please install Python 3 to run backend tests."
@@ -53,28 +62,19 @@ run_frontend_tests() {
     print_status "Running frontend tests..."
     
     if command_exists npm; then
-        # Check if we're in the right directory
-        if [ ! -f "frontend/package.json" ]; then
+        # Get the directory where this script is located
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        
+        # Check if we're in the right directory structure
+        if [ ! -f "$SCRIPT_DIR/../../frontend/package.json" ]; then
             print_error "Frontend package.json not found. Please run from project root."
             return 1
         fi
         
-        # Install dependencies if needed
-        if [ ! -d "frontend/node_modules" ]; then
-            print_status "Installing frontend dependencies..."
-            cd frontend && npm install && cd ..
-        fi
-        
-        # Run frontend tests
-        cd frontend
-        if [ -f "package.json" ] && grep -q '"test"' package.json; then
-            npm test
-            print_success "Frontend tests completed"
-        else
-            print_warning "No test script found in frontend package.json"
-            print_status "Frontend tests are located in admin/testing/frontend/"
-        fi
-        cd ..
+        # Run the simple frontend test script
+        cd "$SCRIPT_DIR/frontend"
+        ./simple-frontend-test.sh
+        print_success "Frontend tests completed"
     else
         print_error "npm not found. Please install Node.js to run frontend tests."
         return 1
@@ -86,7 +86,10 @@ run_performance_tests() {
     print_status "Running performance tests..."
     
     if command_exists python3; then
-        cd "$(dirname "$0")/performance"
+        # Get the directory where this script is located
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        cd "$SCRIPT_DIR/performance"
+        
         if [ -f "run_performance_tests.sh" ]; then
             chmod +x run_performance_tests.sh
             ./run_performance_tests.sh
@@ -94,7 +97,6 @@ run_performance_tests() {
         else
             print_warning "Performance test script not found"
         fi
-        cd ..
     else
         print_error "Python3 not found. Please install Python 3 to run performance tests."
         return 1
@@ -123,8 +125,11 @@ show_help() {
 
 # Main execution
 main() {
+    # Get the directory where this script is located
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    
     # Check if we're in the project root
-    if [ ! -f "docker-compose.yml" ] && [ ! -f "frontend/package.json" ]; then
+    if [ ! -f "$SCRIPT_DIR/../../docker-compose.yml" ] && [ ! -f "$SCRIPT_DIR/../../frontend/package.json" ]; then
         print_error "Please run this script from the project root directory"
         exit 1
     fi

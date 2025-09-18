@@ -38,9 +38,12 @@ command_exists() {
 main() {
     print_status "Starting frontend test runner..."
     
+    # Get the directory where this script is located
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    
     # Check if we're in the right directory structure
-    if [ ! -f "../../frontend/package.json" ]; then
-        print_error "Frontend package.json not found. Please run from admin/testing/frontend/"
+    if [ ! -f "$SCRIPT_DIR/../../../frontend/package.json" ]; then
+        print_error "Frontend package.json not found. Please run from project root."
         exit 1
     fi
     
@@ -51,7 +54,7 @@ main() {
     fi
     
     # Navigate to frontend directory
-    cd ../../frontend
+    cd "$SCRIPT_DIR/../../../frontend"
     
     # Check if node_modules exists
     if [ ! -d "node_modules" ]; then
@@ -74,10 +77,10 @@ main() {
     mkdir -p src/__tests__/test-utils
     
     # Copy test files
-    cp ../admin/testing/frontend/components/pokemon/*.test.tsx src/__tests__/components/pokemon/
-    cp ../admin/testing/frontend/pages/*.test.tsx src/__tests__/pages/
-    cp ../admin/testing/frontend/test-utils/*.ts src/__tests__/test-utils/
-    cp ../admin/testing/frontend/vitest.config.ts ./
+    cp "$SCRIPT_DIR/components/pokemon"/*.test.tsx src/__tests__/components/pokemon/
+    cp "$SCRIPT_DIR/pages"/*.test.tsx src/__tests__/pages/
+    cp "$SCRIPT_DIR/test-utils"/*.ts src/__tests__/test-utils/
+    cp "$SCRIPT_DIR/vitest.config.ts" ./
     
     # Update package.json to include test script if not present
     if ! grep -q '"test"' package.json; then
