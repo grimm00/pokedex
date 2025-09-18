@@ -48,6 +48,9 @@ run_backend_tests() {
         fi
         
         python3 test_app_running.py
+        echo ""
+        echo "Running search functionality tests..."
+        python3 test_search_functionality.py
         print_success "Backend tests completed"
     else
         print_error "Python3 not found. Please install Python 3 to run backend tests."
