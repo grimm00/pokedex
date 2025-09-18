@@ -13,10 +13,28 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-BASE_URL="http://localhost:5000"
+# Try Docker first, then fall back to local backend
+DOCKER_URL="http://localhost"
+LOCAL_URL="http://localhost:5000"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RESULTS_DIR="$SCRIPT_DIR/results"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+# Determine which URL to use
+if curl -s -f "$DOCKER_URL/" > /dev/null 2>&1; then
+    BASE_URL="$DOCKER_URL"
+    echo -e "${GREEN}✅ Using Docker application at $BASE_URL${NC}"
+elif curl -s -f "$LOCAL_URL/" > /dev/null 2>&1; then
+    BASE_URL="$LOCAL_URL"
+    echo -e "${GREEN}✅ Using local backend at $BASE_URL${NC}"
+else
+    echo -e "${RED}❌ No server found at $DOCKER_URL or $LOCAL_URL${NC}"
+    echo "Please start the application first:"
+    echo "  docker-compose up --build"
+    echo "  or"
+    echo "  export DATABASE_URL='sqlite:///\$(pwd)/instance/pokedex_dev.db' && python3 -m backend.app"
+    exit 1
+fi
 
 # Create results directory
 mkdir -p "$RESULTS_DIR"
@@ -27,19 +45,6 @@ echo "Timestamp: $(date)"
 echo "Results Directory: $RESULTS_DIR"
 echo ""
 
-# Function to check if server is running
-check_server() {
-    echo -e "${YELLOW}🔍 Checking if server is running...${NC}"
-    if curl -s "$BASE_URL/" > /dev/null 2>&1; then
-        echo -e "${GREEN}✅ Server is running at $BASE_URL${NC}"
-        return 0
-    else
-        echo -e "${RED}❌ Server is not running at $BASE_URL${NC}"
-        echo "Please start the server first:"
-        echo "  export DATABASE_URL='sqlite:///\$(pwd)/instance/pokedex_dev.db' && python3 -m backend.app"
-        return 1
-    fi
-}
 
 # Function to run baseline tests
 run_baseline_tests() {
@@ -232,10 +237,6 @@ main() {
             ;;
     esac
     
-    # Check if server is running
-    if ! check_server; then
-        exit 1
-    fi
     
     # Run tests based on type
     case "$TEST_TYPE" in

@@ -39,8 +39,6 @@ run_backend_tests() {
     print_status "Running backend tests..."
     
     if command_exists python3; then
-        # Get the directory where this script is located
-        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
         cd "$SCRIPT_DIR/test-scripts"
         
         # Check if requests is installed
@@ -62,9 +60,6 @@ run_frontend_tests() {
     print_status "Running frontend tests..."
     
     if command_exists npm; then
-        # Get the directory where this script is located
-        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-        
         # Check if we're in the right directory structure
         if [ ! -f "$SCRIPT_DIR/../../frontend/package.json" ]; then
             print_error "Frontend package.json not found. Please run from project root."
@@ -86,8 +81,6 @@ run_performance_tests() {
     print_status "Running performance tests..."
     
     if command_exists python3; then
-        # Get the directory where this script is located
-        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
         cd "$SCRIPT_DIR/performance"
         
         if [ -f "run_performance_tests.sh" ]; then
