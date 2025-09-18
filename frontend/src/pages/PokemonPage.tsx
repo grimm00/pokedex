@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { PokemonCard } from '@/components/pokemon/PokemonCard'
 import { PokemonModal } from '@/components/pokemon/PokemonModal'
 import { PokemonSearch } from '@/components/pokemon/PokemonSearch'
@@ -25,7 +25,7 @@ export const PokemonPage: React.FC = () => {
   // Fetch Pokemon data on component mount
   useEffect(() => {
     fetchPokemon()
-  }, [fetchPokemon])
+  }, []) // Remove fetchPokemon from dependencies to prevent infinite loop
 
   console.log('Pokemon data:', pokemon)
 
@@ -40,7 +40,7 @@ export const PokemonPage: React.FC = () => {
     setSelectedPokemon(null)
   }
 
-  const handleSearch = async (searchTerm: string, selectedType: string) => {
+  const handleSearch = useCallback(async (searchTerm: string, selectedType: string) => {
     try {
       const params = {
         search: searchTerm || undefined,
@@ -51,15 +51,15 @@ export const PokemonPage: React.FC = () => {
     } catch (error) {
       console.error('Search failed:', error)
     }
-  }
+  }, [fetchPokemon])
 
-  const handleClearSearch = async () => {
+  const handleClearSearch = useCallback(async () => {
     try {
       await fetchPokemon()
     } catch (error) {
       console.error('Clear search failed:', error)
     }
-  }
+  }, [fetchPokemon])
 
   // Handle ESC key to close modal
   useEffect(() => {

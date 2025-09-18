@@ -24,7 +24,7 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
             }
         }
         loadTypes()
-    }, [getPokemonTypes])
+    }, []) // Remove getPokemonTypes from dependencies to prevent infinite loop
 
     // Debounced search effect
     useEffect(() => {
@@ -36,7 +36,7 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
         }, 300) // 300ms debounce
 
         return () => clearTimeout(timeoutId)
-    }, [searchTerm, selectedType, onSearch])
+    }, [searchTerm, selectedType, onSearch]) // Keep onSearch in dependencies since it's now memoized
 
     const handleClear = () => {
         setSearchTerm('')
