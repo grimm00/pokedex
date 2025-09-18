@@ -14,8 +14,6 @@ interface PokemonState {
   // UI State
   loading: boolean
   error: string | null
-  searchQuery: string
-  typeFilter: string
 
   // Pagination
   page: number
@@ -31,8 +29,6 @@ interface PokemonActions {
   getPokemonTypes: () => Promise<string[]>
 
   // UI Actions
-  searchPokemon: (query: string) => void
-  filterByType: (type: string) => void
   setSelectedPokemon: (pokemon: Pokemon | null) => void
 
   // Favorites
@@ -41,7 +37,6 @@ interface PokemonActions {
   fetchFavorites: () => Promise<void>
 
   // Utility Actions
-  resetFilters: () => void
   clearError: () => void
   reset: () => void
 }
@@ -55,8 +50,6 @@ const initialState: PokemonState = {
   favorites: new Set(),
   loading: false,
   error: null,
-  searchQuery: '',
-  typeFilter: 'all',
   page: 1,
   hasMore: true,
   total: 0,
@@ -81,8 +74,6 @@ export const usePokemonStore = create<PokemonStore>()(
             state.total = response.pagination.total
             state.page = response.pagination.page
             state.hasMore = response.pagination.has_next
-            state.searchQuery = params?.search || ''
-            state.typeFilter = params?.type || 'all'
             state.loading = false
           })
         } catch (error) {
@@ -114,7 +105,7 @@ export const usePokemonStore = create<PokemonStore>()(
       },
 
       loadMore: async () => {
-        const { page, hasMore, loading, searchQuery, typeFilter } = get()
+        const { page, hasMore, loading, pokemon } = get()
         if (!hasMore || loading) return
 
         set((state) => {
@@ -123,15 +114,9 @@ export const usePokemonStore = create<PokemonStore>()(
 
         try {
           const nextPage = page + 1
-          const params: PokemonSearchParams = {
-            page: nextPage,
-            search: searchQuery || undefined,
-            type: typeFilter !== 'all' ? typeFilter : undefined,
-          }
-
-          const response = await pokemonService.getPokemon(params)
+          const response = await pokemonService.getPokemon({ page: nextPage })
           set((state) => {
-            state.pokemon = [...state.pokemon, ...response.pokemon]
+            state.pokemon = [...pokemon, ...response.pokemon]
             state.filteredPokemon = [...state.filteredPokemon, ...response.pokemon]
             state.page = nextPage
             state.hasMore = response.pagination.has_next
@@ -153,24 +138,6 @@ export const usePokemonStore = create<PokemonStore>()(
           console.error('Failed to fetch Pokemon types:', error)
           throw error
         }
-      },
-
-      searchPokemon: (query: string) => {
-        set((state) => {
-          state.searchQuery = query
-          state.filteredPokemon = state.pokemon.filter((pokemon: Pokemon) =>
-            pokemon.name.toLowerCase().includes(query.toLowerCase())
-          )
-        })
-      },
-
-      filterByType: (type: string) => {
-        set((state) => {
-          state.typeFilter = type
-          state.filteredPokemon = state.pokemon.filter((pokemon: Pokemon) =>
-            type === 'all' || pokemon.types.includes(type)
-          )
-        })
       },
 
       setSelectedPokemon: (pokemon: Pokemon | null) => {
@@ -209,21 +176,13 @@ export const usePokemonStore = create<PokemonStore>()(
         try {
           const favorites = await pokemonService.getFavorites()
           set((state) => {
-            state.favorites = new Set(favorites)
+            state.favorites = new Set(favorites.map((fav: any) => fav.pokemon_id))
           })
         } catch (error) {
           set((state) => {
             state.error = error instanceof Error ? error.message : 'Failed to fetch favorites'
           })
         }
-      },
-
-      resetFilters: () => {
-        set((state) => {
-          state.searchQuery = ''
-          state.typeFilter = 'all'
-          state.filteredPokemon = state.pokemon
-        })
       },
 
       clearError: () => {
@@ -233,9 +192,11 @@ export const usePokemonStore = create<PokemonStore>()(
       },
 
       reset: () => {
-        set(() => ({ ...initialState }))
+        set(initialState)
       },
     })),
-    { name: 'pokemon-store' }
+    {
+      name: 'pokemon-store',
+    }
   )
 )

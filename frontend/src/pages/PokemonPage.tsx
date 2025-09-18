@@ -1,23 +1,18 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { PokemonCard } from '@/components/pokemon/PokemonCard'
 import { PokemonModal } from '@/components/pokemon/PokemonModal'
-import { PokemonSearch } from '@/components/pokemon/PokemonSearch'
+import { PokemonSearchMemo as PokemonSearch } from '@/components/pokemon/PokemonSearch'
 import { usePokemonStore } from '@/store/pokemonStore'
 
-export const PokemonPage: React.FC = () => {
-  console.log('PokemonPage rendering...')
-
-  // Use Zustand store instead of mock data
-  const {
-    pokemon,
-    filteredPokemon,
-    loading,
-    error,
-    fetchPokemon,
-    clearError,
-    searchQuery,
-    typeFilter
-  } = usePokemonStore()
+// Memoized PokemonPage to prevent unnecessary re-renders
+const PokemonPageComponent: React.FC = () => {
+  // Only subscribe to the data we actually need
+  const pokemon = usePokemonStore((state) => state.pokemon)
+  const filteredPokemon = usePokemonStore((state) => state.filteredPokemon)
+  const loading = usePokemonStore((state) => state.loading)
+  const error = usePokemonStore((state) => state.error)
+  const fetchPokemon = usePokemonStore((state) => state.fetchPokemon)
+  const clearError = usePokemonStore((state) => state.clearError)
 
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -29,30 +24,20 @@ export const PokemonPage: React.FC = () => {
       hasFetched.current = true
       fetchPokemon()
     }
-  }, []) // Empty dependency array - only run once on mount
+  }, [fetchPokemon])
 
-  console.log('Pokemon data:', pokemon)
-  console.log('Filtered Pokemon:', filteredPokemon)
-  console.log('Loading:', loading)
-  console.log('Error:', error)
-  console.log('Pokemon length:', pokemon.length)
-  console.log('Filtered Pokemon length:', filteredPokemon.length)
-  console.log('Search query:', searchQuery)
-  console.log('Type filter:', typeFilter)
-
-  const handlePokemonClick = (selectedPokemon: any) => {
-    console.log('Pokemon clicked:', selectedPokemon.name)
+  const handlePokemonClick = useCallback((selectedPokemon: any) => {
     setSelectedPokemon(selectedPokemon)
     setIsModalOpen(true)
-  }
+  }, [])
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
     setSelectedPokemon(null)
-  }
+  }, [])
 
-  // Use refs to store stable function references
-  const handleSearchRef = useRef(async (searchTerm: string, selectedType: string) => {
+  // Stable search handlers that don't change
+  const handleSearch = useCallback(async (searchTerm: string, selectedType: string) => {
     try {
       const params = {
         search: searchTerm || undefined,
@@ -63,48 +48,15 @@ export const PokemonPage: React.FC = () => {
     } catch (error) {
       console.error('Search failed:', error)
     }
-  })
+  }, [fetchPokemon])
 
-  const handleClearSearchRef = useRef(async () => {
+  const handleClearSearch = useCallback(async () => {
     try {
       await fetchPokemon()
     } catch (error) {
       console.error('Clear search failed:', error)
     }
-  })
-
-  // Update refs when fetchPokemon changes
-  useEffect(() => {
-    handleSearchRef.current = async (searchTerm: string, selectedType: string) => {
-      try {
-        const params = {
-          search: searchTerm || undefined,
-          type: selectedType !== 'all' ? selectedType : undefined,
-          page: 1
-        }
-        await fetchPokemon(params)
-      } catch (error) {
-        console.error('Search failed:', error)
-      }
-    }
-
-    handleClearSearchRef.current = async () => {
-      try {
-        await fetchPokemon()
-      } catch (error) {
-        console.error('Clear search failed:', error)
-      }
-    }
   }, [fetchPokemon])
-
-  // Stable function references that don't change
-  const handleSearch = useCallback((searchTerm: string, selectedType: string) => {
-    handleSearchRef.current(searchTerm, selectedType)
-  }, [])
-
-  const handleClearSearch = useCallback(() => {
-    handleClearSearchRef.current()
-  }, [])
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -126,10 +78,10 @@ export const PokemonPage: React.FC = () => {
       document.removeEventListener('keydown', handleEscKey)
       document.body.style.overflow = 'unset'
     }
-  }, [isModalOpen])
+  }, [isModalOpen, handleCloseModal])
 
   // Loading state
-  if (loading) {
+  if (loading && pokemon.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center mb-8">
@@ -150,8 +102,8 @@ export const PokemonPage: React.FC = () => {
         <h1 className="text-4xl font-bold text-center mb-8">
           Pokemon Collection
         </h1>
-        <div className="flex flex-col items-center py-20">
-          <div className="text-red-500 text-lg mb-4">Error: {error}</div>
+        <div className="text-center py-20">
+          <p className="text-red-500 text-lg mb-4">Error: {error}</p>
           <button
             onClick={() => {
               clearError()
@@ -178,17 +130,6 @@ export const PokemonPage: React.FC = () => {
         onClear={handleClearSearch}
       />
 
-      {/* Results Count */}
-      {(searchQuery || typeFilter !== 'all') && (
-        <div className="mb-6 text-center">
-          <p className="text-gray-600">
-            Found {filteredPokemon.length} Pokemon
-            {searchQuery && ` matching "${searchQuery}"`}
-            {typeFilter !== 'all' && ` of type ${typeFilter}`}
-          </p>
-        </div>
-      )}
-
       {/* Pokemon Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredPokemon.map((poke) => (
@@ -201,7 +142,7 @@ export const PokemonPage: React.FC = () => {
       </div>
 
       {/* No Results Message */}
-      {filteredPokemon.length === 0 && (searchQuery || typeFilter !== 'all') && (
+      {filteredPokemon.length === 0 && (
         <div className="text-center py-12">
           <div className="text-gray-500 text-lg mb-4">
             No Pokemon found matching your search criteria
@@ -224,3 +165,6 @@ export const PokemonPage: React.FC = () => {
     </div>
   )
 }
+
+// Export memoized component
+export const PokemonPage = memo(PokemonPageComponent)

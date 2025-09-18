@@ -8,8 +8,6 @@ export const useSelectedPokemon = () => usePokemonStore((state) => state.selecte
 export const useFavorites = () => usePokemonStore((state) => state.favorites)
 export const usePokemonLoading = () => usePokemonStore((state) => state.loading)
 export const usePokemonError = () => usePokemonStore((state) => state.error)
-export const useSearchQuery = () => usePokemonStore((state) => state.searchQuery)
-export const useTypeFilter = () => usePokemonStore((state) => state.typeFilter)
 export const useHasMore = () => usePokemonStore((state) => state.hasMore)
 
 // Pokemon actions
@@ -17,13 +15,10 @@ export const usePokemonActions = () => usePokemonStore((state) => ({
   fetchPokemon: state.fetchPokemon,
   fetchPokemonById: state.fetchPokemonById,
   loadMore: state.loadMore,
-  searchPokemon: state.searchPokemon,
-  filterByType: state.filterByType,
   setSelectedPokemon: state.setSelectedPokemon,
   addToFavorites: state.addToFavorites,
   removeFromFavorites: state.removeFromFavorites,
   fetchFavorites: state.fetchFavorites,
-  resetFilters: state.resetFilters,
   clearError: state.clearError,
   reset: state.reset,
 }))
@@ -89,4 +84,3 @@ export const useIsFavorite = (pokemonId: number) => usePokemonStore(
     [pokemonId]
   )
 )
-

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, memo, useCallback } from 'react'
 import { usePokemonStore } from '@/store/pokemonStore'
 
 interface PokemonSearchProps {
@@ -6,58 +6,70 @@ interface PokemonSearchProps {
     onClear: () => void
 }
 
-export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
+const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
     const [searchTerm, setSearchTerm] = useState('')
     const [selectedType, setSelectedType] = useState('all')
     const [availableTypes, setAvailableTypes] = useState<string[]>([])
     const [isSearching, setIsSearching] = useState(false)
     const { getPokemonTypes } = usePokemonStore()
     const onSearchRef = useRef(onSearch)
+    const hasInitialized = useRef(false)
 
     // Keep the ref updated with the latest onSearch function
     useEffect(() => {
         onSearchRef.current = onSearch
     }, [onSearch])
 
+    // Memoize the getPokemonTypes function to prevent infinite loops
+    const memoizedGetPokemonTypes = useCallback(() => getPokemonTypes(), [getPokemonTypes])
+
     // Load available types on component mount
     useEffect(() => {
         const loadTypes = async () => {
             try {
-                const types = await getPokemonTypes()
+                const types = await memoizedGetPokemonTypes()
                 setAvailableTypes(types)
             } catch (error) {
                 console.error('Failed to load Pokemon types:', error)
             }
         }
         loadTypes()
-    }, []) // Remove getPokemonTypes from dependencies to prevent infinite loop
+    }, [memoizedGetPokemonTypes])
 
-    // Debounced search effect - only trigger when user actually types
+    // Immediate search effect - trigger as soon as user types or changes filter
     useEffect(() => {
-        // Don't trigger search on initial mount when both are empty/default
-        if (searchTerm === '' && selectedType === 'all') {
+        // Skip the very first render to avoid duplicate initial load
+        if (!hasInitialized.current) {
+            hasInitialized.current = true
             return
         }
 
-        const timeoutId = setTimeout(() => {
-            setIsSearching(true)
-            onSearchRef.current(searchTerm, selectedType) // Use ref to get latest function
-            // Reset searching state after a short delay
-            setTimeout(() => setIsSearching(false), 500)
-        }, 800) // 800ms debounce - gives more time to type
+        // Show loading state briefly for visual feedback
+        setIsSearching(true)
+
+        // Trigger search immediately
+        onSearchRef.current(searchTerm, selectedType)
+
+        // Hide loading state after a short delay
+        const timeoutId = setTimeout(() => setIsSearching(false), 300)
 
         return () => clearTimeout(timeoutId)
     }, [searchTerm, selectedType]) // Remove onSearch from dependencies
 
-    const handleClear = () => {
+    // Memoized event handlers to prevent unnecessary re-renders
+    const handleClear = useCallback(() => {
         setSearchTerm('')
         setSelectedType('all')
         onClear()
-    }
+    }, [onClear])
 
-    const handleTypeChange = (type: string) => {
+    const handleTypeChange = useCallback((type: string) => {
         setSelectedType(type)
-    }
+    }, [])
+
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value)
+    }, [])
 
     return (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -74,7 +86,7 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
                             type="text"
                             id="search"
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={handleSearchChange}
                             placeholder="Enter Pokemon name..."
                             className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         />
@@ -139,3 +151,6 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
         </div>
     )
 }
+
+// Memoize the component to prevent unnecessary re-renders when parent updates
+export const PokemonSearchMemo = memo(PokemonSearch)
