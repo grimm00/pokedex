@@ -4,7 +4,7 @@ import type { Pokemon, PokemonListResponse, PokemonDetailResponse, PokemonSearch
 export const pokemonService = {
   async getPokemon(params?: PokemonSearchParams): Promise<PokemonListResponse> {
     const searchParams = new URLSearchParams()
-    
+
     if (params?.search) {
       searchParams.append('search', params.search)
     }
@@ -20,14 +20,14 @@ export const pokemonService = {
 
     const queryString = searchParams.toString()
     const endpoint = `/api/v1/pokemon${queryString ? `?${queryString}` : ''}`
-    
+
     const response = await apiClient.get<PokemonListResponse>(endpoint)
     return response.data
   },
 
   async getPokemonById(id: number): Promise<Pokemon> {
     const response = await apiClient.get<PokemonDetailResponse>(`/api/v1/pokemon/${id}`)
-    return response.data.data
+    return response.data.pokemon
   },
 
   async getPokemonTypes(): Promise<string[]> {

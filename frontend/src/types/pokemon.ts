@@ -1,21 +1,21 @@
-export type PokemonType = 
-  | 'fire' 
-  | 'water' 
-  | 'grass' 
-  | 'electric' 
-  | 'psychic' 
-  | 'ice' 
-  | 'dragon' 
-  | 'dark' 
-  | 'fairy' 
-  | 'normal' 
-  | 'fighting' 
-  | 'flying' 
-  | 'poison' 
-  | 'ground' 
-  | 'rock' 
-  | 'bug' 
-  | 'ghost' 
+export type PokemonType =
+  | 'fire'
+  | 'water'
+  | 'grass'
+  | 'electric'
+  | 'psychic'
+  | 'ice'
+  | 'dragon'
+  | 'dark'
+  | 'fairy'
+  | 'normal'
+  | 'fighting'
+  | 'flying'
+  | 'poison'
+  | 'ground'
+  | 'rock'
+  | 'bug'
+  | 'ghost'
   | 'steel'
 
 export interface PokemonSprites {
@@ -50,26 +50,33 @@ export interface PokemonAbility {
 
 export interface Pokemon {
   id: number
+  pokemon_id: number  // PokeAPI ID
   name: string
-  height: number
-  weight: number
-  types: string[]  // Simplified for frontend display
-  abilities: { name: string }[]  // Simplified for frontend display
-  stats: { name: string; base_stat: number }[]  // Simplified for frontend display
-  sprites: { front_default: string }  // Simplified for frontend display
+  height: number  // in decimeters
+  weight: number  // in hectograms
+  base_experience?: number
+  types: string[]  // JSON array from backend
+  abilities: string[]  // JSON array from backend
+  stats: { [key: string]: number }  // JSON object from backend
+  sprites: { [key: string]: string }  // JSON object from backend
   created_at?: string
   updated_at?: string
 }
 
 export interface PokemonListResponse {
-  data: Pokemon[]
-  total: number
-  page: number
-  per_page: number
+  pokemon: Pokemon[]
+  pagination: {
+    page: number
+    per_page: number
+    total: number
+    pages: number
+    has_next: boolean
+    has_prev: boolean
+  }
 }
 
 export interface PokemonDetailResponse {
-  data: Pokemon
+  pokemon: Pokemon
 }
 
 export interface PokemonSearchParams {

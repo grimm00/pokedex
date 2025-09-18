@@ -32,6 +32,17 @@ pokedex/
 │   │   └── seed_pokemon.py  # CLI entry point for seeding
 │   ├── app.py               # Main Flask application
 │   └── database.py          # Database configuration
+├── frontend/                # React TypeScript Frontend
+│   ├── src/
+│   │   ├── components/      # React components
+│   │   │   └── pokemon/     # Pokemon-specific components
+│   │   ├── pages/           # Page components
+│   │   ├── services/        # API service layer
+│   │   ├── store/           # Zustand state management
+│   │   ├── types/           # TypeScript type definitions
+│   │   └── utils/           # Utility functions
+│   ├── package.json         # Node.js dependencies
+│   └── vite.config.ts       # Vite configuration
 ├── migrations/              # Database migrations (Flask-Migrate)
 ├── instance/                # SQLite database (not in git)
 ├── requirements.txt         # Python dependencies
@@ -70,8 +81,14 @@ cd pokedex
 ```bash
 git clone https://github.com/yourusername/pokedex.git
 cd pokedex
-docker-compose up
+docker-compose up --build
 ```
+
+**Access the application:**
+- **Full Application**: http://localhost (Frontend + API)
+- **API Only**: http://localhost/api/v1/
+- **Health check**: http://localhost/api/v1/health
+- **API docs**: http://localhost/api/docs
 
 **Test Docker Setup:**
 ```bash
@@ -131,6 +148,47 @@ docker-compose up
    ```bash
    curl http://localhost:5000/api/v1/pokemon
    ```
+
+### Frontend Setup (React + TypeScript)
+
+1. **Navigate to frontend directory**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the application**
+   - Frontend: http://localhost:3001 (or 3000 if available)
+   - Backend API: http://localhost:5000
+
+### Full-Stack Development
+
+To run both frontend and backend together:
+
+1. **Terminal 1 - Backend**
+   ```bash
+   export DATABASE_URL="sqlite:///$(pwd)/instance/pokedex_dev.db"
+   python3 -m backend.app
+   ```
+
+2. **Terminal 2 - Frontend**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+3. **Access the application**
+   - Open http://localhost:3001 in your browser
+   - The frontend will automatically connect to the backend API
 
 ## 🔌 API Endpoints
 

@@ -17,7 +17,7 @@ class ApiClient {
 
   constructor() {
     this.config = {
-      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+      baseURL: import.meta.env.VITE_API_URL || '',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.config.baseURL}${endpoint}`
-    
+
     const token = localStorage.getItem('token')
     const headers = {
       ...this.config.headers,
@@ -63,7 +63,7 @@ class ApiClient {
       if (error instanceof ApiError) {
         throw error
       }
-      
+
       throw new ApiError(
         error instanceof Error ? error.message : 'Network error',
         0,

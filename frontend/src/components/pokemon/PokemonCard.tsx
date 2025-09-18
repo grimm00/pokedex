@@ -38,11 +38,11 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
 
   // Get the primary type for hover color
   const primaryType = pokemon.types[0] || 'normal'
-  
+
   // Type-specific hover colors
   const getHoverStyle = () => {
     if (!isHovered) return {}
-    
+
     const colors = {
       // Primary types
       grass: 'linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(255, 255, 255, 0.9))',
@@ -51,7 +51,7 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       electric: 'linear-gradient(135deg, rgba(255, 230, 109, 0.4), rgba(255, 255, 255, 0.9))',
       psychic: 'linear-gradient(135deg, rgba(168, 230, 207, 0.4), rgba(255, 255, 255, 0.9))',
       poison: 'linear-gradient(135deg, rgba(155, 89, 182, 0.4), rgba(255, 255, 255, 0.9))',
-      
+
       // Additional types
       ice: 'linear-gradient(135deg, rgba(180, 248, 200, 0.4), rgba(255, 255, 255, 0.9))',
       dragon: 'linear-gradient(135deg, rgba(255, 182, 193, 0.4), rgba(255, 255, 255, 0.9))',
@@ -66,12 +66,12 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       ghost: 'linear-gradient(135deg, rgba(142, 68, 173, 0.4), rgba(255, 255, 255, 0.9))',
       steel: 'linear-gradient(135deg, rgba(127, 140, 141, 0.4), rgba(255, 255, 255, 0.9))',
     }
-    
+
     return {
       background: colors[primaryType as keyof typeof colors] || 'rgba(255, 255, 255, 0.95)'
     }
   }
-  
+
   return (
     <div
       className={`${primaryType} cursor-pointer group relative overflow-hidden hover:scale-105 ${className || ''}`}
@@ -90,19 +90,18 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       {/* Pokemon Image */}
       <div className="relative mb-4 h-32 flex items-center justify-center">
         <img
-          src={pokemon.sprites.front_default}
+          src={pokemon.sprites.front_default || (pokemon.sprites.other as any)?.['official-artwork']?.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`}
           alt={`${formatName(pokemon.name)} front view`}
           className="w-full h-full object-contain transition-transform duration-300 hover:scale-110"
         />
-        
+
         {/* Favorite Button */}
         <button
           onClick={handleFavoriteToggle}
-          className={`absolute top-2 right-2 p-1 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 ${
-            isFavorite 
-              ? 'text-red-500 bg-red-50' 
-              : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
-          }`}
+          className={`absolute top-2 right-2 p-1 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 ${isFavorite
+            ? 'text-red-500 bg-red-50'
+            : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
+            }`}
           aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
           <svg

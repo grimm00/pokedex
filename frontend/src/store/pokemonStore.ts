@@ -10,13 +10,13 @@ interface PokemonState {
   filteredPokemon: Pokemon[]
   selectedPokemon: Pokemon | null
   favorites: Set<number>
-  
+
   // UI State
   loading: boolean
   error: string | null
   searchQuery: string
   typeFilter: PokemonType | 'all'
-  
+
   // Pagination
   page: number
   hasMore: boolean
@@ -28,17 +28,17 @@ interface PokemonActions {
   fetchPokemon: (params?: PokemonSearchParams) => Promise<void>
   fetchPokemonById: (id: number) => Promise<void>
   loadMore: () => Promise<void>
-  
+
   // UI Actions
   searchPokemon: (query: string) => void
   filterByType: (type: PokemonType | 'all') => void
   setSelectedPokemon: (pokemon: Pokemon | null) => void
-  
+
   // Favorites
   addToFavorites: (pokemon: Pokemon) => Promise<void>
   removeFromFavorites: (pokemonId: number) => Promise<void>
   fetchFavorites: () => Promise<void>
-  
+
   // Utility Actions
   resetFilters: () => void
   clearError: () => void
@@ -75,11 +75,11 @@ export const usePokemonStore = create<PokemonStore>()(
         try {
           const response = await pokemonService.getPokemon(params)
           set((state) => {
-            state.pokemon = response.data
-            state.filteredPokemon = response.data
-            state.total = response.total
-            state.page = response.page
-            state.hasMore = response.data.length > 0
+            state.pokemon = response.pokemon
+            state.filteredPokemon = response.pokemon
+            state.total = response.pagination.total
+            state.page = response.pagination.page
+            state.hasMore = response.pagination.has_next
             state.loading = false
           })
         } catch (error) {
@@ -125,13 +125,13 @@ export const usePokemonStore = create<PokemonStore>()(
             search: searchQuery || undefined,
             type: typeFilter !== 'all' ? typeFilter : undefined,
           }
-          
+
           const response = await pokemonService.getPokemon(params)
           set((state) => {
-            state.pokemon = [...state.pokemon, ...response.data]
-            state.filteredPokemon = [...state.filteredPokemon, ...response.data]
+            state.pokemon = [...state.pokemon, ...response.pokemon]
+            state.filteredPokemon = [...state.filteredPokemon, ...response.pokemon]
             state.page = nextPage
-            state.hasMore = response.data.length > 0
+            state.hasMore = response.pagination.has_next
             state.loading = false
           })
         } catch (error) {

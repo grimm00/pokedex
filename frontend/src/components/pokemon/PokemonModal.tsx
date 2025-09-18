@@ -2,13 +2,17 @@ import React from 'react'
 
 interface Pokemon {
   id: number
+  pokemon_id: number
   name: string
   types: string[]
   height: number
   weight: number
-  abilities: { name: string }[]
-  stats: { name: string; base_stat: number }[]
-  sprites: { front_default: string }
+  base_experience?: number
+  abilities: string[]
+  stats: { [key: string]: number }
+  sprites: { [key: string]: string }
+  created_at?: string
+  updated_at?: string
 }
 
 interface PokemonModalProps {
@@ -52,11 +56,11 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
         {/* Header */}
@@ -126,7 +130,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
                       key={index}
                       className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
                     >
-                      {ability.name.replace('-', ' ')}
+                      {ability.replace('-', ' ')}
                     </span>
                   ))}
                 </div>
@@ -138,21 +142,21 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
           <div>
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Base Stats</h3>
             <div className="space-y-3">
-              {pokemon.stats.map((stat) => (
-                <div key={stat.name} className="flex items-center">
+              {Object.entries(pokemon.stats).map(([statName, statValue]) => (
+                <div key={statName} className="flex items-center">
                   <div className="w-24 text-sm font-medium text-gray-600 capitalize">
-                    {stat.name.replace('-', ' ')}
+                    {statName.replace('-', ' ')}
                   </div>
                   <div className="flex-1 mx-4">
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className={`h-2 rounded-full ${getStatColor(stat.name)}`}
-                        style={{ width: `${getStatWidth(stat.base_stat)}%` }}
+                        className={`h-2 rounded-full ${getStatColor(statName)}`}
+                        style={{ width: `${getStatWidth(statValue)}%` }}
                       />
                     </div>
                   </div>
                   <div className="w-12 text-sm font-bold text-gray-900 text-right">
-                    {stat.base_stat}
+                    {statValue}
                   </div>
                 </div>
               ))}

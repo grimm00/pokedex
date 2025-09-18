@@ -38,6 +38,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 CORS(app, origins=[
     'http://localhost:3000',  # React dev server
+    'http://localhost:3001',  # React dev server (alternative port)
     'http://localhost:5173',  # Vite dev server
     'https://pokedex.example.com'  # Production domain
 ])

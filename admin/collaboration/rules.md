@@ -48,6 +48,15 @@
 - **Provide commands for user to run** instead of running npm/servers directly
 - **Let user handle all server startup** and npm commands
 
+### **Collaborative Problem Solving**
+- **Ask user to help** when encountering issues instead of debugging alone
+- **Request status checks** - "Are you still running the backend? Can you check if it's responding?"
+- **Ask for user to test** - "Can you try running this command and let me know what happens?"
+- **Request user to restart services** - "The API seems down, can you restart the backend for me?"
+- **Ask for error details** - "What error are you seeing? Can you share the terminal output?"
+- **Request user to check logs** - "Can you check the backend logs and tell me what's happening?"
+- **Don't assume** - Always ask "Is X still running?" before troubleshooting
+
 ### **Terminal Command Limitations (Temporary Fix)**
 - **Avoid running npm commands** - User will handle all npm install, npm run dev, etc.
 - **Avoid running server commands** - User will start/stop Flask, React dev servers

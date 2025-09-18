@@ -31,10 +31,18 @@ if docker-compose up -d; then
     
     # Test API endpoint
     echo "🧪 Testing API endpoint..."
-    if curl -f http://localhost:5000/api/v1/health > /dev/null 2>&1; then
+    if curl -f http://localhost/api/v1/health > /dev/null 2>&1; then
         echo "✅ API is responding"
     else
         echo "⚠️  API is not responding (this might be normal if still starting up)"
+    fi
+    
+    # Test frontend
+    echo "🧪 Testing frontend..."
+    if curl -f http://localhost/ > /dev/null 2>&1; then
+        echo "✅ Frontend is responding"
+    else
+        echo "⚠️  Frontend is not responding (this might be normal if still starting up)"
     fi
     
     # Show running containers
@@ -43,7 +51,8 @@ if docker-compose up -d; then
     
     echo ""
     echo "🎉 Docker setup test complete!"
-    echo "API should be available at: http://localhost:5000"
+    echo "Full application available at: http://localhost"
+    echo "API available at: http://localhost/api/v1/"
     echo "To stop: docker-compose down"
     echo "To view logs: docker-compose logs -f"
     
