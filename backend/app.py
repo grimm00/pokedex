@@ -51,6 +51,21 @@ setup_rate_limiting(limiter)
 create_error_handlers(app)
 setup_request_logging(app)
 
+# Add cache-busting headers for API responses
+@app.after_request
+def add_cache_headers(response):
+    """Add appropriate cache headers to API responses"""
+    # Don't cache API responses
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    
+    # Add version header for cache invalidation
+    response.headers['X-API-Version'] = 'v1'
+    response.headers['X-Build-Date'] = os.environ.get('BUILD_DATE', 'unknown')
+    
+    return response
+
 # Initialize Flask-RESTful API with versioning
 api = Api(app, prefix='/api/v1')
 

@@ -13,7 +13,7 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
     const [isSearching, setIsSearching] = useState(false)
     const { getPokemonTypes } = usePokemonStore()
     const onSearchRef = useRef(onSearch)
-    
+
     // Keep the ref updated with the latest onSearch function
     useEffect(() => {
         onSearchRef.current = onSearch
