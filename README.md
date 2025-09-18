@@ -220,10 +220,23 @@ docker-compose up
 
 ## 📚 Learning Resources
 
+### **Project Documentation**
 - [Project Brainstorming](./admin/planning/planning-notes/brainstorming.md) - Initial ideas and technical considerations
 - [Development Roadmap](./admin/planning/roadmap.md) - Detailed 10-week development plan
 - [Development Rules](./admin/collaboration/rules.md) - Project guidelines and best practices
 
+### **Frontend Learning**
+- [Frontend Design Document](./admin/planning/frontend-design.md) - Complete UI/UX design and technology deep dive
+- **Vite** - Ultra-fast build tool and development server
+- **Zustand** - Lightweight state management (2.9kb)
+- **Tailwind CSS** - Utility-first CSS framework
+- **Headless UI** - Accessible, unstyled React components
+
+### **Backend Learning**
+- [ADR-001: Technology Stack](./admin/planning/adrs/adr-001-technology-stack.md) - Backend technology decisions
+- [ADR-002: Database Design](./admin/planning/adrs/adr-002-database-design.md) - Database schema and patterns
+- [ADR-003: API Design](./admin/planning/adrs/adr-003-api-design-patterns.md) - RESTful API patterns
+- [ADR-004: Security](./admin/planning/adrs/adr-004-security-implementation.md) - Security implementation
 ## 🤝 Contributing
 
 This is a learning project, but contributions and suggestions are welcome! Please see our [contributing guidelines](CONTRIBUTING.md) for details.

@@ -1,5 +1,5 @@
 # Git
-.git
+.git/
 .gitignore
 
 # Python
@@ -66,7 +66,7 @@ coverage.xml
 *.cover
 .hypothesis/
 
-# Documentation
+# Documentation (exclude from Docker image)
 admin/
 docs/
 *.md
@@ -96,10 +96,18 @@ temp/
 *.tmp
 *.temp
 
-# Node modules (if any)
+# Node modules
 node_modules/
 
-# Docker
+# Frontend build artifacts
+frontend/dist/
+frontend/build/
+
+# Portable Node.js installation (not needed in Docker)
+node-v20.19.5-linux-x64/
+node-v20.19.5-linux-x64.tar.xz
+
+# Docker files (not needed in Docker image)
 Dockerfile
 docker-compose.yml
 .dockerignore
