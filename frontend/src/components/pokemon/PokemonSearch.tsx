@@ -10,6 +10,7 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
     const [searchTerm, setSearchTerm] = useState('')
     const [selectedType, setSelectedType] = useState('all')
     const [availableTypes, setAvailableTypes] = useState<string[]>([])
+    const [isSearching, setIsSearching] = useState(false)
     const { getPokemonTypes } = usePokemonStore()
 
     // Load available types on component mount
@@ -25,10 +26,17 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
         loadTypes()
     }, [getPokemonTypes])
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault()
-        onSearch(searchTerm, selectedType)
-    }
+    // Debounced search effect
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setIsSearching(true)
+            onSearch(searchTerm, selectedType)
+            // Reset searching state after a short delay
+            setTimeout(() => setIsSearching(false), 500)
+        }, 300) // 300ms debounce
+
+        return () => clearTimeout(timeoutId)
+    }, [searchTerm, selectedType, onSearch])
 
     const handleClear = () => {
         setSearchTerm('')
@@ -38,14 +46,13 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
 
     const handleTypeChange = (type: string) => {
         setSelectedType(type)
-        onSearch(searchTerm, type)
     }
 
     return (
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Search Pokemon</h2>
 
-            <form onSubmit={handleSearch} className="space-y-4">
+            <div className="space-y-4">
                 {/* Search Input */}
                 <div>
                     <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
@@ -61,9 +68,13 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
                             className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         />
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                            {isSearching ? (
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                            ) : (
+                                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -91,20 +102,14 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                     <button
-                        type="submit"
-                        className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
-                    >
-                        Search
-                    </button>
-                    <button
                         type="button"
                         onClick={handleClear}
-                        className="flex-1 bg-gray-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
+                        className="w-full bg-gray-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
                     >
-                        Clear
+                        Clear All Filters
                     </button>
                 </div>
-            </form>
+            </div>
 
             {/* Search Status */}
             {(searchTerm || selectedType !== 'all') && (
