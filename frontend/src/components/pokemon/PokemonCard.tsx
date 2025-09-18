@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import type { Pokemon } from '@/types/pokemon'
+import { TypeBadge } from './TypeBadge'
 
 interface PokemonCardProps {
   pokemon: Pokemon
@@ -128,12 +129,10 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       {/* Pokemon Types */}
       <div className="flex flex-wrap gap-2 justify-center mb-4">
         {pokemon.types.map((type) => (
-          <span
+          <TypeBadge
             key={type}
-            className={`type-badge type-${type}`}
-          >
-            {type}
-          </span>
+            type={type}
+          />
         ))}
       </div>
 

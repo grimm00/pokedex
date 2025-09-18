@@ -88,6 +88,11 @@ def api_docs():
                     'pokemon_id': {'type': 'integer', 'required': True, 'description': 'PokeAPI Pokemon ID'}
                 }
             },
+            'pokemon_types': {
+                'method': 'GET',
+                'path': '/api/v1/pokemon/types',
+                'description': 'Get all available Pokemon types for filtering'
+            },
             'cache_stats': {
                 'method': 'GET',
                 'path': '/api/v1/cache/stats',
@@ -121,6 +126,7 @@ from backend.routes import pokemon_routes, user_routes, auth_routes, cache_route
 # Public routes (no authentication required)
 api.add_resource(pokemon_routes.PokemonList, '/pokemon')
 api.add_resource(pokemon_routes.PokemonDetail, '/pokemon/<int:pokemon_id>')
+api.add_resource(pokemon_routes.PokemonTypes, '/pokemon/types')
 api.add_resource(auth_routes.AuthRegister, '/auth/register')
 api.add_resource(auth_routes.AuthLogin, '/auth/login')
 

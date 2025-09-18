@@ -4,6 +4,27 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    // Ensure type badge classes are always included
+    'type-fire',
+    'type-water',
+    'type-grass',
+    'type-electric',
+    'type-psychic',
+    'type-ice',
+    'type-dragon',
+    'type-dark',
+    'type-fairy',
+    'type-normal',
+    'type-fighting',
+    'type-flying',
+    'type-poison',
+    'type-ground',
+    'type-rock',
+    'type-bug',
+    'type-ghost',
+    'type-steel',
+  ],
   theme: {
     extend: {
       colors: {
@@ -20,25 +41,25 @@ export default {
           800: '#1f2937',
           900: '#111827',
         },
-        // Pokemon type colors
-        'fire': '#FF6B6B',
-        'water': '#4ECDC4',
-        'grass': '#45B7D1',
-        'electric': '#FFE66D',
-        'psychic': '#A8E6CF',
-        'ice': '#B4F8C8',
-        'dragon': '#FFB6C1',
-        'dark': '#2C3E50',
-        'fairy': '#FFB6C1',
-        'normal': '#95A5A6',
-        'fighting': '#E74C3C',
-        'flying': '#85C1E9',
-        'poison': '#9B59B6',
-        'ground': '#D2B48C',
-        'rock': '#A0522D',
-        'bug': '#27AE60',
-        'ghost': '#8E44AD',
-        'steel': '#7F8C8D',
+        // Pokemon type colors (classic Pokemon colors)
+        'fire': '#F08030',      // Classic fire orange
+        'water': '#6890F0',     // Classic water blue
+        'grass': '#78C850',     // Classic grass green
+        'electric': '#F8D030',  // Classic electric yellow
+        'psychic': '#F85888',   // Classic psychic pink
+        'ice': '#98D8D8',       // Classic ice light blue
+        'dragon': '#7038F8',    // Classic dragon purple
+        'dark': '#705848',      // Classic dark brown
+        'fairy': '#EE99AC',     // Classic fairy pink
+        'normal': '#A8A878',    // Classic normal gray
+        'fighting': '#C03028',  // Classic fighting red
+        'flying': '#A890F0',    // Classic flying purple
+        'poison': '#A040A0',    // Classic poison purple
+        'ground': '#E0C068',    // Classic ground yellow-brown
+        'rock': '#B8A038',      // Classic rock brown
+        'bug': '#A8B820',       // Classic bug green
+        'ghost': '#705898',     // Classic ghost purple
+        'steel': '#B8B8D0',     // Classic steel gray
       },
       fontFamily: {
         'pokemon': ['Pokemon', 'sans-serif'],

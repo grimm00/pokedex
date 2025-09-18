@@ -104,6 +104,14 @@ node_modules/
 frontend/dist/
 frontend/build/
 
+# Frontend test files
+frontend/src/**/*.test.ts
+frontend/src/**/*.test.tsx
+frontend/src/**/*.spec.ts
+frontend/src/**/*.spec.tsx
+frontend/src/test-utils/
+frontend/vitest.config.ts
+
 # Portable Node.js installation (not needed in Docker)
 node-v20.19.5-linux-x64/
 node-v20.19.5-linux-x64.tar.xz

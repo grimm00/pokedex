@@ -167,3 +167,23 @@ class PokemonDetail(Resource):
         db.session.commit()
         
         return {'message': 'Pokemon deleted successfully'}, 200
+
+class PokemonTypes(Resource):
+    """Handle GET /api/v1/pokemon/types - Get all available Pokemon types"""
+    
+    def get(self):
+        """Get all unique Pokemon types from the database"""
+        from backend.database import db
+        
+        # Query all Pokemon and extract unique types
+        pokemon_list = Pokemon.query.all()
+        all_types = set()
+        
+        for pokemon in pokemon_list:
+            if pokemon.types:
+                all_types.update(pokemon.types)
+        
+        # Convert to sorted list
+        types_list = sorted(list(all_types))
+        
+        return types_list

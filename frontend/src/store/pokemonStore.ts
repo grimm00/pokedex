@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import type { Pokemon, PokemonType, PokemonSearchParams } from '@/types'
+import type { Pokemon, PokemonSearchParams } from '@/types'
 import { pokemonService } from '@/services'
 
 interface PokemonState {
@@ -15,7 +15,7 @@ interface PokemonState {
   loading: boolean
   error: string | null
   searchQuery: string
-  typeFilter: PokemonType | 'all'
+  typeFilter: string
 
   // Pagination
   page: number
@@ -28,10 +28,11 @@ interface PokemonActions {
   fetchPokemon: (params?: PokemonSearchParams) => Promise<void>
   fetchPokemonById: (id: number) => Promise<void>
   loadMore: () => Promise<void>
+  getPokemonTypes: () => Promise<string[]>
 
   // UI Actions
   searchPokemon: (query: string) => void
-  filterByType: (type: PokemonType | 'all') => void
+  filterByType: (type: string) => void
   setSelectedPokemon: (pokemon: Pokemon | null) => void
 
   // Favorites
@@ -80,6 +81,8 @@ export const usePokemonStore = create<PokemonStore>()(
             state.total = response.pagination.total
             state.page = response.pagination.page
             state.hasMore = response.pagination.has_next
+            state.searchQuery = params?.search || ''
+            state.typeFilter = params?.type || 'all'
             state.loading = false
           })
         } catch (error) {
@@ -142,6 +145,16 @@ export const usePokemonStore = create<PokemonStore>()(
         }
       },
 
+      getPokemonTypes: async () => {
+        try {
+          const types = await pokemonService.getPokemonTypes()
+          return types
+        } catch (error) {
+          console.error('Failed to fetch Pokemon types:', error)
+          throw error
+        }
+      },
+
       searchPokemon: (query: string) => {
         set((state) => {
           state.searchQuery = query
@@ -151,7 +164,7 @@ export const usePokemonStore = create<PokemonStore>()(
         })
       },
 
-      filterByType: (type: PokemonType | 'all') => {
+      filterByType: (type: string) => {
         set((state) => {
           state.typeFilter = type
           state.filteredPokemon = state.pokemon.filter((pokemon: Pokemon) =>
