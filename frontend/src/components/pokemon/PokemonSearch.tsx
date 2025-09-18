@@ -44,7 +44,7 @@ export const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear 
             onSearchRef.current(searchTerm, selectedType) // Use ref to get latest function
             // Reset searching state after a short delay
             setTimeout(() => setIsSearching(false), 500)
-        }, 300) // 300ms debounce
+        }, 800) // 800ms debounce - gives more time to type
 
         return () => clearTimeout(timeoutId)
     }, [searchTerm, selectedType]) // Remove onSearch from dependencies

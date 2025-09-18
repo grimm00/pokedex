@@ -32,6 +32,13 @@ export const PokemonPage: React.FC = () => {
   }, []) // Empty dependency array - only run once on mount
 
   console.log('Pokemon data:', pokemon)
+  console.log('Filtered Pokemon:', filteredPokemon)
+  console.log('Loading:', loading)
+  console.log('Error:', error)
+  console.log('Pokemon length:', pokemon.length)
+  console.log('Filtered Pokemon length:', filteredPokemon.length)
+  console.log('Search query:', searchQuery)
+  console.log('Type filter:', typeFilter)
 
   const handlePokemonClick = (selectedPokemon: any) => {
     console.log('Pokemon clicked:', selectedPokemon.name)
