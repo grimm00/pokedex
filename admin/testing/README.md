@@ -15,10 +15,15 @@ This directory contains comprehensive testing documentation, scripts, and result
 ```
 admin/testing/
 ├── README.md                           # This file
+├── run-tests.sh                        # Main test runner script
 ├── quick-reference.md                  # Quick testing commands
+├── comprehensive-testing-strategy.md   # Overall testing strategy
+├── backend-testing-strategy.md         # Backend-specific testing strategy
+├── next-steps-testing.md               # Next steps for testing implementation
 ├── test-scripts/                       # Executable test scripts
 │   ├── test_app.py                     # Main integration test script
 │   ├── test_app_with_data.py           # Test with seeded data
+│   ├── test_backend_updated.py         # Updated backend test script
 │   └── run_test.sh                     # Test execution script
 ├── test-data/                          # Test data and fixtures
 │   └── (future test data files)
@@ -30,12 +35,62 @@ admin/testing/
 │       ├── load_test_results.json      # Load testing data
 │       ├── logs/                       # Performance test logs
 │       └── reports/                    # Performance test reports
-└── performance/                        # Performance testing
-    ├── README.md                       # Performance testing overview
-    ├── performance-testing-plan.md     # Comprehensive testing strategy
-    ├── baseline_test.py               # Baseline performance testing
-    ├── load_test.py                   # Load testing automation
-    └── run_performance_tests.sh       # Test execution script
+├── performance/                        # Performance testing
+│   ├── README.md                       # Performance testing overview
+│   ├── performance-testing-plan.md     # Comprehensive testing strategy
+│   ├── baseline_test.py               # Baseline performance testing
+│   ├── load_test.py                   # Load testing automation
+│   └── run_performance_tests.sh       # Test execution script
+└── frontend/                           # Frontend testing
+    ├── README.md                       # Frontend testing documentation
+    ├── run-frontend-tests.sh           # Frontend test runner
+    ├── vitest.config.ts                # Vitest configuration
+    ├── components/                     # Component tests
+    │   └── pokemon/
+    │       ├── PokemonCard.test.tsx
+    │       └── TypeBadge.test.tsx
+    ├── pages/                          # Page tests
+    │   └── PokemonPage.test.tsx
+    └── test-utils/                     # Test utilities
+        └── setup.ts
+```
+
+## Quick Start
+
+### Run All Tests
+```bash
+# Run all tests (backend, frontend, performance)
+./admin/testing/run-tests.sh --all
+```
+
+### Backend Testing
+```bash
+# Run backend tests only
+./admin/testing/run-tests.sh --backend
+
+# Or run directly
+cd admin/testing/test-scripts
+python3 test_backend_updated.py
+```
+
+### Frontend Testing
+```bash
+# Run frontend tests only
+./admin/testing/run-tests.sh --frontend
+
+# Or run directly
+cd admin/testing/frontend
+./run-frontend-tests.sh
+```
+
+### Performance Testing
+```bash
+# Run performance tests only
+./admin/testing/run-tests.sh --performance
+
+# Or run directly
+cd admin/testing/performance
+./run_performance_tests.sh
 ```
 
 ## Test Categories
