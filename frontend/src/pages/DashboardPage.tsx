@@ -130,30 +130,84 @@ export const DashboardPage: React.FC = () => {
             </div>
           ) : favoritePokemon.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {favoritePokemon.slice(0, 8).map((pokemon) => (
-                <Link
-                  key={pokemon.pokemon_id}
-                  to="/pokemon"
-                  className="group text-center hover:bg-gray-50 p-3 rounded-lg transition-all duration-200 hover:shadow-md"
-                >
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-4 mb-2 group-hover:from-blue-100 group-hover:to-indigo-200 transition-colors">
-                    <div className="text-3xl mb-2">🔍</div>
-                    <div className="text-sm font-semibold text-gray-900 truncate mb-1">
-                      {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+              {favoritePokemon.slice(0, 8).map((pokemon) => {
+                const primaryType = pokemon.types?.[0] || 'normal'
+                
+                // Type-specific hover colors (simplified for mini cards)
+                const getHoverStyle = () => {
+                  const colors = {
+                    grass: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(255, 255, 255, 0.95))',
+                    fire: 'linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 255, 255, 0.95))',
+                    water: 'linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(255, 255, 255, 0.95))',
+                    electric: 'linear-gradient(135deg, rgba(255, 230, 109, 0.2), rgba(255, 255, 255, 0.95))',
+                    psychic: 'linear-gradient(135deg, rgba(227, 136, 216, 0.2), rgba(255, 255, 255, 0.95))',
+                    poison: 'linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(255, 255, 255, 0.95))',
+                    ice: 'linear-gradient(135deg, rgba(180, 248, 200, 0.2), rgba(255, 255, 255, 0.95))',
+                    dragon: 'linear-gradient(135deg, rgba(255, 182, 193, 0.2), rgba(255, 255, 255, 0.95))',
+                    dark: 'linear-gradient(135deg, rgba(44, 62, 80, 0.2), rgba(255, 255, 255, 0.95))',
+                    fairy: 'linear-gradient(135deg, rgba(255, 182, 193, 0.2), rgba(255, 255, 255, 0.95))',
+                    normal: 'linear-gradient(135deg, rgba(149, 165, 166, 0.2), rgba(255, 255, 255, 0.95))',
+                    fighting: 'linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(255, 255, 255, 0.95))',
+                    flying: 'linear-gradient(135deg, rgba(133, 193, 233, 0.2), rgba(255, 255, 255, 0.95))',
+                    ground: 'linear-gradient(135deg, rgba(210, 180, 140, 0.2), rgba(255, 255, 255, 0.95))',
+                    rock: 'linear-gradient(135deg, rgba(160, 82, 45, 0.2), rgba(255, 255, 255, 0.95))',
+                    bug: 'linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(255, 255, 255, 0.95))',
+                    ghost: 'linear-gradient(135deg, rgba(142, 68, 173, 0.2), rgba(255, 255, 255, 0.95))',
+                    steel: 'linear-gradient(135deg, rgba(127, 140, 141, 0.2), rgba(255, 255, 255, 0.95))',
+                  }
+                  return colors[primaryType as keyof typeof colors] || 'rgba(255, 255, 255, 0.95)'
+                }
+
+                return (
+                  <Link
+                    key={pokemon.pokemon_id}
+                    to="/pokemon"
+                    className="group relative overflow-hidden hover:scale-105 transition-all duration-300 hover:shadow-lg"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.9)',
+                      borderRadius: '12px',
+                      padding: '16px',
+                      transition: 'all 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = getHoverStyle()
+                      e.currentTarget.style.transform = 'translateY(-4px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    {/* Pokemon Sprite */}
+                    <div className="relative mb-3 h-20 flex items-center justify-center">
+                      <img
+                        src={pokemon.sprites?.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`}
+                        alt={`${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)} front view`}
+                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      />
                     </div>
-                    <div className="text-xs text-gray-600">
+
+                    {/* Pokemon Name */}
+                    <h3 className="text-sm font-bold text-center mb-2 capitalize truncate">
+                      {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+                    </h3>
+
+                    {/* Pokemon ID */}
+                    <div className="text-xs text-gray-500 text-center mb-2">
                       #{pokemon.pokemon_id.toString().padStart(3, '0')}
                     </div>
+
+                    {/* Primary Type Badge */}
                     {pokemon.types && pokemon.types.length > 0 && (
-                      <div className="mt-2 flex justify-center">
-                        <span className="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">
+                      <div className="flex justify-center">
+                        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
                           {pokemon.types[0].charAt(0).toUpperCase() + pokemon.types[0].slice(1)}
                         </span>
                       </div>
                     )}
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                )
+              })}
             </div>
           ) : (
             <div className="text-center py-8">
