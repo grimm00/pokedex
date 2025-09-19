@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, memo, useCallback } from 'react'
 import { usePokemonStore } from '@/store/pokemonStore'
+import { useAuthStore } from '@/store/authStore'
 
 interface PokemonSearchProps {
     onSearch: (searchTerm: string, selectedType: string, sortBy?: string) => void
@@ -13,6 +14,7 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
     const [availableTypes, setAvailableTypes] = useState<string[]>([])
     const [isSearching, setIsSearching] = useState(false)
     const { getPokemonTypes } = usePokemonStore()
+    const { isAuthenticated } = useAuthStore()
     const onSearchRef = useRef(onSearch)
     const hasInitialized = useRef(false)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -174,6 +176,9 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
                         <option value="height_desc">Height (Tall to Short)</option>
                         <option value="weight">Weight (Light to Heavy)</option>
                         <option value="weight_desc">Weight (Heavy to Light)</option>
+                        {isAuthenticated && (
+                            <option value="favorites">Favorites First</option>
+                        )}
                     </select>
                 </div>
 
