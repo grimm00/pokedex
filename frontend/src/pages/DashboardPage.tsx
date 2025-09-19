@@ -99,7 +99,7 @@ export const DashboardPage: React.FC = () => {
           <div className="flex items-center space-x-6">
             <div className="bg-gray-200 rounded-full p-8">
               <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
               </svg>
             </div>
             <div>
@@ -123,7 +123,7 @@ export const DashboardPage: React.FC = () => {
               View All ({favoritePokemon.length})
             </Link>
           </div>
-          
+
           {loading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -132,7 +132,7 @@ export const DashboardPage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {favoritePokemon.slice(0, 8).map((pokemon) => {
                 const primaryType = pokemon.types?.[0] || 'normal'
-                
+
                 // Type-specific hover colors (simplified for mini cards)
                 const getHoverStyle = () => {
                   const colors = {
@@ -239,15 +239,15 @@ export const DashboardPage: React.FC = () => {
                       })
                     }
                   })
-                  
+
                   // Sort by count and take top 5
                   const sortedTypes = Object.entries(typeCounts)
-                    .sort(([,a], [,b]) => b - a)
+                    .sort(([, a], [, b]) => b - a)
                     .slice(0, 5)
-                  
+
                   return sortedTypes.map(([type, count]) => (
-                    <span 
-                      key={type} 
+                    <span
+                      key={type}
                       className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
                     >
                       {type.charAt(0).toUpperCase() + type.slice(1)} ({count})
