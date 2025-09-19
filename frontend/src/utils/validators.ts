@@ -51,7 +51,7 @@ export class DataValidator {
 
     // Required fields
     const requiredFields = [
-      'id', 'pokemon_id', 'name', 'height', 'weight', 
+      'id', 'pokemon_id', 'name', 'height', 'weight',
       'types', 'abilities', 'stats', 'sprites'
     ]
 
@@ -68,8 +68,8 @@ export class DataValidator {
       'name': 'string',
       'height': 'number',
       'weight': 'number',
-      'types': 'object',
-      'abilities': 'object',
+      'types': 'array',
+      'abilities': 'array',
       'stats': 'object',
       'sprites': 'object'
     }
@@ -83,12 +83,12 @@ export class DataValidator {
       }
     }
 
-    // Array validations
-    if (pokemon.types && !Array.isArray(pokemon.types)) {
-      errors.push('types should be an array')
+    // Array content validations (optional - can add more specific checks later)
+    if (pokemon.types && Array.isArray(pokemon.types) && pokemon.types.length === 0) {
+      warnings.push('types array is empty')
     }
-    if (pokemon.abilities && !Array.isArray(pokemon.abilities)) {
-      errors.push('abilities should be an array')
+    if (pokemon.abilities && Array.isArray(pokemon.abilities) && pokemon.abilities.length === 0) {
+      warnings.push('abilities array is empty')
     }
 
     return {
@@ -201,7 +201,7 @@ export class DataValidator {
    */
   static validateApiResponse(endpoint: string, response: any, validator: (data: any) => ValidationResult): ValidationResult {
     const result = validator(response)
-    
+
     if (result.valid) {
       console.log(`✅ ${endpoint} response validation passed`)
     } else {
@@ -218,8 +218,8 @@ export class DataValidator {
 /**
  * Convenience functions for common validations
  */
-export const validateFavoritesResponse = (response: any) => 
+export const validateFavoritesResponse = (response: any) =>
   DataValidator.validateApiResponse('Favorites API', response, (data) => DataValidator.validateFavoritesResponse(data))
 
-export const validatePokemonData = (pokemon: any) => 
+export const validatePokemonData = (pokemon: any) =>
   DataValidator.validateApiResponse('Pokemon Data', pokemon, (data) => DataValidator.validatePokemonData(data))

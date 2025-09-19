@@ -30,8 +30,8 @@ class DataValidator:
             'name': str,
             'height': int,
             'weight': int,
-            'types': list,
-            'abilities': list,
+            'types': list,  # Array of strings
+            'abilities': list,  # Array of strings
             'stats': dict,
             'sprites': dict
         }
