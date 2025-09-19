@@ -48,17 +48,9 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
             return
         }
 
-        // Only trigger search if there are meaningful parameters
+        // Always trigger search to handle all state changes
         const trimmedSearch = searchTerm?.trim()
-        const hasSearchTerm = trimmedSearch && trimmedSearch.length > 0
-        const hasTypeFilter = selectedType !== 'all'
-        const hasSort = sortBy && sortBy !== 'id'
-
-        // Skip search if no meaningful parameters
-        if (!hasSearchTerm && !hasTypeFilter && !hasSort) {
-            return
-        }
-
+        
         // Show loading state briefly for visual feedback
         setIsSearching(true)
 
