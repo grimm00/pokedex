@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse, abort
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.database import db
 from backend.models.pokemon import Pokemon
 from backend.models.user import UserPokemon
@@ -9,6 +10,7 @@ import os
 class PokemonList(Resource):
     """Handle GET /api/pokemon and POST /api/pokemon"""
     
+    @jwt_required(optional=True)
     def get(self):
         """Get all Pokemon with optional pagination and search (with caching)"""
         from flask import request
@@ -20,13 +22,37 @@ class PokemonList(Resource):
         sort_by = request.args.get('sort', type=str)
         
         # Create cache parameters
-        cache_params = {
-            'page': page,
-            'per_page': per_page,
-            'search': search,
-            'type': pokemon_type,
-            'sort': sort_by
-        }
+        # For favorites sorting, we need to include user ID in cache key
+        # since favorites are user-specific
+        if sort_by == 'favorites':
+            from flask_jwt_extended import get_jwt_identity
+            try:
+                user_id = get_jwt_identity()
+                cache_params = {
+                    'page': page,
+                    'per_page': per_page,
+                    'search': search,
+                    'type': pokemon_type,
+                    'sort': sort_by,
+                    'user_id': user_id  # Include user ID for favorites sorting
+                }
+            except Exception:
+                # If JWT fails, use default cache key
+                cache_params = {
+                    'page': page,
+                    'per_page': per_page,
+                    'search': search,
+                    'type': pokemon_type,
+                    'sort': sort_by
+                }
+        else:
+            cache_params = {
+                'page': page,
+                'per_page': per_page,
+                'search': search,
+                'type': pokemon_type,
+                'sort': sort_by
+            }
         
         # Check cache first
         cached_result = pokemon_cache.get_pokemon_list(cache_params)
@@ -105,7 +131,7 @@ class PokemonList(Resource):
                         UserPokemon.user_id == user_id
                     ).all()
                     favorited_pokemon_ids = [row[0] for row in favorited_ids]
-                    print(f"DEBUG: Found {len(favorited_pokemon_ids)} favorites for user {user_id}")
+                    print(f"DEBUG: Found {len(favorited_pokemon_ids)} favorites: {favorited_pokemon_ids}")
                 else:
                     # No user ID, use default sorting
                     print("DEBUG: No user ID, using default sorting")
