@@ -17,10 +17,6 @@ class AuthRegister(Resource):
     
     def post(self):
         """Register a new user"""
-        # Apply rate limiting
-        limiter = current_app.extensions.get('limiter')
-        if limiter:
-            limiter.limit("5 per minute")(lambda: None)()
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True, help='Username is required')
         parser.add_argument('email', type=str, required=True, help='Email is required')

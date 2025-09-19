@@ -44,6 +44,16 @@ CORS(app, origins=[
 ])
 jwt = JWTManager(app)
 
+# JWT identity loader
+@jwt.user_identity_loader
+def user_identity_lookup(user_id):
+    return str(user_id)
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return User.query.filter_by(id=identity).one_or_none()
+
 # Initialize security features
 limiter = create_limiter(app)
 setup_security_headers(app)
@@ -135,6 +145,7 @@ def api_docs():
 
 # Import models and routes
 from backend.models import pokemon, user
+from backend.models.user import User
 from backend.routes import pokemon_routes, user_routes, auth_routes, cache_routes
 
 # Register API routes

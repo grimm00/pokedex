@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react'
+import { Link } from 'react-router-dom'
 import { PokemonCard } from '@/components/pokemon/PokemonCard'
 import { PokemonModal } from '@/components/pokemon/PokemonModal'
 import { PokemonSearchMemo as PokemonSearch } from '@/components/pokemon/PokemonSearch'
 import { usePokemonStore } from '@/store/pokemonStore'
+import { useAuthStore } from '@/store/authStore'
 
 // Memoized PokemonPage to prevent unnecessary re-renders
 const PokemonPageComponent: React.FC = () => {
@@ -16,6 +18,7 @@ const PokemonPageComponent: React.FC = () => {
   const fetchPokemon = usePokemonStore((state) => state.fetchPokemon)
   const loadMore = usePokemonStore((state) => state.loadMore)
   const clearError = usePokemonStore((state) => state.clearError)
+  const { isAuthenticated } = useAuthStore()
 
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -136,6 +139,33 @@ const PokemonPageComponent: React.FC = () => {
         onSearch={handleSearch}
         onClear={handleClearSearch}
       />
+
+      {/* Login Prompt for Unauthenticated Users */}
+      {!isAuthenticated && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-blue-100 p-3 rounded-lg mr-4">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-blue-900">Want to save your favorite Pokemon?</h3>
+                <p className="text-blue-700">
+                  Sign in to add Pokemon to your favorites and access your personal dashboard.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/auth"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Pokemon Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

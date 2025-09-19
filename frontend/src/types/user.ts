@@ -7,21 +7,22 @@ export interface User {
   updated_at: string
 }
 
-export interface LoginRequest {
-  email: string
+export interface LoginCredentials {
+  username: string
   password: string
 }
 
-export interface RegisterRequest {
+export interface RegisterCredentials {
   username: string
   email: string
   password: string
 }
 
 export interface AuthResponse {
+  message: string
+  user: User
   access_token: string
   refresh_token: string
-  user: User
 }
 
 export interface UserProfile {

@@ -31,7 +31,7 @@ class ApiClient {
   ): Promise<ApiResponse<T>> {
     const url = `${this.config.baseURL}${endpoint}`
 
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('access_token')
     const headers = {
       ...this.config.headers,
       ...options.headers,

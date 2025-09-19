@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import type { Pokemon } from '@/types/pokemon'
 import { TypeBadge } from './TypeBadge'
+import { useFavoritesStore } from '@/store/favoritesStore'
+import { useAuthStore } from '@/store/authStore'
 
 interface PokemonCardProps {
   pokemon: Pokemon
@@ -14,15 +16,24 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
   className
 }) => {
   const [isHovered, setIsHovered] = useState(false)
-  const [isFavorite, setIsFavorite] = useState(false)
+  const { user } = useAuthStore()
+  const { isFavorite, toggleFavorite, loading } = useFavoritesStore()
+
+  const isPokemonFavorite = isFavorite(pokemon.pokemon_id)
 
   const handleClick = () => {
     onSelect?.(pokemon)
   }
 
-  const handleFavoriteToggle = (e: React.MouseEvent) => {
+  const handleFavoriteToggle = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    setIsFavorite(!isFavorite)
+    if (user) {
+      try {
+        await toggleFavorite(user.id, pokemon.pokemon_id)
+      } catch (error) {
+        console.error('Failed to toggle favorite:', error)
+      }
+    }
   }
 
   const formatName = (name: string) => {
@@ -99,15 +110,16 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
         {/* Favorite Button */}
         <button
           onClick={handleFavoriteToggle}
-          className={`absolute top-2 right-2 p-1 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 ${isFavorite
+          className={`absolute top-2 right-2 p-1 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 ${isPokemonFavorite
             ? 'text-red-500 bg-red-50'
             : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
             }`}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={isPokemonFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          disabled={loading}
         >
           <svg
             className="w-5 h-5"
-            fill={isFavorite ? 'currentColor' : 'none'}
+            fill={isPokemonFavorite ? 'currentColor' : 'none'}
             stroke="currentColor"
             viewBox="0 0 24 24"
           >

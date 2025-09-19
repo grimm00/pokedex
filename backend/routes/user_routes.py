@@ -160,7 +160,7 @@ class UserFavorites(Resource):
     @jwt_required()
     def get(self, user_id):
         """Get user's favorite Pokemon (own data only)"""
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if not user:
@@ -180,7 +180,7 @@ class UserFavorites(Resource):
     @jwt_required()
     def post(self, user_id):
         """Add Pokemon to user's favorites (own data only)"""
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if not user:
@@ -222,7 +222,7 @@ class UserFavorites(Resource):
     @jwt_required()
     def delete(self, user_id):
         """Remove Pokemon from user's favorites (own data only)"""
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
         
         if not user:

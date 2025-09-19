@@ -1,9 +1,16 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { HomePage } from '@/pages/HomePage'
 import { PokemonPage } from '@/pages/PokemonPage'
+import { AuthPage } from '@/pages/AuthPage'
+import { ProfilePage } from '@/pages/ProfilePage'
+import { FavoritesPage } from '@/pages/FavoritesPage'
+import { DashboardPage } from '@/pages/DashboardPage'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { useAuthStore } from '@/store/authStore'
 
 function App() {
   console.log('App component rendering...')
+  const { isAuthenticated, user, logout } = useAuthStore()
 
   return (
     <Router>
@@ -15,7 +22,7 @@ function App() {
               <Link to="/" className="text-2xl font-pokemon font-bold text-blue-600">
                 Pokedex
               </Link>
-              
+
               <div className="flex items-center space-x-4">
                 <Link
                   to="/pokemon"
@@ -23,7 +30,43 @@ function App() {
                 >
                   Pokemon
                 </Link>
-                <span className="text-gray-600">Frontend Working! 🎉</span>
+
+                {isAuthenticated ? (
+                  <div className="flex items-center space-x-4">
+                    <span className="text-gray-600">Welcome, {user?.username}!</span>
+                    <Link
+                      to="/dashboard"
+                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/favorites"
+                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      Favorites
+                    </Link>
+                    <Link
+                      to="/profile"
+                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="text-gray-600 hover:text-red-600 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -34,6 +77,22 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/pokemon" element={<PokemonPage />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/favorites" element={
+              <ProtectedRoute>
+                <FavoritesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/auth" element={<AuthPage />} />
           </Routes>
         </main>
 
