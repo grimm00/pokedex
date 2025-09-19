@@ -1,0 +1,98 @@
+import type { ApiResponse, ApiConfig } from '@/types'
+
+export class ApiError extends Error {
+  public status: number
+  public details?: Record<string, any>
+
+  constructor(message: string, status: number, details?: Record<string, any>) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.details = details
+  }
+}
+
+class ApiClient {
+  private config: ApiConfig
+
+  constructor() {
+    this.config = {
+      baseURL: import.meta.env.VITE_API_URL || '',
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  }
+
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<ApiResponse<T>> {
+    const url = `${this.config.baseURL}${endpoint}`
+
+    const token = localStorage.getItem('token')
+    const headers = {
+      ...this.config.headers,
+      ...options.headers,
+      ...(token && { Authorization: `Bearer ${token}` }),
+    }
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new ApiError(
+          data.message || 'An error occurred',
+          response.status,
+          data
+        )
+      }
+
+      return {
+        data: data.data || data,
+        message: data.message,
+        status: response.status,
+      }
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error
+      }
+
+      throw new ApiError(
+        error instanceof Error ? error.message : 'Network error',
+        0,
+        { originalError: error }
+      )
+    }
+  }
+
+  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'GET' })
+  }
+
+  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+    })
+  }
+
+  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined,
+    })
+  }
+
+  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'DELETE' })
+  }
+}
+
+export const apiClient = new ApiClient()
