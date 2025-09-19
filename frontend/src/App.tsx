@@ -50,7 +50,7 @@ function App() {
                     </Link>
                     <Link
                       to="/favorites"
-                      className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors relative group"
+                      className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors group"
                       aria-label={`Favorites (${favoritePokemonIds.size} items)`}
                     >
                       <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -59,7 +59,7 @@ function App() {
                       <span>Favorites</span>
                       {favoritePokemonIds.size > 0 && (
                         <span 
-                          className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold animate-pulse group-hover:animate-none"
+                          className="bg-blue-100 text-blue-700 text-sm px-2 py-1 rounded-md font-medium min-w-[1.5rem] text-center"
                           aria-label={`${favoritePokemonIds.size} favorites`}
                         >
                           {favoritePokemonIds.size > 99 ? '99+' : favoritePokemonIds.size}
