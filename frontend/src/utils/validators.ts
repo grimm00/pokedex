@@ -130,7 +130,7 @@ export class DataValidator {
       } else {
         // Validate each favorite item
         response.favorites.forEach((favorite: any, index: number) => {
-          const favoriteValidation = this.validateFavoriteData(favorite)
+          const favoriteValidation = DataValidator.validateFavoriteData(favorite)
           if (!favoriteValidation.valid) {
             errors.push(`Favorite item ${index}: ${favoriteValidation.errors.join(', ')}`)
           }
@@ -219,7 +219,7 @@ export class DataValidator {
  * Convenience functions for common validations
  */
 export const validateFavoritesResponse = (response: any) => 
-  DataValidator.validateApiResponse('Favorites API', response, DataValidator.validateFavoritesResponse)
+  DataValidator.validateApiResponse('Favorites API', response, (data) => DataValidator.validateFavoritesResponse(data))
 
 export const validatePokemonData = (pokemon: any) => 
-  DataValidator.validateApiResponse('Pokemon Data', pokemon, DataValidator.validatePokemonData)
+  DataValidator.validateApiResponse('Pokemon Data', pokemon, (data) => DataValidator.validatePokemonData(data))
