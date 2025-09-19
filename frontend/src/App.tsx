@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { HomePage } from '@/pages/HomePage'
 import { PokemonPage } from '@/pages/PokemonPage'
-import './styles/globals.css'
 
 function App() {
   console.log('App component rendering...')

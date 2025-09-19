@@ -37,9 +37,13 @@ class PokemonList(Resource):
         if search:
             query = query.filter(Pokemon.name.ilike(f"%{search}%"))
         
-        # Apply type filter (would need to implement JSON querying)
+        # Apply type filter for JSON array
         if pokemon_type:
-            query = query.filter(Pokemon.types.contains([pokemon_type]))
+            # For SQLite JSON, use JSON_EXTRACT to check if the type exists in the array
+            # This will work for both single-type and multi-type Pokemon
+            query = query.filter(
+                db.func.json_extract(Pokemon.types, '$').op('LIKE')(f'%"{pokemon_type}"%')
+            )
         
         # Apply pagination
         per_page = min(per_page, 100)  # Limit max items per page
