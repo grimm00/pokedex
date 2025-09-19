@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse, abort
 from backend.database import db
 from backend.models.pokemon import Pokemon
+from backend.models.user import UserPokemon
 from backend.services.cache import pokemon_cache, cache_manager
 import requests
 import os
@@ -65,6 +66,27 @@ class PokemonList(Resource):
                 query = query.order_by(Pokemon.pokemon_id.asc())
             elif sort_by == 'id_desc':
                 query = query.order_by(Pokemon.pokemon_id.desc())
+            elif sort_by == 'favorites':
+                # Get user ID from JWT token for favorites sorting
+                from flask_jwt_extended import get_jwt_identity
+                try:
+                    user_id = get_jwt_identity()
+                    if user_id:
+                        # Join with UserPokemon to sort by favorites
+                        query = query.outerjoin(
+                            UserPokemon, 
+                            (Pokemon.pokemon_id == UserPokemon.pokemon_id) & 
+                            (UserPokemon.user_id == user_id)
+                        ).order_by(
+                            UserPokemon.pokemon_id.desc().nullslast(),  # Favorites first
+                            Pokemon.pokemon_id.asc()  # Then by Pokemon ID
+                        )
+                    else:
+                        # If no user ID, fall back to default sorting
+                        query = query.order_by(Pokemon.pokemon_id.asc())
+                except Exception:
+                    # If JWT verification fails, fall back to default sorting
+                    query = query.order_by(Pokemon.pokemon_id.asc())
             else:
                 # Default to name ascending if invalid sort option
                 query = query.order_by(Pokemon.name.asc())
