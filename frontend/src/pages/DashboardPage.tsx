@@ -115,12 +115,12 @@ export const DashboardPage: React.FC = () => {
         {/* Recent Favorites */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">Recent Favorites</h2>
+            <h2 className="text-2xl font-bold text-gray-900">My Favorites</h2>
             <Link
               to="/favorites"
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
-              View All
+              View All ({favoritePokemon.length})
             </Link>
           </div>
           
@@ -130,17 +130,27 @@ export const DashboardPage: React.FC = () => {
             </div>
           ) : favoritePokemon.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {favoritePokemon.slice(0, 6).map((pokemon) => (
+              {favoritePokemon.slice(0, 8).map((pokemon) => (
                 <Link
                   key={pokemon.pokemon_id}
                   to="/pokemon"
-                  className="text-center hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                  className="group text-center hover:bg-gray-50 p-3 rounded-lg transition-all duration-200 hover:shadow-md"
                 >
-                  <div className="bg-gray-100 rounded-lg p-4 mb-2">
-                    <div className="text-2xl mb-1">🔍</div>
-                    <div className="text-sm font-medium text-gray-900 truncate">
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-4 mb-2 group-hover:from-blue-100 group-hover:to-indigo-200 transition-colors">
+                    <div className="text-3xl mb-2">🔍</div>
+                    <div className="text-sm font-semibold text-gray-900 truncate mb-1">
                       {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
                     </div>
+                    <div className="text-xs text-gray-600">
+                      #{pokemon.pokemon_id.toString().padStart(3, '0')}
+                    </div>
+                    {pokemon.types && pokemon.types.length > 0 && (
+                      <div className="mt-2 flex justify-center">
+                        <span className="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">
+                          {pokemon.types[0].charAt(0).toUpperCase() + pokemon.types[0].slice(1)}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </Link>
               ))}
@@ -159,7 +169,74 @@ export const DashboardPage: React.FC = () => {
               </Link>
             </div>
           )}
+
+          {/* Favorite Types Breakdown */}
+          {favoritePokemon.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Favorite Types</h3>
+              <div className="flex flex-wrap gap-2">
+                {(() => {
+                  // Calculate favorite types
+                  const typeCounts: { [key: string]: number } = {}
+                  favoritePokemon.forEach(pokemon => {
+                    if (pokemon.types && Array.isArray(pokemon.types)) {
+                      pokemon.types.forEach((type: string) => {
+                        typeCounts[type] = (typeCounts[type] || 0) + 1
+                      })
+                    }
+                  })
+                  
+                  // Sort by count and take top 5
+                  const sortedTypes = Object.entries(typeCounts)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 5)
+                  
+                  return sortedTypes.map(([type, count]) => (
+                    <span 
+                      key={type} 
+                      className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
+                    >
+                      {type.charAt(0).toUpperCase() + type.slice(1)} ({count})
+                    </span>
+                  ))
+                })()}
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Favorites Statistics */}
+        {favoritePokemon.length > 0 && (
+          <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Favorites Insights</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">{favoritePokemon.length}</div>
+                <div className="text-gray-600">Total Favorites</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">
+                  {(() => {
+                    const uniqueTypes = new Set()
+                    favoritePokemon.forEach(pokemon => {
+                      if (pokemon.types && Array.isArray(pokemon.types)) {
+                        pokemon.types.forEach((type: string) => uniqueTypes.add(type))
+                      }
+                    })
+                    return uniqueTypes.size
+                  })()}
+                </div>
+                <div className="text-gray-600">Unique Types</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-600 mb-2">
+                  {favoritePokemon.length > 0 ? Math.round(favoritePokemon.length / 151 * 100) : 0}%
+                </div>
+                <div className="text-gray-600">Pokedex Completion</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Future Features Placeholder */}
         <div className="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6">
