@@ -50,7 +50,7 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       fire: 'linear-gradient(135deg, rgba(255, 107, 107, 0.4), rgba(255, 255, 255, 0.9))',
       water: 'linear-gradient(135deg, rgba(78, 205, 196, 0.4), rgba(255, 255, 255, 0.9))',
       electric: 'linear-gradient(135deg, rgba(255, 230, 109, 0.4), rgba(255, 255, 255, 0.9))',
-      psychic: 'linear-gradient(135deg, rgba(168, 230, 207, 0.4), rgba(255, 255, 255, 0.9))',
+      psychic: 'linear-gradient(135deg, rgba(227, 136, 216, 0.4), rgba(255, 255, 255, 0.9))',
       poison: 'linear-gradient(135deg, rgba(155, 89, 182, 0.4), rgba(255, 255, 255, 0.9))',
 
       // Additional types

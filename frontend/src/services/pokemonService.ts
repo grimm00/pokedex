@@ -11,6 +11,9 @@ export const pokemonService = {
     if (params?.type && params.type !== 'all') {
       searchParams.append('type', params.type)
     }
+    if (params?.sort) {
+      searchParams.append('sort', params.sort)
+    }
     if (params?.page) {
       searchParams.append('page', params.page.toString())
     }

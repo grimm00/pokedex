@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef, memo, useCallback } from 'react'
 import { usePokemonStore } from '@/store/pokemonStore'
 
 interface PokemonSearchProps {
-    onSearch: (searchTerm: string, selectedType: string) => void
+    onSearch: (searchTerm: string, selectedType: string, sortBy?: string) => void
     onClear: () => void
 }
 
 const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
     const [searchTerm, setSearchTerm] = useState('')
     const [selectedType, setSelectedType] = useState('all')
+    const [sortBy, setSortBy] = useState('id') // Matches backend default
     const [availableTypes, setAvailableTypes] = useState<string[]>([])
     const [isSearching, setIsSearching] = useState(false)
     const { getPokemonTypes } = usePokemonStore()
@@ -51,9 +52,15 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
             return
         }
 
-        // Don't trigger search for empty or whitespace-only terms
+        // Always trigger search - let the backend handle the sorting
+        // This ensures sort changes always work, regardless of "default" state
         const trimmedSearch = searchTerm?.trim()
-        if (!trimmedSearch && selectedType === 'all') {
+        const hasSearchTerm = trimmedSearch && trimmedSearch.length > 0
+        const hasTypeFilter = selectedType !== 'all'
+        const hasSort = sortBy && sortBy !== 'id' // Only skip if it's the default backend sort
+
+        // Skip search only if there are no meaningful parameters
+        if (!hasSearchTerm && !hasTypeFilter && !hasSort) {
             return
         }
 
@@ -62,22 +69,27 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
 
         // Debounce search to prevent excessive API calls and state conflicts
         const timeoutId = setTimeout(() => {
-            onSearchRef.current(searchTerm, selectedType)
+            onSearchRef.current(searchTerm, selectedType, sortBy)
             setIsSearching(false)
         }, 300) // 300ms debounce
 
         return () => clearTimeout(timeoutId)
-    }, [searchTerm, selectedType]) // Remove onSearch from dependencies
+    }, [searchTerm, selectedType, sortBy]) // Remove onSearch from dependencies
 
     // Memoized event handlers to prevent unnecessary re-renders
     const handleClear = useCallback(() => {
         setSearchTerm('')
         setSelectedType('all')
+        setSortBy('id') // Reset to backend default
         onClear()
     }, [onClear])
 
     const handleTypeChange = useCallback((type: string) => {
         setSelectedType(type)
+    }, [])
+
+    const handleSortChange = useCallback((sort: string) => {
+        setSortBy(sort)
     }, [])
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,6 +166,28 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
                                 {type.charAt(0).toUpperCase() + type.slice(1)}
                             </option>
                         ))}
+                    </select>
+                </div>
+
+                {/* Sort Options */}
+                <div>
+                    <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-2">
+                        Sort by
+                    </label>
+                    <select
+                        id="sort"
+                        value={sortBy}
+                        onChange={(e) => handleSortChange(e.target.value)}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    >
+                        <option value="id">Pokemon ID (Low to High)</option>
+                        <option value="id_desc">Pokemon ID (High to Low)</option>
+                        <option value="name">Name (A-Z)</option>
+                        <option value="name_desc">Name (Z-A)</option>
+                        <option value="height">Height (Short to Tall)</option>
+                        <option value="height_desc">Height (Tall to Short)</option>
+                        <option value="weight">Weight (Light to Heavy)</option>
+                        <option value="weight_desc">Weight (Heavy to Light)</option>
                     </select>
                 </div>
 

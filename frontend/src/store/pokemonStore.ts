@@ -116,8 +116,12 @@ export const usePokemonStore = create<PokemonStore>()(
           const nextPage = page + 1
           const response = await pokemonService.getPokemon({ page: nextPage })
           set((state) => {
-            state.pokemon = [...pokemon, ...response.pokemon]
-            state.filteredPokemon = [...state.filteredPokemon, ...response.pokemon]
+            // Deduplicate Pokemon by pokemon_id to avoid duplicate keys
+            const existingIds = new Set(pokemon.map(p => p.pokemon_id))
+            const newPokemon = response.pokemon.filter(p => !existingIds.has(p.pokemon_id))
+
+            state.pokemon = [...pokemon, ...newPokemon]
+            state.filteredPokemon = [...state.filteredPokemon, ...newPokemon]
             state.page = nextPage
             state.hasMore = response.pagination.has_next
             state.loading = false

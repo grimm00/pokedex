@@ -82,6 +82,7 @@ export interface PokemonDetailResponse {
 export interface PokemonSearchParams {
   search?: string
   type?: string
+  sort?: string
   page?: number
   per_page?: number
 }

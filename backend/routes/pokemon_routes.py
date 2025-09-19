@@ -16,13 +16,15 @@ class PokemonList(Resource):
         per_page = request.args.get('per_page', 20, type=int)
         search = request.args.get('search', type=str)
         pokemon_type = request.args.get('type', type=str)
+        sort_by = request.args.get('sort', type=str)
         
         # Create cache parameters
         cache_params = {
             'page': page,
             'per_page': per_page,
             'search': search,
-            'type': pokemon_type
+            'type': pokemon_type,
+            'sort': sort_by
         }
         
         # Check cache first
@@ -44,6 +46,31 @@ class PokemonList(Resource):
             query = query.filter(
                 db.func.json_extract(Pokemon.types, '$').op('LIKE')(f'%"{pokemon_type}"%')
             )
+        
+        # Apply sorting
+        if sort_by:
+            if sort_by == 'name':
+                query = query.order_by(Pokemon.name.asc())
+            elif sort_by == 'name_desc':
+                query = query.order_by(Pokemon.name.desc())
+            elif sort_by == 'height':
+                query = query.order_by(Pokemon.height.asc())
+            elif sort_by == 'height_desc':
+                query = query.order_by(Pokemon.height.desc())
+            elif sort_by == 'weight':
+                query = query.order_by(Pokemon.weight.asc())
+            elif sort_by == 'weight_desc':
+                query = query.order_by(Pokemon.weight.desc())
+            elif sort_by == 'id':
+                query = query.order_by(Pokemon.pokemon_id.asc())
+            elif sort_by == 'id_desc':
+                query = query.order_by(Pokemon.pokemon_id.desc())
+            else:
+                # Default to name ascending if invalid sort option
+                query = query.order_by(Pokemon.name.asc())
+        else:
+            # Default sorting by Pokemon ID
+            query = query.order_by(Pokemon.pokemon_id.asc())
         
         # Apply pagination
         per_page = min(per_page, 100)  # Limit max items per page

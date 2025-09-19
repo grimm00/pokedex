@@ -11,7 +11,10 @@ const PokemonPageComponent: React.FC = () => {
   const filteredPokemon = usePokemonStore((state) => state.filteredPokemon)
   const loading = usePokemonStore((state) => state.loading)
   const error = usePokemonStore((state) => state.error)
+  const hasMore = usePokemonStore((state) => state.hasMore)
+  const total = usePokemonStore((state) => state.total)
   const fetchPokemon = usePokemonStore((state) => state.fetchPokemon)
+  const loadMore = usePokemonStore((state) => state.loadMore)
   const clearError = usePokemonStore((state) => state.clearError)
 
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null)
@@ -37,13 +40,14 @@ const PokemonPageComponent: React.FC = () => {
   }, [])
 
   // Stable search handlers that don't change
-  const handleSearch = useCallback(async (searchTerm: string, selectedType: string) => {
+  const handleSearch = useCallback(async (searchTerm: string, selectedType: string, sortBy?: string) => {
     try {
       // Prevent search with empty or whitespace-only terms from causing issues
       const trimmedSearch = searchTerm?.trim()
       const params = {
         search: trimmedSearch || undefined,
         type: selectedType !== 'all' ? selectedType : undefined,
+        sort: sortBy || undefined,
         page: 1
       }
       await fetchPokemon(params)
@@ -137,12 +141,42 @@ const PokemonPageComponent: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredPokemon.map((poke) => (
           <PokemonCard
-            key={poke.id}
+            key={poke.pokemon_id}
             pokemon={poke}
             onSelect={handlePokemonClick}
           />
         ))}
       </div>
+
+      {/* Load More Button and Pagination Info */}
+      {filteredPokemon.length > 0 && (
+        <div className="text-center py-8">
+          <div className="text-gray-600 mb-4">
+            Showing {filteredPokemon.length} of {total} Pokemon
+          </div>
+          {hasMore && (
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="px-8 py-3 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Loading...
+                </div>
+              ) : (
+                'Load More Pokemon'
+              )}
+            </button>
+          )}
+          {!hasMore && (
+            <div className="text-gray-500 text-sm">
+              You've reached the end! All Pokemon have been loaded.
+            </div>
+          )}
+        </div>
+      )}
 
       {/* No Results Message */}
       {filteredPokemon.length === 0 && (

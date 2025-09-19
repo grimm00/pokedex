@@ -34,6 +34,16 @@
 - **Test changes** before proceeding to next steps
 - **Document modifications** in appropriate files
 
+### **Testing Before Implementation**
+- **Test existing functionality** before adding new features
+- **Verify API endpoints** work correctly before frontend integration
+- **Test with real data** (not just mock data) when possible
+- **Use Docker containers** for consistent testing environment
+- **Test edge cases** and error scenarios
+- **Verify UI components** work with actual backend responses
+- **Test search/filter combinations** to ensure they work together
+- **Validate sorting** with different data types and edge cases
+
 ### **Project Management**
 - **Follow the roadmap** and ADRs for strategic decisions
 - **Update progress documentation** after major milestones
@@ -74,10 +84,30 @@
 4. **Get user approval** before implementation
 
 ### **Implementation Phase**
-1. **Make incremental changes** with clear explanations
-2. **Test functionality** after each change
-3. **Update documentation** to reflect changes
-4. **Maintain project structure** and organization
+1. **Test existing functionality** before making changes
+2. **Make incremental changes** with clear explanations
+3. **Test functionality** after each change
+4. **Update documentation** to reflect changes
+5. **Maintain project structure** and organization
+
+### **Feature Testing Workflow**
+1. **Backend Testing First**
+   - Test API endpoints with curl or Postman
+   - Verify data structure and response format
+   - Test edge cases and error scenarios
+   - Ensure proper sorting, filtering, and pagination
+
+2. **Frontend Integration Testing**
+   - Test with real API data (not mock data)
+   - Verify UI components work with actual responses
+   - Test user interactions and state management
+   - Validate search/filter/sort combinations
+
+3. **End-to-End Testing**
+   - Test complete user workflows
+   - Verify data flows correctly between frontend and backend
+   - Test with different data sets and scenarios
+   - Ensure consistent behavior across features
 
 ### **Documentation Phase**
 1. **Update relevant documentation** files

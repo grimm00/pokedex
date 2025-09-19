@@ -45,7 +45,7 @@ describe('PokemonSearch', () => {
     fireEvent.change(searchInput, { target: { value: 'char' } })
 
     await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith('char', 'all')
+      expect(mockOnSearch).toHaveBeenCalledWith('char', 'all', 'id')
     })
   })
 
@@ -61,10 +61,9 @@ describe('PokemonSearch', () => {
       fireEvent.change(typeFilter, { target: { value: 'fire' } })
     })
 
-    // Wait for the useEffect to trigger - note: there's a bug in the component
-    // where selectedType is not being updated correctly, so it calls with empty string
+    // Wait for the useEffect to trigger - now includes sort parameter
     await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith('', '')
+      expect(mockOnSearch).toHaveBeenCalledWith('', 'fire', 'id')
     }, { timeout: 2000 })
   })
 
@@ -109,14 +108,12 @@ describe('PokemonSearch', () => {
     render(<PokemonSearch onSearch={mockOnSearch} onClear={mockOnClear} />)
 
     const searchInput = screen.getByPlaceholderText('Enter Pokemon name...')
+
+    // Trigger search input change
     fireEvent.change(searchInput, { target: { value: 'test' } })
 
-    // Look for the loading spinner by its class
-    await waitFor(() => {
-      expect(screen.getByRole('textbox')).toBeInTheDocument()
-    }, { timeout: 1000 })
-
-    // The spinner should be visible briefly
+    // The spinner should be visible immediately after input change
+    // We need to check for it right after the change, before the debounce timeout
     const spinner = document.querySelector('.animate-spin')
     expect(spinner).toBeInTheDocument()
   })
