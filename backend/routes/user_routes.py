@@ -173,9 +173,18 @@ class UserFavorites(Resource):
         
         favorites = UserPokemon.query.filter_by(user_id=user_id).all()
         
+        # Include full Pokemon data for each favorite
+        favorites_with_pokemon = []
+        for favorite in favorites:
+            pokemon = Pokemon.query.filter_by(pokemon_id=favorite.pokemon_id).first()
+            favorite_dict = favorite.to_dict()
+            if pokemon:
+                favorite_dict['pokemon'] = pokemon.to_dict()
+            favorites_with_pokemon.append(favorite_dict)
+        
         return {
             'user_id': user_id,
-            'favorites': [favorite.to_dict() for favorite in favorites]
+            'favorites': favorites_with_pokemon
         }
     
     @jwt_required()

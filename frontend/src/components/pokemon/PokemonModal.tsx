@@ -1,4 +1,6 @@
 import React from 'react'
+import { useAuthStore } from '@/store/authStore'
+import { useFavoritesStore } from '@/store/favoritesStore'
 
 interface Pokemon {
   id: number
@@ -23,6 +25,27 @@ interface PokemonModalProps {
 
 export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onClose }) => {
   if (!isOpen || !pokemon) return null
+
+  const { user, isAuthenticated } = useAuthStore()
+  const { isFavorite, toggleFavorite, loading } = useFavoritesStore()
+
+  const isPokemonFavorite = isFavorite(pokemon.pokemon_id)
+
+  const handleFavoriteToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    if (!isAuthenticated || !user) {
+      alert('Please log in to add Pokemon to your favorites!')
+      return
+    }
+
+    try {
+      await toggleFavorite(user.id, pokemon.pokemon_id)
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error)
+      alert('Failed to update favorites. Please try again.')
+    }
+  }
 
   const formatName = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1)
@@ -174,13 +197,14 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
               Close
             </button>
             <button
-              onClick={() => {
-                // TODO: Add to favorites
-                console.log('Add to favorites:', pokemon.name)
-              }}
-              className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              onClick={handleFavoriteToggle}
+              disabled={loading}
+              className={`px-6 py-2 rounded-lg transition-colors ${isPokemonFavorite
+                  ? 'bg-red-500 text-white hover:bg-red-600'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              ❤️ Add to Favorites
+              {isPokemonFavorite ? '❤️ Remove from Favorites' : '🤍 Add to Favorites'}
             </button>
           </div>
         </div>

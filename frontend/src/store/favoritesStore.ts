@@ -113,13 +113,16 @@ export const useFavoritesStore = create<FavoritesStore>()(
             },
 
             toggleFavorite: async (userId: number, pokemonId: number) => {
-                const { favoritePokemonIds, addFavorite, removeFavorite } = get()
+                const { favoritePokemonIds, addFavorite, removeFavorite, getFavorites } = get()
 
                 if (favoritePokemonIds.has(pokemonId)) {
                     await removeFavorite(userId, pokemonId)
                 } else {
                     await addFavorite(userId, pokemonId)
                 }
+
+                // Refresh favorites to update the favoritePokemon array
+                await getFavorites(userId)
             },
 
             isFavorite: (pokemonId: number) => {
@@ -135,7 +138,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
 
             reset: () => {
                 set((state) => {
-                    state.favorites = []
+                    state.favoritePokemonIds = new Set()
                     state.favoritePokemon = []
                     state.loading = false
                     state.error = null
