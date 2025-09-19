@@ -1,4 +1,5 @@
 export * from './pokemonStore'
-export * from './userStore'
+export * from './authStore'
+export * from './favoritesStore'
 export * from './uiStore'
 

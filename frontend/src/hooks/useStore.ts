@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import { usePokemonStore, useUserStore, useUIStore } from '@/store'
+import { usePokemonStore, useAuthStore, useFavoritesStore, useUIStore } from '@/store'
 
 // Pokemon selectors
 export const usePokemon = () => usePokemonStore((state) => state.pokemon)
 export const useFilteredPokemon = () => usePokemonStore((state) => state.filteredPokemon)
 export const useSelectedPokemon = () => usePokemonStore((state) => state.selectedPokemon)
-export const useFavorites = () => usePokemonStore((state) => state.favorites)
+export const usePokemonFavorites = () => usePokemonStore((state) => state.favorites)
 export const usePokemonLoading = () => usePokemonStore((state) => state.loading)
 export const usePokemonError = () => usePokemonStore((state) => state.error)
 export const useHasMore = () => usePokemonStore((state) => state.hasMore)
@@ -23,22 +23,33 @@ export const usePokemonActions = () => usePokemonStore((state) => ({
   reset: state.reset,
 }))
 
-// User selectors
-export const useUser = () => useUserStore((state) => state.user)
-export const useIsAuthenticated = () => useUserStore((state) => state.isAuthenticated)
-export const useUserLoading = () => useUserStore((state) => state.loading)
-export const useUserError = () => useUserStore((state) => state.error)
+// Auth selectors
+export const useUser = () => useAuthStore((state) => state.user)
+export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated)
+export const useAuthLoading = () => useAuthStore((state) => state.loading)
+export const useAuthError = () => useAuthStore((state) => state.error)
 
-// User actions
-export const useUserActions = () => useUserStore((state) => ({
+// Auth actions
+export const useAuthActions = () => useAuthStore((state) => ({
   login: state.login,
   register: state.register,
   logout: state.logout,
-  refreshToken: state.refreshToken,
-  getCurrentUser: state.getCurrentUser,
-  updateProfile: state.updateProfile,
+  checkAuth: state.checkAuth,
   clearError: state.clearError,
-  reset: state.reset,
+}))
+
+// Favorites selectors
+export const useFavorites = () => useFavoritesStore((state) => state.favoritePokemon)
+export const useFavoriteIds = () => useFavoritesStore((state) => state.favoritePokemonIds)
+export const useFavoritesLoading = () => useFavoritesStore((state) => state.loading)
+export const useFavoritesError = () => useFavoritesStore((state) => state.error)
+
+// Favorites actions
+export const useFavoritesActions = () => useFavoritesStore((state) => ({
+  getFavorites: state.getFavorites,
+  toggleFavorite: state.toggleFavorite,
+  isFavorite: state.isFavorite,
+  clearError: state.clearError,
 }))
 
 // UI selectors
