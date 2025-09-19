@@ -52,24 +52,19 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
             return
         }
 
-        // Always trigger search - let the backend handle the sorting
-        // This ensures sort changes always work, regardless of "default" state
+        // Always trigger search when user types or changes filters
+        // This ensures search works immediately when user types
         const trimmedSearch = searchTerm?.trim()
-        const hasSearchTerm = trimmedSearch && trimmedSearch.length > 0
-        const hasTypeFilter = selectedType !== 'all'
-        const hasSort = sortBy && sortBy !== 'id' // Only skip if it's the default backend sort
-
-        // Skip search only if there are no meaningful parameters
-        if (!hasSearchTerm && !hasTypeFilter && !hasSort) {
-            return
-        }
+        
+        // Always trigger search - let the backend handle empty search terms
+        // This ensures search works immediately when user types
 
         // Show loading state briefly for visual feedback
         setIsSearching(true)
 
         // Debounce search to prevent excessive API calls and state conflicts
         const timeoutId = setTimeout(() => {
-            onSearchRef.current(searchTerm, selectedType, sortBy)
+            onSearchRef.current(trimmedSearch || '', selectedType, sortBy)
             setIsSearching(false)
         }, 300) // 300ms debounce
 
