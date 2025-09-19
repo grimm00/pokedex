@@ -8,6 +8,14 @@
 - Verify search/filter/sort combinations work together
 - Test edge cases and error scenarios
 
+## CRITICAL: NEVER COMMIT WITHOUT TESTING
+- **MANDATORY**: Test ALL changes before committing
+- **MANDATORY**: Verify functionality works as expected
+- **MANDATORY**: Check for performance issues (excessive API calls, timeouts)
+- **MANDATORY**: Test the specific scenario the user reported
+- **NEVER**: Commit changes that could cause 100+ requests or timeouts
+- **ALWAYS**: Ask user to test before committing if unsure
+
 ## Development Workflow
 1. **Backend First**: Test API endpoints and data structure
 2. **Frontend Integration**: Test with real API responses

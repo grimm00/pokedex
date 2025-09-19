@@ -69,8 +69,19 @@ export const usePokemonStore = create<PokemonStore>()(
         try {
           const response = await pokemonService.getPokemon(params)
           set((state) => {
-            state.pokemon = response.pokemon
-            state.filteredPokemon = response.pokemon
+            // If this is a search/filter operation, only update filteredPokemon
+            // If this is the initial load or clear, update both arrays
+            const isSearchOrFilter = params && (params.search || params.type || params.sort)
+            
+            if (isSearchOrFilter) {
+              // Search/filter: only update filteredPokemon, preserve original pokemon array
+              state.filteredPokemon = response.pokemon
+            } else {
+              // Initial load or clear: update both arrays
+              state.pokemon = response.pokemon
+              state.filteredPokemon = response.pokemon
+            }
+            
             state.total = response.pagination.total
             state.page = response.pagination.page
             state.hasMore = response.pagination.has_next

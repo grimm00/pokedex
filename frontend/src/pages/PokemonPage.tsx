@@ -44,7 +44,6 @@ const PokemonPageComponent: React.FC = () => {
 
   // Stable search handlers that don't change
   const handleSearch = useCallback(async (searchTerm: string, selectedType: string, sortBy?: string) => {
-    console.log('🔍 handleSearch called with:', { searchTerm, selectedType, sortBy })
     try {
       // Prevent search with empty or whitespace-only terms from causing issues
       const trimmedSearch = searchTerm?.trim()
@@ -54,11 +53,9 @@ const PokemonPageComponent: React.FC = () => {
         sort: sortBy || undefined,
         page: 1
       }
-      console.log('🔍 Calling fetchPokemon with params:', params)
       await fetchPokemon(params)
-      console.log('🔍 fetchPokemon completed successfully')
     } catch (error) {
-      console.error('🔍 Search failed:', error)
+      console.error('Search failed:', error)
       // Don't let search errors cause page refreshes
     }
   }, [fetchPokemon])

@@ -46,9 +46,17 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
             return
         }
 
-        // Always trigger search when user types or changes filters
+        // Only trigger search if there are meaningful parameters
         const trimmedSearch = searchTerm?.trim()
-        
+        const hasSearchTerm = trimmedSearch && trimmedSearch.length > 0
+        const hasTypeFilter = selectedType !== 'all'
+        const hasSort = sortBy && sortBy !== 'id'
+
+        // Skip search if no meaningful parameters
+        if (!hasSearchTerm && !hasTypeFilter && !hasSort) {
+            return
+        }
+
         // Show loading state briefly for visual feedback
         setIsSearching(true)
 
@@ -56,7 +64,7 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
         const timeoutId = setTimeout(() => {
             onSearchRef.current(trimmedSearch || '', selectedType, sortBy)
             setIsSearching(false)
-        }, 100) // 100ms debounce - very responsive
+        }, 300) // Increased to 300ms to prevent excessive calls
 
         return () => clearTimeout(timeoutId)
     }, [searchTerm, selectedType, sortBy]) // Remove onSearch from dependencies
@@ -79,7 +87,7 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
-        
+
         // Sanitize input to prevent issues with special characters
         const sanitizedValue = value.replace(/[<>]/g, '')
 
