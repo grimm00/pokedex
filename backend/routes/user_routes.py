@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse, abort
+from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.database import db
 from backend.models.user import User, UserPokemon
@@ -232,14 +233,19 @@ class UserFavorites(Resource):
         if current_user_id != user_id:
             return {'message': 'Access denied'}, 403
         
-        parser = reqparse.RequestParser()
-        parser.add_argument('pokemon_id', type=int, required=True, help='Pokemon ID is required')
-        args = parser.parse_args()
+        # Handle JSON request body
+        try:
+            data = request.get_json()
+            if not data or 'pokemon_id' not in data:
+                return {'message': 'Pokemon ID is required in request body'}, 400
+            pokemon_id = data['pokemon_id']
+        except Exception as e:
+            return {'message': 'Invalid JSON in request body'}, 400
         
         # Find and remove favorite
         favorite = UserPokemon.query.filter_by(
             user_id=user_id, 
-            pokemon_id=args['pokemon_id']
+            pokemon_id=pokemon_id
         ).first()
         
         if not favorite:

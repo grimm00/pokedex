@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { useEffect } from 'react'
 import { HomePage } from '@/pages/HomePage'
 import { PokemonPage } from '@/pages/PokemonPage'
 import { AuthPage } from '@/pages/AuthPage'
@@ -10,7 +11,12 @@ import { useAuthStore } from '@/store/authStore'
 
 function App() {
   console.log('App component rendering...')
-  const { isAuthenticated, user, logout } = useAuthStore()
+  const { isAuthenticated, user, logout, checkAuth } = useAuthStore()
+
+  // Check authentication status on app mount
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   return (
     <Router>

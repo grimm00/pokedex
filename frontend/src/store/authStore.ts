@@ -23,6 +23,7 @@ interface AuthActions {
     login: (credentials: LoginCredentials) => Promise<void>
     register: (credentials: RegisterCredentials) => Promise<void>
     logout: () => Promise<void>
+    checkAuth: () => Promise<void>
     refreshAuth: () => Promise<void>
 
     // User actions
@@ -38,7 +39,7 @@ type AuthStore = AuthState & AuthActions
 
 const initialState: AuthState = {
     user: null,
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem('access_token'),
     accessToken: localStorage.getItem('access_token'),
     refreshToken: localStorage.getItem('refresh_token'),
     loading: false,
@@ -58,6 +59,7 @@ export const useAuthStore = create<AuthStore>()(
 
                 try {
                     const response = await authService.login(credentials)
+                    console.log('Login response:', response)
 
                     // Store tokens in localStorage
                     localStorage.setItem('access_token', response.access_token)
@@ -70,6 +72,8 @@ export const useAuthStore = create<AuthStore>()(
                         state.refreshToken = response.refresh_token
                         state.loading = false
                     })
+
+                    console.log('User stored in auth store:', response.user)
                 } catch (error) {
                     set((state) => {
                         state.error = error instanceof Error ? error.message : 'Login failed'
@@ -123,6 +127,10 @@ export const useAuthStore = create<AuthStore>()(
                     localStorage.removeItem('access_token')
                     localStorage.removeItem('refresh_token')
 
+                    // Clear all localStorage to remove any cached data
+                    localStorage.clear()
+                    console.log('Cleared all localStorage data')
+
                     set((state) => {
                         state.user = null
                         state.isAuthenticated = false
@@ -131,6 +139,46 @@ export const useAuthStore = create<AuthStore>()(
                         state.loading = false
                         state.error = null
                     })
+                }
+            },
+
+            checkAuth: async () => {
+                const { accessToken } = get()
+                if (!accessToken) {
+                    set((state) => {
+                        state.isAuthenticated = false
+                        state.user = null
+                    })
+                    return
+                }
+
+                set((state) => {
+                    state.loading = true
+                })
+
+                try {
+                    // Try to get user profile to validate token
+                    const profile = await authService.getProfile()
+
+                    set((state) => {
+                        state.user = profile
+                        state.isAuthenticated = true
+                        state.loading = false
+                    })
+                } catch (error) {
+                    // Token is invalid, clear auth state
+                    console.log('Token validation failed, clearing auth state')
+                    set((state) => {
+                        state.user = null
+                        state.isAuthenticated = false
+                        state.accessToken = null
+                        state.refreshToken = null
+                        state.loading = false
+                    })
+
+                    // Clear invalid tokens
+                    localStorage.removeItem('access_token')
+                    localStorage.removeItem('refresh_token')
                 }
             },
 

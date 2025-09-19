@@ -17,7 +17,7 @@ class ApiClient {
 
   constructor() {
     this.config = {
-      baseURL: import.meta.env.VITE_API_URL || '',
+      baseURL: 'http://localhost:5000', // Use direct backend URL for now
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    const url = `${this.config.baseURL}${endpoint}`
+    const url = this.config.baseURL ? `${this.config.baseURL}${endpoint}` : endpoint
 
     const token = localStorage.getItem('access_token')
     const headers = {
@@ -38,10 +38,23 @@ class ApiClient {
       ...(token && { Authorization: `Bearer ${token}` }),
     }
 
+    console.log('API Request:', {
+      url,
+      method: options.method || 'GET',
+      headers,
+      body: options.body
+    })
+
     try {
       const response = await fetch(url, {
         ...options,
         headers,
+      })
+
+      console.log('API Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: response.url
       })
 
       const data = await response.json()
@@ -90,8 +103,11 @@ class ApiClient {
     })
   }
 
-  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'DELETE' })
+  async delete<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'DELETE',
+      body: data ? JSON.stringify(data) : undefined,
+    })
   }
 }
 

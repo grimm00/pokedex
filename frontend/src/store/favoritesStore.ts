@@ -1,12 +1,16 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
+import { enableMapSet } from 'immer'
 import { favoritesService } from '@/services/favoritesService'
 import type { Pokemon } from '@/types'
 
+// Enable MapSet support for Immer
+enableMapSet()
+
 interface FavoritesState {
     // Favorites data
-    favorites: number[] // Array of Pokemon IDs
+    favoritePokemonIds: Set<number> // Quick lookup for favorite status
     favoritePokemon: Pokemon[] // Full Pokemon objects
 
     // UI state
@@ -30,7 +34,7 @@ interface FavoritesActions {
 type FavoritesStore = FavoritesState & FavoritesActions
 
 const initialState: FavoritesState = {
-    favorites: [],
+    favoritePokemonIds: new Set(),
     favoritePokemon: [],
     loading: false,
     error: null
@@ -50,7 +54,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
                 try {
                     const response = await favoritesService.getFavorites(userId)
                     set((state) => {
-                        state.favorites = response.favorites.map(fav => fav.pokemon_id)
+                        state.favoritePokemonIds = new Set(response.favorites.map(fav => fav.pokemon_id))
                         state.favoritePokemon = response.favorites
                             .filter(fav => fav.pokemon)
                             .map(fav => fav.pokemon!)
@@ -74,9 +78,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
                 try {
                     await favoritesService.addFavorite(userId, pokemonId)
                     set((state) => {
-                        if (!state.favorites.includes(pokemonId)) {
-                            state.favorites.push(pokemonId)
-                        }
+                        state.favoritePokemonIds.add(pokemonId)
                         state.loading = false
                     })
                 } catch (error) {
@@ -97,7 +99,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
                 try {
                     await favoritesService.removeFavorite(userId, pokemonId)
                     set((state) => {
-                        state.favorites = state.favorites.filter(id => id !== pokemonId)
+                        state.favoritePokemonIds.delete(pokemonId)
                         state.favoritePokemon = state.favoritePokemon.filter(pokemon => pokemon.pokemon_id !== pokemonId)
                         state.loading = false
                     })
@@ -111,9 +113,9 @@ export const useFavoritesStore = create<FavoritesStore>()(
             },
 
             toggleFavorite: async (userId: number, pokemonId: number) => {
-                const { favorites, addFavorite, removeFavorite } = get()
+                const { favoritePokemonIds, addFavorite, removeFavorite } = get()
 
-                if (favorites.includes(pokemonId)) {
+                if (favoritePokemonIds.has(pokemonId)) {
                     await removeFavorite(userId, pokemonId)
                 } else {
                     await addFavorite(userId, pokemonId)
@@ -121,8 +123,8 @@ export const useFavoritesStore = create<FavoritesStore>()(
             },
 
             isFavorite: (pokemonId: number) => {
-                const { favorites } = get()
-                return favorites.includes(pokemonId)
+                const { favoritePokemonIds } = get()
+                return favoritePokemonIds.has(pokemonId)
             },
 
             clearError: () => {

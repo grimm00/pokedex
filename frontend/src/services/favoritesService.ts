@@ -27,7 +27,7 @@ export const favoritesService = {
 
     async removeFavorite(userId: number, pokemonId: number): Promise<void> {
         await apiClient.delete(`/api/v1/users/${userId}/favorites`, {
-            body: JSON.stringify({ pokemon_id: pokemonId })
+            pokemon_id: pokemonId
         })
     }
 }

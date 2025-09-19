@@ -27,12 +27,30 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
 
   const handleFavoriteToggle = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (user) {
+    if (!user) {
+      // Show user-friendly message
+      alert('Please log in to add Pokemon to your favorites!')
+      return
+    }
+
+    // Decode JWT token to see what user ID it contains
+    const token = localStorage.getItem('access_token')
+    if (token) {
       try {
-        await toggleFavorite(user.id, pokemon.pokemon_id)
-      } catch (error) {
-        console.error('Failed to toggle favorite:', error)
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        console.log('JWT token user ID:', payload.sub)
+      } catch (e) {
+        console.log('Could not decode JWT token')
       }
+    }
+
+    console.log('Toggling favorite for user ID:', user.id, 'Pokemon ID:', pokemon.pokemon_id)
+
+    try {
+      await toggleFavorite(user.id, pokemon.pokemon_id)
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error)
+      alert('Failed to update favorites. Please try again.')
     }
   }
 
