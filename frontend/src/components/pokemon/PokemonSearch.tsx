@@ -16,7 +16,6 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
     const onSearchRef = useRef(onSearch)
     const hasInitialized = useRef(false)
     const inputRef = useRef<HTMLInputElement>(null)
-    const isUserTyping = useRef(false)
 
     // Keep the ref updated with the latest onSearch function
     useEffect(() => {
@@ -47,18 +46,9 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
             return
         }
 
-        // Don't trigger search if user is actively typing
-        if (isUserTyping.current) {
-            return
-        }
-
         // Always trigger search when user types or changes filters
-        // This ensures search works immediately when user types
         const trimmedSearch = searchTerm?.trim()
         
-        // Always trigger search - let the backend handle empty search terms
-        // This ensures search works immediately when user types
-
         // Show loading state briefly for visual feedback
         setIsSearching(true)
 
@@ -66,7 +56,7 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
         const timeoutId = setTimeout(() => {
             onSearchRef.current(trimmedSearch || '', selectedType, sortBy)
             setIsSearching(false)
-        }, 300) // 300ms debounce
+        }, 100) // 100ms debounce - very responsive
 
         return () => clearTimeout(timeoutId)
     }, [searchTerm, selectedType, sortBy]) // Remove onSearch from dependencies
@@ -89,19 +79,12 @@ const PokemonSearch: React.FC<PokemonSearchProps> = ({ onSearch, onClear }) => {
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
+        
         // Sanitize input to prevent issues with special characters
         const sanitizedValue = value.replace(/[<>]/g, '')
 
-        // Mark that user is actively typing
-        isUserTyping.current = true
-
         // Always update the search term immediately for responsive UI
         setSearchTerm(sanitizedValue)
-
-        // Reset typing flag after a short delay
-        setTimeout(() => {
-            isUserTyping.current = false
-        }, 100)
     }, []) // Remove searchTerm dependency to prevent function recreation
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
