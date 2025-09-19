@@ -72,15 +72,8 @@ class PokemonList(Resource):
                 try:
                     user_id = get_jwt_identity()
                     if user_id:
-                        # Join with UserPokemon to sort by favorites
-                        query = query.outerjoin(
-                            UserPokemon, 
-                            (Pokemon.pokemon_id == UserPokemon.pokemon_id) & 
-                            (UserPokemon.user_id == user_id)
-                        ).order_by(
-                            UserPokemon.pokemon_id.desc().nullslast(),  # Favorites first
-                            Pokemon.pokemon_id.asc()  # Then by Pokemon ID
-                        )
+                        # Favorites sorting will be handled in the pagination section
+                        pass
                     else:
                         # If no user ID, fall back to default sorting
                         query = query.order_by(Pokemon.pokemon_id.asc())
@@ -97,23 +90,97 @@ class PokemonList(Resource):
         # Apply pagination
         per_page = min(per_page, 100)  # Limit max items per page
         
-        pokemon_paginated = query.paginate(
-            page=page, 
-            per_page=per_page, 
-            error_out=False
-        )
-        
-        result = {
-            'pokemon': [pokemon.to_dict() for pokemon in pokemon_paginated.items],
-            'pagination': {
-                'page': page,
-                'per_page': per_page,
-                'total': pokemon_paginated.total,
-                'pages': pokemon_paginated.pages,
-                'has_next': pokemon_paginated.has_next,
-                'has_prev': pokemon_paginated.has_prev
+        # Special handling for favorites sorting - manual sort after fetch
+        if sort_by == 'favorites':
+            # Get all Pokemon first
+            all_pokemon = query.all()
+            
+            # Get user favorites from JWT token
+            from flask_jwt_extended import get_jwt_identity
+            try:
+                user_id = get_jwt_identity()
+                print(f"DEBUG: JWT user_id: {user_id}")
+                if user_id:
+                    favorited_ids = db.session.query(UserPokemon.pokemon_id).filter(
+                        UserPokemon.user_id == user_id
+                    ).all()
+                    favorited_pokemon_ids = [row[0] for row in favorited_ids]
+                    print(f"DEBUG: Found {len(favorited_pokemon_ids)} favorites for user {user_id}")
+                else:
+                    # No user ID, use default sorting
+                    print("DEBUG: No user ID, using default sorting")
+                    favorited_pokemon_ids = []
+            except Exception as e:
+                # JWT verification failed, use default sorting
+                print(f"DEBUG: JWT verification failed: {e}")
+                favorited_pokemon_ids = []
+            
+            if favorited_pokemon_ids:
+                # Sort manually: favorites first, then others
+                favorites = [p for p in all_pokemon if p.pokemon_id in favorited_pokemon_ids]
+                non_favorites = [p for p in all_pokemon if p.pokemon_id not in favorited_pokemon_ids]
+                
+                # Sort each group by pokemon_id
+                favorites.sort(key=lambda x: x.pokemon_id)
+                non_favorites.sort(key=lambda x: x.pokemon_id)
+                
+                # Combine: favorites first, then others
+                sorted_pokemon = favorites + non_favorites
+                
+                # Apply pagination manually
+                start_idx = (page - 1) * per_page
+                end_idx = start_idx + per_page
+                paginated_items = sorted_pokemon[start_idx:end_idx]
+                
+                result = {
+                    'pokemon': [pokemon.to_dict() for pokemon in paginated_items],
+                    'pagination': {
+                        'page': page,
+                        'per_page': per_page,
+                        'total': len(sorted_pokemon),
+                        'pages': (len(sorted_pokemon) + per_page - 1) // per_page,
+                        'has_next': end_idx < len(sorted_pokemon),
+                        'has_prev': page > 1
+                    }
+                }
+            else:
+                # No favorites, use normal pagination
+                pokemon_paginated = query.paginate(
+                    page=page, 
+                    per_page=per_page, 
+                    error_out=False
+                )
+                
+                result = {
+                    'pokemon': [pokemon.to_dict() for pokemon in pokemon_paginated.items],
+                    'pagination': {
+                        'page': page,
+                        'per_page': per_page,
+                        'total': pokemon_paginated.total,
+                        'pages': pokemon_paginated.pages,
+                        'has_next': pokemon_paginated.has_next,
+                        'has_prev': pokemon_paginated.has_prev
+                    }
+                }
+        else:
+            # Normal pagination for other sorts
+            pokemon_paginated = query.paginate(
+                page=page, 
+                per_page=per_page, 
+                error_out=False
+            )
+            
+            result = {
+                'pokemon': [pokemon.to_dict() for pokemon in pokemon_paginated.items],
+                'pagination': {
+                    'page': page,
+                    'per_page': per_page,
+                    'total': pokemon_paginated.total,
+                    'pages': pokemon_paginated.pages,
+                    'has_next': pokemon_paginated.has_next,
+                    'has_prev': pokemon_paginated.has_prev
+                }
             }
-        }
         
         # Cache the result for 5 minutes
         pokemon_cache.cache_pokemon_list(cache_params, result, ttl=300)
