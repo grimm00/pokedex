@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.database import db
 from backend.models.user import User, UserPokemon
 from backend.models.pokemon import Pokemon
+from backend.utils.validators import validate_and_log_response, DataValidator
 
 class UserList(Resource):
     """Handle GET /api/users and POST /api/users"""
@@ -182,10 +183,23 @@ class UserFavorites(Resource):
                 favorite_dict['pokemon'] = pokemon.to_dict()
             favorites_with_pokemon.append(favorite_dict)
         
-        return {
+        response = {
             'user_id': user_id,
             'favorites': favorites_with_pokemon
         }
+        
+        # Validate response structure
+        validation_result = validate_and_log_response(
+            f'GET /api/v1/users/{user_id}/favorites',
+            response,
+            DataValidator.validate_favorites_response
+        )
+        
+        if not validation_result['valid']:
+            # Log error but still return response to avoid breaking frontend
+            current_app.logger.error(f"Favorites response validation failed: {validation_result}")
+        
+        return response
     
     @jwt_required()
     def post(self, user_id):

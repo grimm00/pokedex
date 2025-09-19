@@ -1,5 +1,6 @@
 import { apiClient } from './api'
 import type { Pokemon } from '@/types'
+import { validateFavoritesResponse } from '@/utils/validators'
 
 export interface FavoriteResponse {
     user_id: number
@@ -15,6 +16,14 @@ export interface FavoriteResponse {
 export const favoritesService = {
     async getFavorites(userId: number): Promise<FavoriteResponse> {
         const response = await apiClient.get<FavoriteResponse>(`/api/v1/users/${userId}/favorites`)
+        
+        // Validate response structure
+        const validation = validateFavoritesResponse(response.data)
+        if (!validation.valid) {
+            console.error('Favorites API response validation failed:', validation.errors)
+            // Still return the data to avoid breaking the app, but log the issue
+        }
+        
         return response.data
     },
 
