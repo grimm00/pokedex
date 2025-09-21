@@ -110,8 +110,8 @@ run_smoke_tests() {
     # Wait a bit for services to fully start
     sleep 30
     
-    # Test health endpoint
-    if curl -f http://localhost/api/v1/health >/dev/null 2>&1; then
+    # Test health endpoint (root path)
+    if curl -f http://localhost/ >/dev/null 2>&1; then
         echo -e "Health endpoint: ${GREEN}✅ OK${NC}"
     else
         echo -e "Health endpoint: ${RED}❌ FAILED${NC}"

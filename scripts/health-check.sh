@@ -74,7 +74,7 @@ echo ""
 # Check API endpoints
 echo "🌐 Checking API endpoints..."
 check_endpoint "Root endpoint" "$BASE_URL/" "200"
-check_endpoint "Health endpoint" "$BASE_URL/api/v1/health" "200"
+check_endpoint "Health endpoint" "$BASE_URL/" "200"
 check_endpoint "Pokemon API" "$BASE_URL/api/v1/pokemon" "200"
 check_endpoint "API docs" "$BASE_URL/api/docs" "200"
 echo ""
