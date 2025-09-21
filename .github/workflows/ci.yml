@@ -49,11 +49,11 @@ jobs:
             ;;
           integration)
             echo "Running integration tests..."
-            python -m pytest tests/integration/ -v --rootdir=.
+            python -m pytest tests/integration/legacy/ -v --rootdir=.
             ;;
           performance)
             echo "Running performance tests..."
-            python -m pytest tests/performance/ -v --rootdir=.
+            python -m pytest tests/performance/legacy/ -v --rootdir=.
             ;;
         esac
         
