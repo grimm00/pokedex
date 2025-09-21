@@ -65,10 +65,14 @@ check_service() {
 
 # Check Docker services
 echo "🐳 Checking Docker services..."
-check_service "Frontend" "pokedex-frontend-1"
-check_service "Backend" "pokedex-backend-1"
-check_service "Nginx" "pokedex-nginx-1"
-check_service "Redis" "pokedex-redis-1"
+# Look for any pokedex container (single-container deployment)
+POKEDEX_CONTAINER=$(docker ps --format "table {{.Names}}" | grep "pokedex-" | head -1)
+if [ -n "$POKEDEX_CONTAINER" ]; then
+    check_service "Pokedex" "$POKEDEX_CONTAINER"
+else
+    echo -e "Pokedex container: ${RED}❌ Not found${NC}"
+    exit 1
+fi
 echo ""
 
 # Check API endpoints
@@ -81,7 +85,7 @@ echo ""
 
 # Check database connectivity
 echo "🗄️  Checking database connectivity..."
-if docker exec pokedex-backend-1 python -c "from backend.database import db; print('Database connection OK')" 2>/dev/null; then
+if docker exec $POKEDEX_CONTAINER python -c "from backend.database import db; print('Database connection OK')" 2>/dev/null; then
     echo -e "Database: ${GREEN}✅ Connected${NC}"
 else
     echo -e "Database: ${RED}❌ Connection failed${NC}"
@@ -89,7 +93,7 @@ fi
 
 # Check Redis connectivity
 echo "🔴 Checking Redis connectivity..."
-if docker exec pokedex-redis-1 redis-cli ping 2>/dev/null | grep -q "PONG"; then
+if docker exec $POKEDEX_CONTAINER redis-cli ping 2>/dev/null | grep -q "PONG"; then
     echo -e "Redis: ${GREEN}✅ Connected${NC}"
 else
     echo -e "Redis: ${RED}❌ Connection failed${NC}"
