@@ -207,13 +207,21 @@ def clean_database():
     # This runs before each test
     # Clean up any test data that might have been created from previous tests
     with flask_app.app_context():
-        UserPokemon.query.delete()
-        User.query.delete()
-        db.session.commit()
+        try:
+            UserPokemon.query.delete()
+            User.query.delete()
+            db.session.commit()
+        except Exception:
+            # Tables might not exist yet, ignore the error
+            db.session.rollback()
     yield
     # This runs after each test
     # Clean up any test data that might have been created
     with flask_app.app_context():
-        UserPokemon.query.delete()
-        User.query.delete()
-        db.session.commit()
+        try:
+            UserPokemon.query.delete()
+            User.query.delete()
+            db.session.commit()
+        except Exception:
+            # Tables might not exist, ignore the error
+            db.session.rollback()
