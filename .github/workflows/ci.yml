@@ -53,7 +53,7 @@ jobs:
             ;;
           performance)
             echo "Running performance tests..."
-            python -m pytest tests/performance/legacy/ -v --rootdir=.
+            python -m pytest tests/performance/ -v --rootdir=.
             ;;
         esac
         
