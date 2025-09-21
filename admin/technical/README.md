@@ -1,192 +1,176 @@
 # Technical Documentation
 
 ## Overview
-This directory contains comprehensive technical documentation for the Pokedex project, covering both backend and frontend technologies, implementation guides, and best practices.
+This directory contains comprehensive technical documentation for the Pokedex project, covering implementation details, architecture decisions, and technical guides.
 
-## 📚 Documentation Structure
+## Documentation Structure
 
-### **Technology Overviews**
-- [Backend Technology Stack](backend-overview.md) - Complete backend technology breakdown
-- [Frontend Technology Stack](frontend-overview.md) - Complete frontend technology breakdown
+### Core Technical Guides
+- **[GitHub Actions Technical Guide](github-actions-technical-guide.md)** - Comprehensive guide to GitHub Actions, workflow patterns, and repository integration
+- **[Docker Registry Technical Guide](docker-registry-technical-guide.md)** - Deep dive into Docker registries, image management, and container distribution
+- **[Pokedex CI/CD Implementation](pokedex-cicd-implementation.md)** - Detailed analysis of our specific CI/CD implementation and architecture
 
-### **Implementation Guides**
-- [Frontend Architecture Guide](guides/frontend-architecture-guide.md) - Comprehensive frontend architecture
-- [React Patterns Guide](guides/react-patterns-guide.md) - Advanced React patterns and best practices
-- [Frontend Debugging Guide](guides/frontend-debugging-guide.md) - Common issues and solutions
-- [Pokemon Card Hover Effects](guides/pokemon-card-hover-effects.md) - Implementation details
-- [API Versioning Strategy](guides/api-versioning-strategy.md) - API versioning implementation
-- [Audit Logging Guide](guides/audit-logging-guide.md) - Security and compliance logging
-- [Performance Optimization Guide](guides/performance-optimization-guide.md) - Performance best practices
-- [Redis Caching Guide](guides/redis-caching-guide.md) - Caching implementation
-- [Testing Guide](guides/testing-guide.md) - Comprehensive testing strategy
+### Quick Reference
+- **[GitHub Actions Quick Reference](github-actions-quick-reference.md)** - Quick commands and patterns for GitHub Actions
+- **[Docker Quick Reference](docker-quick-reference.md)** - Essential Docker commands and patterns
+- **[Deployment Quick Reference](deployment-quick-reference.md)** - Deployment commands and troubleshooting
 
-### **Development Process**
-- [Development Summary](development-summary.md) - Frontend development process and lessons learned
+## Key Technical Concepts
 
-### **Security Documentation**
-- [Security Implementation](security/) - Security features and implementation
-- [Authentication & Authorization](security/) - Auth system documentation
-- [Data Protection](security/) - Data security measures
+### GitHub Actions
+- **Workflows**: Automated processes defined in YAML
+- **Jobs**: Parallel execution units
+- **Steps**: Individual tasks within jobs
+- **Actions**: Reusable workflow components
+- **Runners**: Execution environments
 
-### **Setup & Configuration**
-- [Environment Setup Guide](environment-setup-guide.md) - Complete environment setup with WSL troubleshooting
-- [Development Environment Setup](setup/) - Local development setup
-- [Environment Configuration](env-template.txt) - Environment variables template
-- [File Structure Learning](file-structure-learning.md) - Project structure explanation
+### Docker and Containers
+- **Images**: Immutable application packages
+- **Containers**: Running instances of images
+- **Registries**: Centralized image storage
+- **Multi-stage Builds**: Optimized image creation
+- **Orchestration**: Container management
 
-## 🎯 Learning Objectives
+### CI/CD Pipeline
+- **Continuous Integration**: Automated testing and validation
+- **Continuous Deployment**: Automated deployment to environments
+- **Security Scanning**: Vulnerability assessment
+- **Performance Testing**: Load testing and benchmarking
+- **Monitoring**: Health checks and observability
 
-### **Backend Technologies**
-- **Python & Flask**: Web framework fundamentals
-- **SQLAlchemy**: Database ORM and relationships
-- **JWT Authentication**: Security and user management
-- **Redis Caching**: Performance optimization
-- **API Design**: RESTful principles and best practices
+## Implementation Status
 
-### **Frontend Technologies**
-- **React 18**: Modern component-based UI development
-- **TypeScript**: Type-safe JavaScript development
-- **Vite**: Modern build tooling and development server
-- **Zustand**: Lightweight state management
-- **Tailwind CSS**: Utility-first CSS framework
-- **Headless UI**: Accessible component library
+### ✅ Completed
+- GitHub Actions workflows (CI, CD, Security, Performance, Cleanup)
+- Docker integration with multi-stage builds
+- Container registry setup (GitHub Container Registry)
+- Security scanning with Trivy and CodeQL
+- Performance testing with k6 and pytest
+- Deployment scripts and health checks
+- Comprehensive technical documentation
 
-### **DevOps & Deployment**
-- **Docker**: Containerization and deployment
-- **AWS**: Cloud infrastructure and services
-- **GitHub Actions**: CI/CD pipeline automation
-- **Terraform**: Infrastructure as code
+### 🔄 In Progress
+- Advanced security scanning patterns
+- Performance optimization strategies
+- Monitoring and alerting setup
+- Documentation updates
 
-## 🚀 Quick Start
+### 📋 Planned
+- Advanced deployment strategies
+- Monitoring and observability
+- Security hardening
+- Performance optimization
 
-### **Backend Development**
-1. Read [Backend Technology Stack](backend-overview.md)
-2. Follow [Development Environment Setup](setup/)
-3. Review [API Versioning Strategy](guides/api-versioning-strategy.md)
-4. Implement features following [Testing Guide](guides/testing-guide.md)
+## Quick Start
 
-### **Frontend Development**
-1. Read [Frontend Technology Stack](frontend-overview.md)
-2. Study [Frontend Architecture Guide](guides/frontend-architecture-guide.md)
-3. Learn [React Patterns Guide](guides/react-patterns-guide.md)
-4. Implement components following best practices
+### Running GitHub Actions
+```bash
+# Trigger workflow manually
+gh workflow run ci.yml
 
-### **Full-Stack Integration**
-1. Understand [API Design Patterns](../planning/adrs/adr-003-api-design-patterns.md)
-2. Implement [Security Features](security/)
-3. Optimize with [Performance Guide](guides/performance-optimization-guide.md)
-4. Deploy using [Docker Configuration](../../docker-compose.yml)
+# View workflow status
+gh run list
 
-## 📖 Learning Path
+# View workflow logs
+gh run view <run-id>
+```
 
-### **Beginner Level**
-1. **Backend Basics**
-   - [Backend Technology Stack](backend-overview.md)
-   - [File Structure Learning](file-structure-learning.md)
-   - [Development Environment Setup](setup/)
+### Docker Operations
+```bash
+# Build images
+docker-compose build
 
-2. **Frontend Basics**
-   - [Frontend Technology Stack](frontend-overview.md)
-   - [Frontend Architecture Guide](guides/frontend-architecture-guide.md)
+# Run services
+docker-compose up -d
 
-### **Intermediate Level**
-1. **Backend Advanced**
-   - [API Versioning Strategy](guides/api-versioning-strategy.md)
-   - [Redis Caching Guide](guides/redis-caching-guide.md)
-   - [Security Implementation](security/)
+# View logs
+docker-compose logs -f
 
-2. **Frontend Advanced**
-   - [React Patterns Guide](guides/react-patterns-guide.md)
-   - [Performance Optimization Guide](guides/performance-optimization-guide.md)
+# Stop services
+docker-compose down
+```
 
-### **Advanced Level**
-1. **Full-Stack Integration**
-   - [Testing Guide](guides/testing-guide.md)
-   - [Performance Optimization Guide](guides/performance-optimization-guide.md)
-   - [Audit Logging Guide](guides/audit-logging-guide.md)
+### Deployment
+```bash
+# Deploy to staging
+./scripts/deploy.sh staging
 
-## 🔧 Development Workflow
+# Deploy to production
+./scripts/deploy.sh production
 
-### **1. Planning Phase**
-- Review relevant technical documentation
-- Understand technology choices and patterns
-- Plan implementation approach
+# Health check
+./scripts/health-check.sh
 
-### **2. Implementation Phase**
-- Follow established patterns and conventions
-- Use provided guides and examples
-- Implement comprehensive testing
+# Rollback
+./scripts/rollback.sh production
+```
 
-### **3. Review Phase**
-- Verify implementation follows best practices
-- Check performance and security considerations
-- Update documentation as needed
+## Learning Path
 
-### **4. Deployment Phase**
-- Follow deployment guides
-- Monitor performance and errors
-- Document any issues or improvements
+### Beginner
+1. Start with [GitHub Actions Technical Guide](github-actions-technical-guide.md)
+2. Understand [Docker Registry Technical Guide](docker-registry-technical-guide.md)
+3. Review [Pokedex CI/CD Implementation](pokedex-cicd-implementation.md)
 
-## 📝 Documentation Standards
+### Intermediate
+1. Explore workflow patterns and best practices
+2. Understand security scanning and vulnerability management
+3. Learn performance testing and optimization
 
-### **Writing Guidelines**
-- **Clear and Concise**: Explain concepts clearly
-- **Code Examples**: Provide practical examples
-- **Learning Focus**: Emphasize learning objectives
-- **Best Practices**: Include industry standards
+### Advanced
+1. Implement custom actions and workflows
+2. Set up advanced monitoring and alerting
+3. Optimize for performance and security
 
-### **Structure Standards**
-- **Overview**: High-level explanation
-- **Implementation**: Step-by-step guide
-- **Examples**: Practical code examples
-- **Best Practices**: Industry standards
-- **Related Docs**: Cross-references
+## Contributing
 
-### **Maintenance**
-- **Keep Updated**: Update with code changes
-- **Version Control**: Track documentation changes
-- **Review Process**: Regular documentation review
-- **User Feedback**: Incorporate feedback
+### Adding New Documentation
+1. Create new markdown files in this directory
+2. Follow the existing documentation structure
+3. Include code examples and practical use cases
+4. Update this README with new documentation
 
-## 🤝 Contributing
+### Documentation Standards
+- Use clear, concise language
+- Include code examples
+- Provide practical use cases
+- Keep documentation up-to-date
+- Follow markdown best practices
 
-### **Adding Documentation**
-1. Follow established structure and format
-2. Include code examples and practical guidance
-3. Cross-reference related documentation
-4. Update this README with new additions
+## Resources
 
-### **Updating Documentation**
-1. Keep content current with code changes
-2. Improve clarity and examples
-3. Add new patterns and best practices
-4. Remove outdated information
+### Official Documentation
+- [GitHub Actions](https://docs.github.com/en/actions)
+- [Docker](https://docs.docker.com/)
+- [Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry)
 
-### **Review Process**
-1. Technical accuracy review
-2. Clarity and completeness check
-3. Cross-reference verification
-4. Final approval and merge
+### Community Resources
+- [Awesome Actions](https://github.com/sdras/awesome-actions)
+- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
+- [CI/CD Best Practices](https://docs.github.com/en/actions/learn-github-actions)
 
-## 🔗 Related Documentation
+### Our Project
+- [GitHub Repository](https://github.com/grimm00/pokedex)
+- [Workflows](.github/workflows/)
+- [Scripts](scripts/)
+- [Docker Configuration](docker-compose.yml)
 
-### **Project Management**
-- [Development Roadmap](../planning/roadmap.md)
-- [Collaboration Rules](../collaboration/rules.md)
-- [ADR Documents](../planning/adrs/)
+## Maintenance
 
-### **User Documentation**
-- [Main README](../../README.md)
-- [API Documentation](../../docs/)
-- [Contributing Guidelines](../../CONTRIBUTING.md)
+### Regular Updates
+- Keep documentation current with code changes
+- Update examples and use cases
+- Review and improve documentation quality
+- Add new technical concepts as needed
 
-### **External Resources**
-- [React Documentation](https://reactjs.org/docs)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs)
-- [Flask Documentation](https://flask.palletsprojects.com/)
-- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+### Review Process
+- Regular documentation reviews
+- User feedback incorporation
+- Technical accuracy validation
+- Consistency checks
 
 ---
 
-This technical documentation provides comprehensive guidance for developing, maintaining, and understanding the Pokedex project's technical implementation.
-
+**Last Updated**: January 20, 2025  
+**Maintainer**: Pokedex Development Team  
+**Version**: 1.0.0
