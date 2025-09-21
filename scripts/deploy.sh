@@ -31,12 +31,15 @@ echo ""
 case $ENVIRONMENT in
     development)
         COMPOSE_FILE="docker-compose.yml"
+        IMAGE_NAME="pokedex"
         ;;
     staging)
-        COMPOSE_FILE="docker-compose.staging.yml"
+        COMPOSE_FILE="docker-compose.yml"
+        IMAGE_NAME="ghcr.io/$GITHUB_REPOSITORY/pokedex"
         ;;
     production)
-        COMPOSE_FILE="docker-compose.prod.yml"
+        COMPOSE_FILE="docker-compose.yml"
+        IMAGE_NAME="ghcr.io/$GITHUB_REPOSITORY/pokedex"
         ;;
 esac
 
@@ -54,22 +57,29 @@ check_docker() {
     fi
 }
 
-# Function to pull latest images
-pull_images() {
-    echo "📥 Pulling latest images..."
-    docker-compose -f $COMPOSE_FILE pull
+# Function to pull latest image
+pull_image() {
+    echo "📥 Pulling latest Pokedex image..."
+    docker pull $IMAGE_NAME:$VERSION
 }
 
-# Function to stop existing containers
-stop_containers() {
-    echo "🛑 Stopping existing containers..."
-    docker-compose -f $COMPOSE_FILE down
+# Function to stop existing container
+stop_container() {
+    echo "🛑 Stopping existing Pokedex container..."
+    docker stop pokedex-$ENVIRONMENT 2>/dev/null || true
+    docker rm pokedex-$ENVIRONMENT 2>/dev/null || true
 }
 
-# Function to start new containers
-start_containers() {
-    echo "🚀 Starting new containers..."
-    docker-compose -f $COMPOSE_FILE up -d
+# Function to start new container
+start_container() {
+    echo "🚀 Starting new Pokedex container..."
+    docker run -d \
+        --name pokedex-$ENVIRONMENT \
+        -p 80:80 \
+        -e DATABASE_URL="${DATABASE_URL:-sqlite:////app/instance/pokedex_dev.db}" \
+        -e REDIS_URL="${REDIS_URL:-redis://localhost:6379/0}" \
+        -e JWT_SECRET_KEY="${JWT_SECRET_KEY:-your-secret-key}" \
+        $IMAGE_NAME:$VERSION
 }
 
 # Function to wait for services to be healthy
@@ -79,12 +89,12 @@ wait_for_health() {
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
-        if docker-compose -f $COMPOSE_FILE ps | grep -q "healthy"; then
-            echo -e "${GREEN}✅ Services are healthy!${NC}"
+        if curl -f http://localhost/ >/dev/null 2>&1; then
+            echo -e "${GREEN}✅ Pokedex is healthy!${NC}"
             return 0
         fi
         
-        echo "Attempt $attempt/$max_attempts - waiting for services..."
+        echo "Attempt $attempt/$max_attempts - waiting for Pokedex..."
         sleep 10
         ((attempt++))
     done
@@ -129,7 +139,7 @@ run_smoke_tests() {
 show_status() {
     echo ""
     echo "📊 Deployment Status:"
-    docker-compose -f $COMPOSE_FILE ps
+    docker ps --filter "name=pokedex-$ENVIRONMENT" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
     echo ""
     echo "🌐 Application URLs:"
     echo "  - Main Application: http://localhost/"
@@ -146,9 +156,9 @@ main() {
     check_docker
     
     # Deployment steps
-    pull_images
-    stop_containers
-    start_containers
+    pull_image
+    stop_container
+    start_container
     
     # Wait for services to be healthy
     if ! wait_for_health; then
