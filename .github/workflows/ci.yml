@@ -45,15 +45,15 @@ jobs:
           unit)
             echo "Running unit tests..."
             cd frontend && npm run test:run
-            cd ../backend && python -m pytest tests/unit/ -v
+            cd .. && python -m pytest tests/unit/backend/ -v --rootdir=.
             ;;
           integration)
             echo "Running integration tests..."
-            cd backend && python -m pytest tests/integration/ -v
+            cd .. && python -m pytest tests/integration/ -v --rootdir=.
             ;;
           performance)
             echo "Running performance tests..."
-            cd backend && python -m pytest tests/performance/ -v
+            cd .. && python -m pytest tests/performance/ -v --rootdir=.
             ;;
         esac
         
