@@ -16,9 +16,16 @@ backend_path = os.path.join(os.path.dirname(__file__), '..', 'backend')
 sys.path.insert(0, backend_path)
 
 # Import the Flask app and models
-from backend.app import app as flask_app
-from backend.database import db
-from backend.models import User, Pokemon, UserPokemon
+try:
+    # Try importing from backend module (local development)
+    from backend.app import app as flask_app
+    from backend.database import db
+    from backend.models import User, Pokemon, UserPokemon
+except ImportError:
+    # Try importing directly (Docker environment)
+    from app import app as flask_app
+    from database import db
+    from models import User, Pokemon, UserPokemon
 
 
 @pytest.fixture(scope='session')

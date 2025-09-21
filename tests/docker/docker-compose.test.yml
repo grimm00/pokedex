@@ -3,8 +3,8 @@ version: '3.8'
 services:
   test-backend:
     build:
-      context: ../../backend
-      dockerfile: Dockerfile.test
+      context: ../../
+      dockerfile: backend/Dockerfile.test
     environment:
       - FLASK_ENV=testing
       - FLASK_DEBUG=False
@@ -12,6 +12,8 @@ services:
       - REDIS_URL=redis://test-redis:6379/1
       - JWT_SECRET_KEY=test-jwt-secret
       - SECRET_KEY=test-secret-key
+    volumes:
+      - ../../tests:/tests
     depends_on:
       - test-redis
     ports:
@@ -81,4 +83,3 @@ services:
       - test-backend
     profiles:
       - e2e
-
