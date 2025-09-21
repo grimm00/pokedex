@@ -66,6 +66,7 @@ jobs:
           frontend/test-results/
           backend/test-results/
           tests/test-results/
+        if-no-files-found: ignore
 
   docker-test:
     runs-on: ubuntu-latest
@@ -81,28 +82,28 @@ jobs:
     - name: Run Docker tests
       run: |
         cd tests/docker
-        docker-compose -f docker-compose.test.yml up --build -d
+        docker compose -f docker-compose.test.yml up --build -d
         sleep 30
-        docker-compose -f docker-compose.test.yml logs test-backend
-        docker-compose -f docker-compose.test.yml logs test-frontend
-        docker-compose -f docker-compose.test.yml down
+        docker compose -f docker-compose.test.yml logs test-backend
+        docker compose -f docker-compose.test.yml logs test-frontend
+        docker compose -f docker-compose.test.yml down
         
     - name: Check test results
       run: |
         cd tests/docker
-        docker-compose -f docker-compose.test.yml up --build -d
+        docker compose -f docker-compose.test.yml up --build -d
         sleep 30
         
         # Check backend test results
-        BACKEND_EXIT_CODE=$(docker-compose -f docker-compose.test.yml ps -q test-backend | xargs docker inspect -f '{{.State.ExitCode}}')
+        BACKEND_EXIT_CODE=$(docker compose -f docker-compose.test.yml ps -q test-backend | xargs docker inspect -f '{{.State.ExitCode}}')
         echo "Backend test exit code: $BACKEND_EXIT_CODE"
         
         # Check frontend test results
-        FRONTEND_EXIT_CODE=$(docker-compose -f docker-compose.test.yml ps -q test-frontend | xargs docker inspect -f '{{.State.ExitCode}}')
+        FRONTEND_EXIT_CODE=$(docker compose -f docker-compose.test.yml ps -q test-frontend | xargs docker inspect -f '{{.State.ExitCode}}')
         echo "Frontend test exit code: $FRONTEND_EXIT_CODE"
         
         # Clean up
-        docker-compose -f docker-compose.test.yml down
+        docker compose -f docker-compose.test.yml down
         
         # Fail if any tests failed
         if [ "$BACKEND_EXIT_CODE" != "0" ] || [ "$FRONTEND_EXIT_CODE" != "0" ]; then
