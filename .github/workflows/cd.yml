@@ -9,6 +9,9 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     environment: staging
+    permissions:
+      contents: read
+      packages: write
     
     steps:
     - name: Checkout code
@@ -72,6 +75,9 @@ jobs:
     needs: deploy-staging
     environment: production
     if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
     
     steps:
     - name: Checkout code

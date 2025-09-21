@@ -95,12 +95,24 @@ jobs:
         sleep 30
         
         # Check backend test results
-        BACKEND_EXIT_CODE=$(docker compose -f docker-compose.test.yml ps -q test-backend | xargs docker inspect -f '{{.State.ExitCode}}')
-        echo "Backend test exit code: $BACKEND_EXIT_CODE"
+        BACKEND_CONTAINER_ID=$(docker compose -f docker-compose.test.yml ps -q test-backend)
+        if [ -n "$BACKEND_CONTAINER_ID" ]; then
+          BACKEND_EXIT_CODE=$(docker inspect -f '{{.State.ExitCode}}' $BACKEND_CONTAINER_ID)
+          echo "Backend test exit code: $BACKEND_EXIT_CODE"
+        else
+          echo "Backend container not found"
+          BACKEND_EXIT_CODE=1
+        fi
         
         # Check frontend test results
-        FRONTEND_EXIT_CODE=$(docker compose -f docker-compose.test.yml ps -q test-frontend | xargs docker inspect -f '{{.State.ExitCode}}')
-        echo "Frontend test exit code: $FRONTEND_EXIT_CODE"
+        FRONTEND_CONTAINER_ID=$(docker compose -f docker-compose.test.yml ps -q test-frontend)
+        if [ -n "$FRONTEND_CONTAINER_ID" ]; then
+          FRONTEND_EXIT_CODE=$(docker inspect -f '{{.State.ExitCode}}' $FRONTEND_CONTAINER_ID)
+          echo "Frontend test exit code: $FRONTEND_EXIT_CODE"
+        else
+          echo "Frontend container not found"
+          FRONTEND_EXIT_CODE=1
+        fi
         
         # Clean up
         docker compose -f docker-compose.test.yml down
