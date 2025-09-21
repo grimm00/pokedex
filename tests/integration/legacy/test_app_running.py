@@ -9,7 +9,7 @@ import json
 import sys
 from datetime import datetime
 
-def test_endpoint(url, name, timeout=5):
+def _test_endpoint(url, name, timeout=5):
     """Test a single endpoint"""
     try:
         response = requests.get(url, timeout=timeout)
@@ -39,7 +39,7 @@ def test_docker_app():
     total = len(tests)
     
     for url, name in tests:
-        if test_endpoint(url, name):
+        if _test_endpoint(url, name):
             passed += 1
     
     print("=" * 50)
@@ -62,7 +62,7 @@ def test_local_backend():
     total = len(tests)
     
     for url, name in tests:
-        if test_endpoint(url, name):
+        if _test_endpoint(url, name):
             passed += 1
     
     print("=" * 50)

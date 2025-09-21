@@ -9,7 +9,7 @@ import json
 import time
 from datetime import datetime
 
-def test_endpoint(url, name, expected_min_results=0, expected_max_results=None, is_types_endpoint=False):
+def _test_endpoint(url, name, expected_min_results=0, expected_max_results=None, is_types_endpoint=False):
     """Test a single endpoint and return results"""
     try:
         response = requests.get(url, timeout=10)
@@ -57,7 +57,7 @@ def test_search_by_name():
     results = []
     for search_term, description, min_results, max_results in test_cases:
         url = f"http://localhost/api/v1/pokemon?search={search_term}"
-        success, count, data = test_endpoint(url, description, min_results, max_results)
+        success, count, data = _test_endpoint(url, description, min_results, max_results)
         results.append((search_term, success, count))
         
         if success and data:
@@ -74,7 +74,7 @@ def test_filter_by_type():
     
     # First get available types
     types_url = "http://localhost/api/v1/pokemon/types"
-    success, _, types_data = test_endpoint(types_url, "Get available types", is_types_endpoint=True)
+    success, _, types_data = _test_endpoint(types_url, "Get available types", is_types_endpoint=True)
     
     if not success or not types_data:
         print("❌ Could not get available types")
@@ -94,7 +94,7 @@ def test_filter_by_type():
     results = []
     for type_name, description, min_results, max_results in test_cases:
         url = f"http://localhost/api/v1/pokemon?type={type_name}"
-        success, count, data = test_endpoint(url, description, min_results, max_results)
+        success, count, data = _test_endpoint(url, description, min_results, max_results)
         results.append((type_name, success, count))
         
         if success and data:
@@ -120,7 +120,7 @@ def test_combined_search():
     results = []
     for search_term, type_filter, description, min_results, max_results in test_cases:
         url = f"http://localhost/api/v1/pokemon?search={search_term}&type={type_filter}"
-        success, count, data = test_endpoint(url, description, min_results, max_results)
+        success, count, data = _test_endpoint(url, description, min_results, max_results)
         results.append((f"{search_term}+{type_filter}", success, count))
         
         if success and data:
@@ -137,7 +137,7 @@ def test_pagination():
     
     # Test pagination with search
     url = "http://localhost/api/v1/pokemon?search=char&page=1&per_page=2"
-    success, count, data = test_endpoint(url, "Search with pagination", 1, 2)
+    success, count, data = _test_endpoint(url, "Search with pagination", 1, 2)
     
     if success and data:
         pagination = data.get('pagination', {})
