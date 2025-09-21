@@ -161,3 +161,4 @@ class TestFavoritesSortingIntegration:
         data = response.json
         pokemon_ids = [p['pokemon_id'] for p in data['pokemon']]
         assert pokemon_ids == sorted(pokemon_ids)
+

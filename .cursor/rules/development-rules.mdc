@@ -3,3 +3,49 @@ description: Read admin/rules.md, admin/roadmap, and adrs
 globs:
 alwaysApply: true
 ---
+Read admin/rules.md, admin/roadmap, and adrs, and also:
+
+# Cursor AI Rules for Pokedex Project
+
+## Testing Before Implementation
+- Always test existing functionality before adding new features
+- Test API endpoints with curl/Postman before frontend integration
+- Use Docker containers for consistent testing environment
+- Test with real data (151 Pokemon) not mock data
+- Verify search/filter/sort combinations work together
+- Test edge cases and error scenarios
+
+## CRITICAL: NEVER COMMIT WITHOUT TESTING
+- **MANDATORY**: Test ALL changes before committing
+- **MANDATORY**: Verify functionality works as expected
+- **MANDATORY**: Check for performance issues (excessive API calls, timeouts)
+- **MANDATORY**: Test the specific scenario the user reported
+- **NEVER**: Commit changes that could cause 100+ requests or timeouts
+- **ALWAYS**: Ask user to test before committing if unsure
+
+## Development Workflow
+1. **Backend First**: Test API endpoints and data structure
+2. **Frontend Integration**: Test with real API responses
+3. **End-to-End**: Test complete user workflows
+4. **Documentation**: Update progress and results
+
+## Code Quality
+- Make incremental changes with clear explanations
+- Test functionality after each change
+- Use existing files rather than creating new ones
+- Maintain project structure and organization
+
+## Project Context
+- This is a React + Flask Pokemon Pokedex application
+- Uses Docker for containerized development
+- Has 151 Pokemon seeded with 38 different types
+- Current focus: Phase 2 completion (search, filtering, sorting)
+- Next: Phase 3 (authentication and user features)
+
+## Testing Commands
+- Test API: `curl "http://localhost/api/v1/pokemon?sort=name&per_page=5"`
+- Test frontend: `curl -s "http://localhost" | head -20`
+- Check containers: `docker ps`
+- Rebuild: `docker compose up --build -d`
+
+@service-template.ts

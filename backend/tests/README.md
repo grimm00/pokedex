@@ -167,3 +167,4 @@ pytest tests/api/test_pokemon_api.py::TestPokemonAPI::test_get_pokemon_list
 ```bash
 pytest --pdb
 ```
+

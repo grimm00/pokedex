@@ -101,3 +101,4 @@ class TestAuthAPI:
         
         assert response.status_code == 200
         assert 'logged out' in response.json['message'].lower()
+

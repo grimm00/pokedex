@@ -52,3 +52,4 @@ def test_pokemon_list(client):
     data = response.json
     assert 'pokemon' in data
     assert len(data['pokemon']) > 0
+

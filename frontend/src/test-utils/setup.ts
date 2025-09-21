@@ -15,7 +15,7 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
     disconnect: vi.fn(),
 }))
 
-// Mock window.matchMedia
+// Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: vi.fn().mockImplementation(query => ({
@@ -30,19 +30,8 @@ Object.defineProperty(window, 'matchMedia', {
     })),
 })
 
-// Mock scrollTo
-Object.defineProperty(window, 'scrollTo', {
+// Mock window.alert
+Object.defineProperty(window, 'alert', {
     writable: true,
     value: vi.fn(),
 })
-
-// Mock console methods to reduce noise in tests
-global.console = {
-    ...console,
-    // Uncomment to ignore a specific log level
-    // log: vi.fn(),
-    // debug: vi.fn(),
-    // info: vi.fn(),
-    // warn: vi.fn(),
-    // error: vi.fn(),
-}

@@ -156,3 +156,4 @@ class TestFavoritesAPI:
         data = response.json
         assert len(data['favorites']) == 1
         assert data['favorites'][0]['pokemon']['pokemon_id'] == 25
+

@@ -35,3 +35,4 @@ def test_pokemon_list_with_params(client):
     assert 'pokemon' in data
     assert 'pagination' in data
     assert len(data['pokemon']) <= 5
+

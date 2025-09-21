@@ -32,3 +32,4 @@ def test_pokemon_list_debug(client):
     print(f"Response status: {response.status_code}")
     print(f"Response data: {response.json}")
     assert response.status_code == 200
+

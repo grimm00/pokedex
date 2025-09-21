@@ -118,3 +118,4 @@ class TestAPIPerformance:
             assert response.status_code == 200
             response_time = end_time - start_time
             assert response_time < 1.0  # Type filtering should be fast
+
