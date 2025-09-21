@@ -1,0 +1,54 @@
+name: Cleanup
+
+on:
+  schedule:
+    - cron: '0 1 * * 0' # Weekly on Sunday at 1 AM
+  workflow_dispatch:
+
+jobs:
+  cleanup-artifacts:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Delete old artifacts
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.runId,
+          });
+          
+          const cutoffDate = new Date();
+          cutoffDate.setDate(cutoffDate.getDate() - 7); // Keep artifacts for 7 days
+          
+          for (const artifact of artifacts.data.artifacts) {
+            const createdAt = new Date(artifact.created_at);
+            if (createdAt < cutoffDate) {
+              console.log(`Deleting artifact: ${artifact.name}`);
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              });
+            }
+          }
+
+  cleanup-docker:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Clean up Docker images
+      run: |
+        # Remove unused Docker images
+        docker image prune -f
+        
+        # Remove unused containers
+        docker container prune -f
+        
+        # Remove unused volumes
+        docker volume prune -f
+        
+        # Remove unused networks
+        docker network prune -f
