@@ -1,43 +1,81 @@
 # Git
-.git/
+.git
 .gitignore
+README.md
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# Documentation
+admin/
+docs/
+*.md
 
-# Virtual Environment
+# Testing
+tests/
+test-results/
+coverage/
+
+# Development
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Cache
+.pytest_cache/
+node_modules/.cache/
+.cache/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Virtual environments
 venv/
 env/
 ENV/
 
-# IDE
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Coverage
+coverage/
+.nyc_output/
+htmlcov/
+
+# IDE files
 .vscode/
 .idea/
-.cursor/
 *.swp
 *.swo
 *~
 
-# OS
+# OS files
 .DS_Store
 .DS_Store?
 ._*
@@ -45,81 +83,266 @@ ENV/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Logs
-*.log
 logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Database
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+*.lcov
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# next.js build output
+.next
+
+# Nuxt.js build output
+.nuxt
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local development
+local/
+dev/
+development/
+
+# Production builds
+build/
+dist/
+out/
+
+# Package manager lock files
+yarn.lock
+pnpm-lock.yaml
+
+# Local environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Test coverage
+coverage/
+.nyc_output/
+test-results/
+test-reports/
+
+# Performance monitoring
+.clinic/
+0x/
+
+# Debug logs
+debug.log
+error.log
+
+# Local database files
 *.db
 *.sqlite
 *.sqlite3
-instance/
+*.db-journal
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-
-# Documentation (exclude from Docker image)
-admin/
-docs/
-*.md
-!README.md
-
-# Development files
-.env
-.env.local
-.env.development
-.env.test
-.env.production
+# Redis dump files
+dump.rdb
 
 # Backup files
-*_backup_*
-backup_*
+*.bak
+*.backup
+*.old
 
-# Performance test results
-admin/testing/results/
-admin/testing/performance/results/
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
 
-# Chat logs
-admin/collaboration/chat-logs/
+# Local test data
+test_data/
+sample_data/
+mock_data/
+
+# Profiling data
+.prof
+*.prof
+
+# Memory dumps
+*.dmp
+*.hprof
+
+# Core dumps
+core
+core.*
+
+# Local configuration overrides
+config/local.json
+config/development.json
+config/production.json
+
+# Local secrets
+secrets/
+.secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Local development tools
+.local/
+dev-tools/
+scripts/local/
 
 # Temporary files
-tmp/
-temp/
 *.tmp
 *.temp
+*.swp
+*.swo
+*~
 
-# Node modules
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Build artifacts
+build/
+dist/
+out/
+.next/
+.nuxt/
+.vuepress/dist/
+
+# Dependencies
 node_modules/
+bower_components/
 
-# Frontend build artifacts
-frontend/dist/
-frontend/build/
+# Optional npm cache directory
+.npm
 
-# Frontend test files
-frontend/src/**/*.test.ts
-frontend/src/**/*.test.tsx
-frontend/src/**/*.spec.ts
-frontend/src/**/*.spec.tsx
-frontend/src/test-utils/
-frontend/vitest.config.ts
+# Optional eslint cache
+.eslintcache
 
-# Portable Node.js installation (not needed in Docker)
-node-v20.19.5-linux-x64/
-node-v20.19.5-linux-x64.tar.xz
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
 
-# Docker files (not needed in Docker image)
-Dockerfile
-docker-compose.yml
-.dockerignore
+# Optional REPL history
+.node_repl_history
 
-# Health check dependency (installed in Dockerfile)
-# curl
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.test
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local Netlify folder
+.netlify
+
+# Vercel
+.vercel
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*

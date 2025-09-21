@@ -1,16 +1,53 @@
 {
-    "name": "pokedex-frontend",
-    "private": true,
-    "version": "0.0.0",
-    "type": "module",
+    "name": "pokedex",
+    "version": "1.0.0",
+    "description": "A modern Pokemon database application built with React, Flask, and Docker",
+    "main": "index.js",
     "scripts": {
-        "dev": "vite",
-        "build": "tsc -b && vite build",
-        "lint": "eslint .",
-        "preview": "vite preview",
-        "test": "vitest",
-        "test:ui": "vitest --ui",
-        "test:run": "vitest --run"
+        "dev": "docker-compose up -d",
+        "test": "npm run test:frontend && npm run test:backend",
+        "test:frontend": "cd frontend && npm test",
+        "test:backend": "cd backend && pytest tests/ -v",
+        "test:docker": "cd tests/docker && docker-compose -f docker-compose.test.yml up --build -d",
+        "build": "docker-compose build",
+        "deploy": "docker-compose -f docker-compose.prod.yml up -d",
+        "clean": "docker-compose down -v && docker system prune -f",
+        "setup": "./setup.sh",
+        "start": "docker-compose up -d",
+        "stop": "docker-compose down",
+        "logs": "docker-compose logs -f",
+        "frontend:dev": "cd frontend && npm run dev",
+        "frontend:build": "cd frontend && npm run build",
+        "frontend:test": "cd frontend && npm test",
+        "backend:dev": "cd backend && python -m backend.app",
+        "backend:test": "cd backend && pytest tests/ -v",
+        "backend:seed": "cd backend && python -m backend.seed_pokemon seed-range 1 151"
+    },
+    "keywords": [
+        "pokemon",
+        "pokedex",
+        "react",
+        "flask",
+        "docker",
+        "typescript",
+        "python",
+        "api",
+        "database",
+        "fullstack"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/username/pokedex.git"
+    },
+    "bugs": {
+        "url": "https://github.com/username/pokedex/issues"
+    },
+    "homepage": "https://github.com/username/pokedex#readme",
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=8.0.0"
     },
     "dependencies": {
         "react": "^18.3.1",
