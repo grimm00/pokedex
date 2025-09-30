@@ -34,6 +34,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
   const [spriteLoading, setSpriteLoading] = useState(false)
 
   const isPokemonFavorite = isFavorite(pokemon.pokemon_id)
+  const primaryType = pokemon.types[0] || 'normal'
 
   // Preload animated sprite when modal opens
   useEffect(() => {
@@ -105,11 +106,11 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100">
+      <div className={`relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100 border-2 border-${primaryType}/20 hover:border-${primaryType}/40 modal-type-border`}>
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl">
+        <div className={`sticky top-0 bg-gradient-to-r from-${primaryType}/5 to-white border-b border-${primaryType}/20 px-6 py-4 rounded-t-2xl`}>
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900 capitalize">
+            <h2 className={`text-2xl font-bold capitalize bg-gradient-to-r from-${primaryType} to-gray-900 bg-clip-text text-transparent`}>
               {formatName(pokemon.name)}
             </h2>
             <button
@@ -129,10 +130,10 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
           <div className="flex flex-col md:flex-row gap-6 mb-6">
             {/* Image */}
             <div className="flex-shrink-0">
-              <div className="w-48 h-48 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center relative overflow-hidden modal-sprite-container">
+              <div className={`w-48 h-48 mx-auto bg-gradient-to-br from-${primaryType}/10 to-gray-100 rounded-2xl flex items-center justify-center relative overflow-hidden modal-sprite-container modal-sprite-type-container border-2 border-${primaryType}/20`}>
                 <img
                   src={
-                    useAnimatedSprite 
+                    useAnimatedSprite
                       ? getAnimatedSpriteUrl(pokemon.pokemon_id)
                       : pokemon.sprites.front_default || getStaticSpriteUrl(pokemon.pokemon_id)
                   }
@@ -156,26 +157,25 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
                     }
                   }}
                 />
-                
+
                 {/* Animation Toggle Button */}
                 {hasAnimatedSprite(pokemon.pokemon_id) && (
                   <button
                     onClick={() => setUseAnimatedSprite(!useAnimatedSprite)}
                     disabled={spriteLoading}
-                    className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-sm border border-white/30 modal-animation-toggle ${
-                      useAnimatedSprite 
-                        ? 'bg-blue-500/80 text-white' 
+                    className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-sm border border-white/30 modal-animation-toggle ${useAnimatedSprite
+                        ? 'bg-blue-500/80 text-white'
                         : 'bg-gray-500/80 text-white hover:bg-blue-500/80'
-                    } ${spriteLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      } ${spriteLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     title={spriteLoading ? 'Loading sprite...' : useAnimatedSprite ? 'Switch to static sprite' : 'Switch to animated sprite'}
                   >
                     {spriteLoading ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                     ) : (
-                      <svg 
-                        className="w-4 h-4" 
-                        fill="none" 
-                        stroke="currentColor" 
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z" />
@@ -189,7 +189,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
             {/* Basic Info */}
             <div className="flex-1">
               <div className="mb-4">
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Types</h3>
+                <h3 className={`text-lg font-semibold mb-2 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Types</h3>
                 <div className="flex flex-wrap gap-2">
                   {pokemon.types.map((type) => (
                     <span
@@ -204,17 +204,17 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 mb-1">Height</h3>
+                  <h3 className={`text-lg font-semibold mb-1 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Height</h3>
                   <p className="text-2xl font-bold text-gray-900">{formatHeight(pokemon.height)}</p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 mb-1">Weight</h3>
+                  <h3 className={`text-lg font-semibold mb-1 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Weight</h3>
                   <p className="text-2xl font-bold text-gray-900">{formatWeight(pokemon.weight)}</p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Abilities</h3>
+                <h3 className={`text-lg font-semibold mb-2 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Abilities</h3>
                 <div className="flex flex-wrap gap-2">
                   {pokemon.abilities.map((ability, index) => (
                     <span
@@ -231,7 +231,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
           {/* Stats */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Base Stats</h3>
+            <h3 className={`text-lg font-semibold mb-4 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Base Stats</h3>
             <div className="space-y-3">
               {Object.entries(pokemon.stats).map(([statName, statValue]) => (
                 <div key={statName} className="flex items-center">
@@ -256,7 +256,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 rounded-b-2xl">
+        <div className={`sticky bottom-0 bg-gradient-to-r from-white to-${primaryType}/5 border-t border-${primaryType}/20 px-6 py-4 rounded-b-2xl`}>
           <div className="flex justify-end gap-3">
             <button
               onClick={onClose}
@@ -268,8 +268,8 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
               onClick={handleFavoriteToggle}
               disabled={loading}
               className={`px-6 py-2 rounded-lg transition-colors ${isPokemonFavorite
-                  ? 'bg-red-500 text-white hover:bg-red-600'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ? 'bg-red-500 text-white hover:bg-red-600'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isPokemonFavorite ? '❤️ Remove from Favorites' : '🤍 Add to Favorites'}

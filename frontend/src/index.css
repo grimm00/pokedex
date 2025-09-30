@@ -18,6 +18,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -46,9 +47,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -59,9 +62,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
@@ -69,10 +74,13 @@ button:focus-visible {
 
 /* Custom animations for Pokemon cards */
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.3;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.6;
     transform: scale(1.05);
@@ -80,9 +88,12 @@ button:focus-visible {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -92,6 +103,7 @@ button:focus-visible {
   0% {
     background-position: -200px 0;
   }
+
   100% {
     background-position: calc(200px + 100%) 0;
   }
@@ -99,10 +111,13 @@ button:focus-visible {
 
 /* Type-specific battle animations */
 @keyframes fireFlicker {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: scale(1.1);
@@ -110,10 +125,13 @@ button:focus-visible {
 }
 
 @keyframes fireParticle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.6;
     transform: translateY(0px) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: translateY(-10px) scale(1.2);
@@ -125,9 +143,11 @@ button:focus-visible {
     transform: rotate(0deg) scale(1);
     opacity: 0.3;
   }
+
   50% {
     opacity: 0.6;
   }
+
   100% {
     transform: rotate(360deg) scale(1.2);
     opacity: 0.3;
@@ -135,10 +155,13 @@ button:focus-visible {
 }
 
 @keyframes waterDrop {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.5;
     transform: translateY(0px) scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: translateY(-8px) scale(1.1);
@@ -146,10 +169,13 @@ button:focus-visible {
 }
 
 @keyframes electricPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.5;
     transform: scale(1);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.2);
@@ -157,10 +183,13 @@ button:focus-visible {
 }
 
 @keyframes electricBolt {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.7;
     transform: scaleY(1);
   }
+
   50% {
     opacity: 1;
     transform: scaleY(1.5);
@@ -172,9 +201,11 @@ button:focus-visible {
     transform: rotate(0deg) scale(1);
     opacity: 0.3;
   }
+
   50% {
     opacity: 0.6;
   }
+
   100% {
     transform: rotate(360deg) scale(1.1);
     opacity: 0.3;
@@ -182,10 +213,13 @@ button:focus-visible {
 }
 
 @keyframes psychicOrb {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.6;
     transform: translateY(0px) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: translateY(-12px) scale(1.3);
@@ -193,10 +227,13 @@ button:focus-visible {
 }
 
 @keyframes iceCrystal {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.7;
     transform: rotate(0deg) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: rotate(180deg) scale(1.2);
@@ -204,10 +241,13 @@ button:focus-visible {
 }
 
 @keyframes dragonEnergy {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: scale(1.15);
@@ -215,10 +255,13 @@ button:focus-visible {
 }
 
 @keyframes windParticle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.5;
     transform: translateX(0px) translateY(0px);
   }
+
   50% {
     opacity: 0.8;
     transform: translateX(15px) translateY(-10px);
@@ -226,10 +269,13 @@ button:focus-visible {
 }
 
 @keyframes groundParticle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.6;
     transform: translateY(0px) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: translateY(-5px) scale(1.1);
@@ -237,10 +283,13 @@ button:focus-visible {
 }
 
 @keyframes rockFragment {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.7;
     transform: rotate(0deg) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: rotate(45deg) scale(1.1);
@@ -248,10 +297,13 @@ button:focus-visible {
 }
 
 @keyframes bugParticle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.6;
     transform: translateX(0px) translateY(0px) scale(1);
   }
+
   50% {
     opacity: 1;
     transform: translateX(8px) translateY(-6px) scale(1.2);
@@ -259,10 +311,13 @@ button:focus-visible {
 }
 
 @keyframes ghostMist {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.4;
     transform: scale(1.05);
@@ -274,9 +329,11 @@ button:focus-visible {
     transform: translateX(-100%) rotate(45deg);
     opacity: 0;
   }
+
   50% {
     opacity: 0.6;
   }
+
   100% {
     transform: translateX(100%) rotate(45deg);
     opacity: 0;
@@ -288,9 +345,11 @@ button:focus-visible {
     transform: rotate(0deg) scale(1);
     opacity: 0.4;
   }
+
   50% {
     opacity: 0.8;
   }
+
   100% {
     transform: rotate(360deg) scale(1.1);
     opacity: 0.4;
@@ -298,10 +357,13 @@ button:focus-visible {
 }
 
 @keyframes poisonBubble {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.5;
     transform: translateY(0px) scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: translateY(-8px) scale(1.2);
@@ -309,10 +371,13 @@ button:focus-visible {
 }
 
 @keyframes fairySparkle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.7;
     transform: scale(1) rotate(0deg);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.3) rotate(180deg);
@@ -320,10 +385,13 @@ button:focus-visible {
 }
 
 @keyframes darkAura {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.3;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.6;
     transform: scale(1.08);
@@ -331,10 +399,13 @@ button:focus-visible {
 }
 
 @keyframes gentleGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.4;
     transform: scale(1.05);
@@ -419,4 +490,23 @@ select:focus-visible {
 .modal-animation-toggle:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Modal type-based styling */
+.modal-type-border {
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-type-border:hover {
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px currentColor;
+}
+
+/* Modal sprite container type styling */
+.modal-sprite-type-container {
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-sprite-type-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
 }
