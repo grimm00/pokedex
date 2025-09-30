@@ -401,3 +401,22 @@ select:focus-visible {
   image-rendering: auto;
   image-rendering: -webkit-optimize-contrast;
 }
+
+/* Modal sprite animations */
+.modal-sprite-container {
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-sprite-container:hover {
+  transform: scale(1.05);
+}
+
+/* Modal animation toggle button */
+.modal-animation-toggle {
+  transition: all 0.2s ease-in-out;
+}
+
+.modal-animation-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}

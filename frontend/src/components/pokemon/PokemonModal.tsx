@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { useFavoritesStore } from '@/store/favoritesStore'
+import { getAnimatedSpriteUrl, getStaticSpriteUrl, preloadAnimatedSprite, hasAnimatedSprite } from '@/utils/spriteUtils'
 
 interface Pokemon {
   id: number
@@ -28,8 +29,27 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
   const { user, isAuthenticated } = useAuthStore()
   const { isFavorite, toggleFavorite, loading } = useFavoritesStore()
+  const [animatedSpriteLoaded, setAnimatedSpriteLoaded] = useState(false)
+  const [useAnimatedSprite, setUseAnimatedSprite] = useState(false)
+  const [spriteLoading, setSpriteLoading] = useState(false)
 
   const isPokemonFavorite = isFavorite(pokemon.pokemon_id)
+
+  // Preload animated sprite when modal opens
+  useEffect(() => {
+    if (isOpen && pokemon && hasAnimatedSprite(pokemon.pokemon_id)) {
+      setSpriteLoading(true)
+      preloadAnimatedSprite(pokemon.pokemon_id)
+      setAnimatedSpriteLoaded(true)
+      setSpriteLoading(false)
+      // Start with animated sprite in modal
+      setUseAnimatedSprite(true)
+    } else {
+      setAnimatedSpriteLoaded(false)
+      setUseAnimatedSprite(false)
+      setSpriteLoading(false)
+    }
+  }, [isOpen, pokemon])
 
   const handleFavoriteToggle = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -109,12 +129,60 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
           <div className="flex flex-col md:flex-row gap-6 mb-6">
             {/* Image */}
             <div className="flex-shrink-0">
-              <div className="w-48 h-48 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center">
+              <div className="w-48 h-48 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center relative overflow-hidden modal-sprite-container">
                 <img
-                  src={pokemon.sprites.front_default}
-                  alt={`${formatName(pokemon.name)} front view`}
-                  className="w-full h-full object-contain"
+                  src={
+                    useAnimatedSprite 
+                      ? getAnimatedSpriteUrl(pokemon.pokemon_id)
+                      : pokemon.sprites.front_default || getStaticSpriteUrl(pokemon.pokemon_id)
+                  }
+                  alt={`${formatName(pokemon.name)} ${useAnimatedSprite ? 'animated' : 'static'} view`}
+                  className={`w-full h-full object-contain pokemon-sprite ${useAnimatedSprite ? 'animated gif' : ''}`}
+                  style={{
+                    imageRendering: useAnimatedSprite ? 'auto' : 'crisp-edges',
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    width: 'auto',
+                    height: 'auto',
+                    objectFit: 'contain',
+                    objectPosition: 'center'
+                  }}
+                  onError={(e) => {
+                    // Fallback to static sprite if animated sprite fails to load
+                    if (useAnimatedSprite) {
+                      const target = e.target as HTMLImageElement
+                      target.src = pokemon.sprites.front_default || getStaticSpriteUrl(pokemon.pokemon_id)
+                      setUseAnimatedSprite(false)
+                    }
+                  }}
                 />
+                
+                {/* Animation Toggle Button */}
+                {hasAnimatedSprite(pokemon.pokemon_id) && (
+                  <button
+                    onClick={() => setUseAnimatedSprite(!useAnimatedSprite)}
+                    disabled={spriteLoading}
+                    className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-sm border border-white/30 modal-animation-toggle ${
+                      useAnimatedSprite 
+                        ? 'bg-blue-500/80 text-white' 
+                        : 'bg-gray-500/80 text-white hover:bg-blue-500/80'
+                    } ${spriteLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    title={spriteLoading ? 'Loading sprite...' : useAnimatedSprite ? 'Switch to static sprite' : 'Switch to animated sprite'}
+                  >
+                    {spriteLoading ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    ) : (
+                      <svg 
+                        className="w-4 h-4" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                      </svg>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
 
