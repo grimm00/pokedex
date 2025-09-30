@@ -1,0 +1,13 @@
+{
+    "message": "Login successful",
+    "user": {
+        "id": 3,
+        "username": "testuser2",
+        "email": "test2@example.com",
+        "is_admin": false,
+        "created_at": "2025-09-30T18:40:39.039185",
+        "updated_at": "2025-09-30T18:40:39.039190"
+    },
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1OTI1NzY2MiwianRpIjoiYTA2NGJkNGUtM2Q3Ny00ZWE4LWFlMTctNGI3ZTU0NmE4MWE2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE3NTkyNTc2NjIsImV4cCI6MTc1OTI2MTI2Mn0.i7aXnfMs9MG0FyZ7usfNfADswQGDYtLg31bLppb1mC0",
+    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1OTI1NzY2MiwianRpIjoiMzlhNzIyMjgtMmEwYy00MmM4LWJlN2QtZjkzYTBkY2NhZjY0IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOiIzIiwibmJmIjoxNzU5MjU3NjYyLCJleHAiOjE3NjE4NDk2NjJ9.BxareuoTDuaJYd1nNMRiVBHgwjQeD36Zwf2Do5xcVMc"
+}

@@ -27,6 +27,7 @@ const mockFavoritesStore = {
     addFavorite: vi.fn(),
     removeFavorite: vi.fn(),
     fetchFavorites: vi.fn(),
+    getFavorites: vi.fn(),
     isFavorite: vi.fn((id) => id === 1),
     toggleFavorite: vi.fn(),
 }

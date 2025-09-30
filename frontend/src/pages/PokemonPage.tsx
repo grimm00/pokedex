@@ -5,6 +5,7 @@ import { PokemonModal } from '@/components/pokemon/PokemonModal'
 import { PokemonSearchMemo as PokemonSearch } from '@/components/pokemon/PokemonSearch'
 import { usePokemonStore } from '@/store/pokemonStore'
 import { useAuthStore } from '@/store/authStore'
+import { useFavoritesStore } from '@/store/favoritesStore'
 
 // Memoized PokemonPage to prevent unnecessary re-renders
 const PokemonPageComponent: React.FC = () => {
@@ -18,7 +19,8 @@ const PokemonPageComponent: React.FC = () => {
   const fetchPokemon = usePokemonStore((state) => state.fetchPokemon)
   const loadMore = usePokemonStore((state) => state.loadMore)
   const clearError = usePokemonStore((state) => state.clearError)
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, user } = useAuthStore()
+  const { getFavorites } = useFavoritesStore()
 
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -31,6 +33,13 @@ const PokemonPageComponent: React.FC = () => {
       fetchPokemon()
     }
   }, [fetchPokemon])
+
+  // Load favorites when user is authenticated
+  useEffect(() => {
+    if (user && isAuthenticated) {
+      getFavorites(user.id)
+    }
+  }, [user, isAuthenticated, getFavorites])
 
   const handlePokemonClick = useCallback((selectedPokemon: any) => {
     setSelectedPokemon(selectedPokemon)

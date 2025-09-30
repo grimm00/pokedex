@@ -1,0 +1,26 @@
+Okay, so I see some opportunity here.
+
+Pokemon Pages: The actual pokedex should be public and not locked out by user authentication. 
+    - The pokedex should be available to any user on the site and not just those that are logged in
+    - The "favorites" selector, thus, should only appear when a user is logged in. 
+
+User Dashboard: If a user logs in, they should be taken to their dashboard, which will be a new page resource
+    - There will be a link to the main pokedex (our pokemon page)
+    - There may be more links available too, again, being just public links/options (like light dark mode, github icon link, etc)
+    - There will be other options user-specific (Favorite Pokemon, Team Builder (Future Development), Trainer Info)
+    - The actual dashboard will be populated which a bunch of cool stuff, but for now, it'll just have:
+        ++ Favorite Pokemon
+        ++ a trainer icon (they can use a trainer sprite from the games or upload their own photo)
+        ++ maybe even have a section for favorite team and recent search history.
+
+Separation: This creates a great separation between what should be public and what's user-specific
+    - Lack of disruption: A person doesn't have to log in just to search some basic information about a pokemon
+    - Home page: Our index can act as the hub to get into other apps we work on (like team builder), which is where
+        a person would have to log in
+    - This may change the project structure some, but we still have all of the resources well-implemented
+
+Considerations: 
+    - I never tested our user-authentication. Let me know if I need to test this first
+    - The console shows this message when rendering the auth page:
+    [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input type=​"password" id=​"password" name=​"password" class=​"w-full px-3 py-2 border rounded-lg focus:​ring-2 focus:​ring-blue-500 focus:​border-transparent border-gray-300" placeholder=​"Enter password" value>​
+ß
