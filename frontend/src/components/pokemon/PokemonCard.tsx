@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import type { Pokemon } from '@/types/pokemon'
 import { TypeBadge } from './TypeBadge'
 import { useFavoritesStore } from '@/store/favoritesStore'
 import { useAuthStore } from '@/store/authStore'
+import { getAnimatedSpriteUrl, getStaticSpriteUrl, preloadAnimatedSprite, hasAnimatedSprite } from '@/utils/spriteUtils'
 
 interface PokemonCardProps {
   pokemon: Pokemon
@@ -16,10 +17,29 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
   className
 }) => {
   const [isHovered, setIsHovered] = useState(false)
+  const [animatedSpriteLoaded, setAnimatedSpriteLoaded] = useState(false)
+  const [useAnimatedSprite, setUseAnimatedSprite] = useState(false)
   const { user } = useAuthStore()
   const { isFavorite, toggleFavorite, loading } = useFavoritesStore()
 
   const isPokemonFavorite = isFavorite(pokemon.pokemon_id)
+
+  // Preload animated sprite when component mounts
+  useEffect(() => {
+    if (hasAnimatedSprite(pokemon.pokemon_id)) {
+      preloadAnimatedSprite(pokemon.pokemon_id)
+      setAnimatedSpriteLoaded(true)
+    }
+  }, [pokemon.pokemon_id])
+
+  // Switch to animated sprite on hover
+  useEffect(() => {
+    if (isHovered && animatedSpriteLoaded && hasAnimatedSprite(pokemon.pokemon_id)) {
+      setUseAnimatedSprite(true)
+    } else {
+      setUseAnimatedSprite(false)
+    }
+  }, [isHovered, animatedSpriteLoaded, pokemon.pokemon_id])
 
   const handleClick = () => {
     onSelect?.(pokemon)
@@ -518,14 +538,26 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       <div className="relative mb-4 h-32 flex items-center justify-center">
         <div className="relative w-full h-full flex items-center justify-center">
           <img
-            src={pokemon.sprites.front_default || (pokemon.sprites.other as any)?.['official-artwork']?.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`}
-            alt={`${formatName(pokemon.name)} front view`}
+            src={
+              useAnimatedSprite 
+                ? getAnimatedSpriteUrl(pokemon.pokemon_id)
+                : pokemon.sprites.front_default || getStaticSpriteUrl(pokemon.pokemon_id)
+            }
+            alt={`${formatName(pokemon.name)} ${useAnimatedSprite ? 'animated' : 'static'} view`}
             className="w-full h-full object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-2 relative z-10"
             style={{
               filter: isHovered 
                 ? `drop-shadow(0 15px 30px rgba(0, 0, 0, 0.3)) brightness(1.1) contrast(1.1)` 
                 : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)) brightness(1) contrast(1)',
-              imageRendering: 'crisp-edges'
+              imageRendering: useAnimatedSprite ? 'auto' : 'crisp-edges'
+            }}
+            onError={(e) => {
+              // Fallback to static sprite if animated sprite fails to load
+              if (useAnimatedSprite) {
+                const target = e.target as HTMLImageElement
+                target.src = pokemon.sprites.front_default || getStaticSpriteUrl(pokemon.pokemon_id)
+                setUseAnimatedSprite(false)
+              }
             }}
           />
           {/* Type-specific battle effects on hover */}
@@ -535,6 +567,23 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
             </div>
           )}
         </div>
+
+        {/* Animation Indicator */}
+        {hasAnimatedSprite(pokemon.pokemon_id) && (
+          <div 
+            className="absolute top-2 left-2 p-1 rounded-full bg-blue-500/80 backdrop-blur-sm border border-white/30 group/animation"
+            title="Hover to see animated sprite!"
+          >
+            <svg 
+              className="w-3 h-3 text-white transition-transform duration-300 group-hover/animation:scale-110" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z" />
+            </svg>
+          </div>
+        )}
 
         {/* Favorite Button */}
         <button
