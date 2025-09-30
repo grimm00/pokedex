@@ -69,6 +69,31 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
   // Get the primary type for hover color
   const primaryType = pokemon.types[0] || 'normal'
 
+  // Get type color for glow effects
+  const getTypeColor = (type: string) => {
+    const colors = {
+      grass: '#22c55e',
+      fire: '#ef4444',
+      water: '#3b82f6',
+      electric: '#eab308',
+      psychic: '#a855f7',
+      poison: '#8b5cf6',
+      ice: '#06b6d4',
+      dragon: '#f97316',
+      dark: '#374151',
+      fairy: '#ec4899',
+      normal: '#6b7280',
+      fighting: '#dc2626',
+      flying: '#0ea5e9',
+      ground: '#a3a3a3',
+      rock: '#78716c',
+      bug: '#16a34a',
+      ghost: '#7c3aed',
+      steel: '#64748b',
+    }
+    return colors[type as keyof typeof colors] || '#6b7280'
+  }
+
   // Type-specific hover colors
   const getHoverStyle = () => {
     if (!isHovered) return {}
@@ -104,14 +129,18 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
 
   return (
     <div
-      className={`${primaryType} cursor-pointer group relative overflow-hidden hover:scale-105 ${className || ''}`}
+      className={`${primaryType} cursor-pointer group relative overflow-hidden ${className || ''}`}
       style={{
-        background: isHovered ? getHoverStyle().background : 'rgba(255, 255, 255, 0.9)',
-        borderRadius: '12px',
+        background: isHovered ? getHoverStyle().background : 'rgba(255, 255, 255, 0.95)',
+        borderRadius: '16px',
         padding: '24px',
-        transition: 'all 0.3s ease',
-        transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-        boxShadow: isHovered ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
+        boxShadow: isHovered 
+          ? '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)' 
+          : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)'
       }}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
@@ -119,19 +148,41 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
     >
       {/* Pokemon Image */}
       <div className="relative mb-4 h-32 flex items-center justify-center">
-        <img
-          src={pokemon.sprites.front_default || (pokemon.sprites.other as any)?.['official-artwork']?.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`}
-          alt={`${formatName(pokemon.name)} front view`}
-          className="w-full h-full object-contain transition-transform duration-300 hover:scale-110"
-        />
+        <div className="relative w-full h-full flex items-center justify-center">
+          <img
+            src={pokemon.sprites.front_default || (pokemon.sprites.other as any)?.['official-artwork']?.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`}
+            alt={`${formatName(pokemon.name)} front view`}
+            className="w-full h-full object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-2"
+            style={{
+              filter: isHovered ? 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2))' : 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))'
+            }}
+          />
+          {/* Glow effect on hover */}
+          {isHovered && (
+            <div 
+              className="absolute inset-0 rounded-full opacity-30 blur-xl"
+              style={{
+                background: `linear-gradient(45deg, ${getTypeColor(primaryType)}, transparent)`,
+                animation: 'pulse 2s infinite'
+              }}
+            />
+          )}
+        </div>
 
         {/* Favorite Button */}
         <button
           onClick={handleFavoriteToggle}
-          className={`absolute top-2 right-2 p-1 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 ${isPokemonFavorite
-            ? 'text-red-500 bg-red-50'
-            : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
-            }`}
+          className={`absolute top-2 right-2 p-2 rounded-full transition-all duration-300 hover:scale-125 focus:outline-none focus:ring-2 focus:ring-red-500 ${
+            isPokemonFavorite
+              ? 'text-red-500 bg-red-50 shadow-lg'
+              : 'text-gray-400 hover:text-red-500 hover:bg-red-50 hover:shadow-md'
+          }`}
+          style={{
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
           aria-label={isPokemonFavorite ? 'Remove from favorites' : 'Add to favorites'}
           disabled={loading}
         >
@@ -180,13 +231,28 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
 
       {/* Action Button */}
       <button
-        className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-4 py-3 text-sm font-medium text-gray-700 bg-white/80 border border-gray-200 rounded-xl hover:bg-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 group-hover:scale-105"
+        style={{
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: isHovered ? '0 8px 25px -5px rgba(0, 0, 0, 0.1)' : '0 2px 4px rgba(0, 0, 0, 0.05)'
+        }}
         onClick={(e) => {
           e.stopPropagation()
           handleClick()
         }}
       >
-        View Details
+        <span className="flex items-center justify-center gap-2">
+          View Details
+          <svg 
+            className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
       </button>
     </div>
   )

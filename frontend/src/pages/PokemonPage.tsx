@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { PokemonCard } from '@/components/pokemon/PokemonCard'
 import { PokemonModal } from '@/components/pokemon/PokemonModal'
 import { PokemonSearchMemo as PokemonSearch } from '@/components/pokemon/PokemonSearch'
+import { PokemonGridSkeleton } from '@/components/ui/SkeletonLoader'
 import { usePokemonStore } from '@/store/pokemonStore'
 import { useAuthStore } from '@/store/authStore'
 import { useFavoritesStore } from '@/store/favoritesStore'
@@ -103,13 +104,23 @@ const PokemonPageComponent: React.FC = () => {
   if (loading && pokemon.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8">
+        <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Pokemon Collection
         </h1>
-        <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          <span className="ml-4 text-lg">Loading Pokemon...</span>
+        
+        {/* Search Component Skeleton */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8 animate-pulse">
+          <div className="h-8 w-48 bg-gray-200 rounded mb-6"></div>
+          <div className="space-y-4">
+            <div className="h-12 bg-gray-200 rounded-lg"></div>
+            <div className="h-12 bg-gray-200 rounded-lg"></div>
+            <div className="h-12 bg-gray-200 rounded-lg"></div>
+            <div className="h-12 bg-gray-200 rounded-lg"></div>
+          </div>
         </div>
+
+        {/* Pokemon Grid Skeleton */}
+        <PokemonGridSkeleton count={8} />
       </div>
     )
   }
@@ -139,9 +150,14 @@ const PokemonPageComponent: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8">
-        Pokemon Collection
-      </h1>
+      <div className="text-center mb-8">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+          Pokemon Collection
+        </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Discover and explore the amazing world of Pokemon. Search, filter, and find your favorites!
+        </p>
+      </div>
 
       {/* Search Component */}
       <PokemonSearch
@@ -189,29 +205,44 @@ const PokemonPageComponent: React.FC = () => {
 
       {/* Load More Button and Pagination Info */}
       {filteredPokemon.length > 0 && (
-        <div className="text-center py-8">
-          <div className="text-gray-600 mb-4">
-            Showing {filteredPokemon.length} of {total} Pokemon
+        <div className="text-center py-12">
+          <div className="text-gray-600 mb-6 text-lg">
+            Showing <span className="font-semibold text-blue-600">{filteredPokemon.length}</span> of <span className="font-semibold text-purple-600">{total}</span> Pokemon
           </div>
           {hasMore && (
             <button
               onClick={loadMore}
               disabled={loading}
-              className="px-8 py-3 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300"
             >
-              {loading ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Loading...
-                </div>
-              ) : (
-                'Load More Pokemon'
+              <span className="relative z-10 flex items-center">
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                    Loading more Pokemon...
+                  </>
+                ) : (
+                  <>
+                    Load More Pokemon
+                    <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </>
+                )}
+              </span>
+              {!loading && (
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               )}
             </button>
           )}
           {!hasMore && (
-            <div className="text-gray-500 text-sm">
-              You've reached the end! All Pokemon have been loaded.
+            <div className="text-gray-500 text-lg">
+              <div className="flex items-center justify-center gap-2">
+                <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                You've reached the end! All Pokemon have been loaded.
+              </div>
             </div>
           )}
         </div>
@@ -219,15 +250,28 @@ const PokemonPageComponent: React.FC = () => {
 
       {/* No Results Message */}
       {filteredPokemon.length === 0 && (
-        <div className="text-center py-12">
-          <div className="text-gray-500 text-lg mb-4">
-            No Pokemon found matching your search criteria
+        <div className="text-center py-16">
+          <div className="mb-8">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Pokemon Found</h3>
+            <p className="text-gray-500 text-lg mb-8 max-w-md mx-auto">
+              We couldn't find any Pokemon matching your search criteria. Try adjusting your filters or search terms.
+            </p>
           </div>
           <button
             onClick={handleClearSearch}
-            className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="group px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300"
           >
-            Clear Search
+            <span className="flex items-center gap-2">
+              <svg className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Clear Search & Filters
+            </span>
           </button>
         </div>
       )}
