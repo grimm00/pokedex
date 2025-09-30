@@ -3,7 +3,7 @@ import type { Pokemon } from '@/types/pokemon'
 import { TypeBadge } from './TypeBadge'
 import { useFavoritesStore } from '@/store/favoritesStore'
 import { useAuthStore } from '@/store/authStore'
-import { getAnimatedSpriteUrl, getStaticSpriteUrl, preloadAnimatedSprite, hasAnimatedSprite } from '@/utils/spriteUtils'
+import { getAnimatedSpriteUrl, getAlternativeAnimatedSpriteUrl, getStaticSpriteUrl, preloadAnimatedSprite, hasAnimatedSprite } from '@/utils/spriteUtils'
 
 interface PokemonCardProps {
   pokemon: Pokemon
@@ -19,6 +19,7 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
   const [isHovered, setIsHovered] = useState(false)
   const [animatedSpriteLoaded, setAnimatedSpriteLoaded] = useState(false)
   const [useAnimatedSprite, setUseAnimatedSprite] = useState(false)
+  const [spriteFallbackUsed, setSpriteFallbackUsed] = useState(false)
   const { user } = useAuthStore()
   const { isFavorite, toggleFavorite, loading } = useFavoritesStore()
 
@@ -36,8 +37,10 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
   useEffect(() => {
     if (isHovered && animatedSpriteLoaded && hasAnimatedSprite(pokemon.pokemon_id)) {
       setUseAnimatedSprite(true)
+      setSpriteFallbackUsed(false) // Reset fallback state
     } else {
       setUseAnimatedSprite(false)
+      setSpriteFallbackUsed(false) // Reset fallback state
     }
   }, [isHovered, animatedSpriteLoaded, pokemon.pokemon_id])
 
@@ -540,23 +543,39 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
           <img
             src={
               useAnimatedSprite 
-                ? getAnimatedSpriteUrl(pokemon.pokemon_id)
+                ? spriteFallbackUsed 
+                  ? getAlternativeAnimatedSpriteUrl(pokemon.pokemon_id)
+                  : getAnimatedSpriteUrl(pokemon.pokemon_id)
                 : pokemon.sprites.front_default || getStaticSpriteUrl(pokemon.pokemon_id)
             }
             alt={`${formatName(pokemon.name)} ${useAnimatedSprite ? 'animated' : 'static'} view`}
-            className="w-full h-full object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-2 relative z-10"
+            className={`w-full h-full object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-2 relative z-10 pokemon-sprite ${useAnimatedSprite ? 'animated gif' : ''}`}
             style={{
               filter: isHovered 
                 ? `drop-shadow(0 15px 30px rgba(0, 0, 0, 0.3)) brightness(1.1) contrast(1.1)` 
                 : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)) brightness(1) contrast(1)',
-              imageRendering: useAnimatedSprite ? 'auto' : 'crisp-edges'
+              imageRendering: useAnimatedSprite ? 'auto' : 'crisp-edges',
+              // Ensure animated GIFs are constrained to the same size as static sprites
+              maxWidth: '100%',
+              maxHeight: '100%',
+              width: 'auto',
+              height: 'auto',
+              // Prevent GIFs from being larger than the container
+              objectFit: 'contain',
+              objectPosition: 'center'
             }}
             onError={(e) => {
-              // Fallback to static sprite if animated sprite fails to load
-              if (useAnimatedSprite) {
+              // Try alternative animated sprite first, then fallback to static
+              if (useAnimatedSprite && !spriteFallbackUsed) {
+                const target = e.target as HTMLImageElement
+                target.src = getAlternativeAnimatedSpriteUrl(pokemon.pokemon_id)
+                setSpriteFallbackUsed(true)
+              } else if (useAnimatedSprite && spriteFallbackUsed) {
+                // Final fallback to static sprite
                 const target = e.target as HTMLImageElement
                 target.src = pokemon.sprites.front_default || getStaticSpriteUrl(pokemon.pokemon_id)
                 setUseAnimatedSprite(false)
+                setSpriteFallbackUsed(false)
               }
             }}
           />

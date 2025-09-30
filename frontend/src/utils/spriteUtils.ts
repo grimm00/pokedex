@@ -46,6 +46,24 @@ export function getSpriteUrl(pokemonId: number, options: SpriteOptions = {}): st
  * @returns Animated sprite URL
  */
 export function getAnimatedSpriteUrl(pokemonId: number, shiny: boolean = false): string {
+  // Use Generation V Black/White animated sprites (these are the most widely available)
+  return getSpriteUrl(pokemonId, {
+    generation: 'generation-v',
+    variant: 'black-white',
+    animated: true,
+    shiny
+  })
+}
+
+/**
+ * Get alternative animated sprite URL (Generation V Black/White)
+ * @param pokemonId - Pokemon ID number
+ * @param shiny - Whether to use shiny variant
+ * @returns Alternative animated sprite URL
+ */
+export function getAlternativeAnimatedSpriteUrl(pokemonId: number, shiny: boolean = false): string {
+  // Use the same sprite but with different CSS constraints
+  // This will be handled by CSS rather than different URLs
   return getSpriteUrl(pokemonId, {
     generation: 'generation-v',
     variant: 'black-white',

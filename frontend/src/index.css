@@ -379,3 +379,25 @@ select:focus-visible {
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* Pokemon sprite optimization */
+.pokemon-sprite {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Ensure animated GIFs don't exceed container size */
+.pokemon-sprite.animated {
+  max-width: 128px;
+  max-height: 128px;
+}
+
+/* Optimize GIF rendering */
+.pokemon-sprite.gif {
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+}
