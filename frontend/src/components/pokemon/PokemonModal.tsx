@@ -36,6 +36,33 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
   const isPokemonFavorite = isFavorite(pokemon.pokemon_id)
   const primaryType = pokemon.types[0] || 'normal'
 
+  // Get type color for CSS custom properties
+  const getTypeColor = (type: string) => {
+    const colors = {
+      grass: '#78C850',
+      fire: '#F08030',
+      water: '#6890F0',
+      electric: '#F8D030',
+      psychic: '#F85888',
+      poison: '#A040A0',
+      ice: '#98D8D8',
+      dragon: '#7038F8',
+      dark: '#705848',
+      fairy: '#EE99AC',
+      normal: '#A8A878',
+      fighting: '#C03028',
+      flying: '#A890F0',
+      ground: '#E0C068',
+      rock: '#B8A038',
+      bug: '#A8B820',
+      ghost: '#705898',
+      steel: '#B8B8D0',
+    }
+    return colors[type as keyof typeof colors] || '#A8A878'
+  }
+
+  const typeColor = getTypeColor(primaryType)
+
   // Preload animated sprite when modal opens
   useEffect(() => {
     if (isOpen && pokemon && hasAnimatedSprite(pokemon.pokemon_id)) {
@@ -106,11 +133,39 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
       />
 
       {/* Modal */}
-      <div className={`relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100 border-2 border-${primaryType}/20 hover:border-${primaryType}/40 modal-type-border`}>
+      <div 
+        className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-100 border-2 modal-type-border"
+        style={{
+          borderColor: `${typeColor}33`,
+          '--type-color': typeColor,
+          '--type-color-light': `${typeColor}20`,
+          '--type-color-medium': `${typeColor}40`,
+          '--type-color-dark': `${typeColor}80`
+        } as React.CSSProperties}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = `${typeColor}66`
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = `${typeColor}33`
+        }}
+      >
         {/* Header */}
-        <div className={`sticky top-0 bg-gradient-to-r from-${primaryType}/5 to-white border-b border-${primaryType}/20 px-6 py-4 rounded-t-2xl`}>
+        <div 
+          className="sticky top-0 bg-white border-b px-6 py-4 rounded-t-2xl"
+          style={{
+            background: `linear-gradient(to right, ${typeColor}0D, white)`,
+            borderBottomColor: `${typeColor}33`
+          }}
+        >
           <div className="flex items-center justify-between">
-            <h2 className={`text-2xl font-bold capitalize bg-gradient-to-r from-${primaryType} to-gray-900 bg-clip-text text-transparent`}>
+            <h2 
+              className="text-2xl font-bold capitalize bg-clip-text text-transparent"
+              style={{
+                background: `linear-gradient(to right, ${typeColor}, #374151)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
+            >
               {formatName(pokemon.name)}
             </h2>
             <button
@@ -130,7 +185,13 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
           <div className="flex flex-col md:flex-row gap-6 mb-6">
             {/* Image */}
             <div className="flex-shrink-0">
-              <div className={`w-48 h-48 mx-auto bg-gradient-to-br from-${primaryType}/10 to-gray-100 rounded-2xl flex items-center justify-center relative overflow-hidden modal-sprite-container modal-sprite-type-container border-2 border-${primaryType}/20`}>
+              <div 
+                className="w-48 h-48 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center relative overflow-hidden modal-sprite-container modal-sprite-type-container border-2"
+                style={{
+                  background: `linear-gradient(135deg, ${typeColor}1A, #f3f4f6)`,
+                  borderColor: `${typeColor}33`
+                }}
+              >
                 <img
                   src={
                     useAnimatedSprite
@@ -189,7 +250,16 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
             {/* Basic Info */}
             <div className="flex-1">
               <div className="mb-4">
-                <h3 className={`text-lg font-semibold mb-2 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Types</h3>
+                <h3 
+                  className="text-lg font-semibold mb-2 bg-clip-text text-transparent"
+                  style={{
+                    background: `linear-gradient(to right, ${typeColor}, #374151)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}
+                >
+                  Types
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {pokemon.types.map((type) => (
                     <span
@@ -204,17 +274,44 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <h3 className={`text-lg font-semibold mb-1 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Height</h3>
+                  <h3 
+                    className="text-lg font-semibold mb-1 bg-clip-text text-transparent"
+                    style={{
+                      background: `linear-gradient(to right, ${typeColor}, #374151)`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}
+                  >
+                    Height
+                  </h3>
                   <p className="text-2xl font-bold text-gray-900">{formatHeight(pokemon.height)}</p>
                 </div>
                 <div>
-                  <h3 className={`text-lg font-semibold mb-1 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Weight</h3>
+                  <h3 
+                    className="text-lg font-semibold mb-1 bg-clip-text text-transparent"
+                    style={{
+                      background: `linear-gradient(to right, ${typeColor}, #374151)`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}
+                  >
+                    Weight
+                  </h3>
                   <p className="text-2xl font-bold text-gray-900">{formatWeight(pokemon.weight)}</p>
                 </div>
               </div>
 
               <div>
-                <h3 className={`text-lg font-semibold mb-2 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Abilities</h3>
+                <h3 
+                  className="text-lg font-semibold mb-2 bg-clip-text text-transparent"
+                  style={{
+                    background: `linear-gradient(to right, ${typeColor}, #374151)`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}
+                >
+                  Abilities
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {pokemon.abilities.map((ability, index) => (
                     <span
@@ -231,7 +328,16 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
           {/* Stats */}
           <div>
-            <h3 className={`text-lg font-semibold mb-4 bg-gradient-to-r from-${primaryType} to-gray-700 bg-clip-text text-transparent`}>Base Stats</h3>
+            <h3 
+              className="text-lg font-semibold mb-4 bg-clip-text text-transparent"
+              style={{
+                background: `linear-gradient(to right, ${typeColor}, #374151)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
+            >
+              Base Stats
+            </h3>
             <div className="space-y-3">
               {Object.entries(pokemon.stats).map(([statName, statValue]) => (
                 <div key={statName} className="flex items-center">
@@ -256,7 +362,13 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
         </div>
 
         {/* Footer */}
-        <div className={`sticky bottom-0 bg-gradient-to-r from-white to-${primaryType}/5 border-t border-${primaryType}/20 px-6 py-4 rounded-b-2xl`}>
+        <div 
+          className="sticky bottom-0 bg-white border-t px-6 py-4 rounded-b-2xl"
+          style={{
+            background: `linear-gradient(to right, white, ${typeColor}0D)`,
+            borderTopColor: `${typeColor}33`
+          }}
+        >
           <div className="flex justify-end gap-3">
             <button
               onClick={onClose}
