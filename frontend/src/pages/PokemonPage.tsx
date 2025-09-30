@@ -107,7 +107,7 @@ const PokemonPageComponent: React.FC = () => {
         <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Pokemon Collection
         </h1>
-        
+
         {/* Search Component Skeleton */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8 animate-pulse">
           <div className="h-8 w-48 bg-gray-200 rounded mb-6"></div>

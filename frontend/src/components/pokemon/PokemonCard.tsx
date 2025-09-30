@@ -69,7 +69,7 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
   // Get the primary type for hover color
   const primaryType = pokemon.types[0] || 'normal'
 
-  // Get type color for glow effects
+  // Get type color for effects
   const getTypeColor = (type: string) => {
     const colors = {
       grass: '#22c55e',
@@ -92,6 +92,374 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
       steel: '#64748b',
     }
     return colors[type as keyof typeof colors] || '#6b7280'
+  }
+
+  // Get type-specific battle animations
+  const getTypeAnimation = (type: string) => {
+    const typeColor = getTypeColor(type)
+    
+    switch (type) {
+      case 'fire':
+        return (
+          <>
+            {/* Fire flicker effect */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-40"
+              style={{
+                background: `radial-gradient(circle, ${typeColor}40 0%, transparent 70%)`,
+                animation: 'fireFlicker 1.5s ease-in-out infinite alternate'
+              }}
+            />
+            {/* Fire particles */}
+            <div className="absolute inset-0">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 rounded-full opacity-60"
+                  style={{
+                    background: typeColor,
+                    left: `${20 + i * 15}%`,
+                    top: `${30 + i * 10}%`,
+                    animation: `fireParticle ${1 + i * 0.2}s ease-in-out infinite alternate`,
+                    animationDelay: `${i * 0.1}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'water':
+        return (
+          <>
+            {/* Water ripple effect */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-30"
+              style={{
+                background: `conic-gradient(from 0deg, ${typeColor}40, transparent, ${typeColor}40)`,
+                animation: 'waterRipple 2s linear infinite'
+              }}
+            />
+            {/* Water droplets */}
+            <div className="absolute inset-0">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-2 h-2 rounded-full opacity-50"
+                  style={{
+                    background: `linear-gradient(45deg, ${typeColor}, transparent)`,
+                    left: `${25 + i * 20}%`,
+                    top: `${20 + i * 15}%`,
+                    animation: `waterDrop ${1.5 + i * 0.3}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.4}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'electric':
+        return (
+          <>
+            {/* Electric spark effect */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-50"
+              style={{
+                background: `radial-gradient(circle, ${typeColor}60 0%, transparent 50%)`,
+                animation: 'electricPulse 0.8s ease-in-out infinite'
+              }}
+            />
+            {/* Electric bolts */}
+            <div className="absolute inset-0">
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-0.5 h-8 opacity-70"
+                  style={{
+                    background: `linear-gradient(to bottom, ${typeColor}, transparent)`,
+                    left: `${30 + i * 25}%`,
+                    top: '10%',
+                    animation: `electricBolt ${0.5 + i * 0.1}s ease-in-out infinite alternate`,
+                    animationDelay: `${i * 0.2}s`,
+                    transform: `rotate(${i * 15 - 15}deg)`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'psychic':
+        return (
+          <>
+            {/* Psychic aura */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-30"
+              style={{
+                background: `conic-gradient(from 180deg, ${typeColor}40, transparent, ${typeColor}40)`,
+                animation: 'psychicAura 3s linear infinite'
+              }}
+            />
+            {/* Floating orbs */}
+            <div className="absolute inset-0">
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-3 h-3 rounded-full opacity-60"
+                  style={{
+                    background: `radial-gradient(circle, ${typeColor}, transparent)`,
+                    left: `${20 + i * 30}%`,
+                    top: `${25 + i * 20}%`,
+                    animation: `psychicOrb ${2 + i * 0.5}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.7}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'ice':
+        return (
+          <>
+            {/* Ice crystals */}
+            <div className="absolute inset-0">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-2 h-2 opacity-70"
+                  style={{
+                    background: `linear-gradient(45deg, ${typeColor}, white)`,
+                    left: `${15 + i * 20}%`,
+                    top: `${20 + i * 15}%`,
+                    animation: `iceCrystal ${1.5 + i * 0.2}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.3}s`,
+                    clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'dragon':
+        return (
+          <>
+            {/* Dragon energy */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-40"
+              style={{
+                background: `radial-gradient(ellipse, ${typeColor}50 0%, transparent 60%)`,
+                animation: 'dragonEnergy 2s ease-in-out infinite alternate'
+              }}
+            />
+          </>
+        )
+      
+      case 'flying':
+        return (
+          <>
+            {/* Wind particles */}
+            <div className="absolute inset-0">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 rounded-full opacity-50"
+                  style={{
+                    background: typeColor,
+                    left: `${10 + i * 12}%`,
+                    top: `${30 + i * 8}%`,
+                    animation: `windParticle ${1 + i * 0.1}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.15}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'ground':
+        return (
+          <>
+            {/* Ground particles */}
+            <div className="absolute inset-0">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 rounded-full opacity-60"
+                  style={{
+                    background: typeColor,
+                    left: `${20 + i * 15}%`,
+                    top: `${70 + i * 5}%`,
+                    animation: `groundParticle ${1.5 + i * 0.2}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.25}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'rock':
+        return (
+          <>
+            {/* Rock fragments */}
+            <div className="absolute inset-0">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-2 h-2 opacity-70"
+                  style={{
+                    background: typeColor,
+                    left: `${25 + i * 20}%`,
+                    top: `${30 + i * 15}%`,
+                    animation: `rockFragment ${2 + i * 0.3}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.5}s`,
+                    clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'bug':
+        return (
+          <>
+            {/* Bug particles */}
+            <div className="absolute inset-0">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 rounded-full opacity-60"
+                  style={{
+                    background: typeColor,
+                    left: `${20 + i * 15}%`,
+                    top: `${25 + i * 12}%`,
+                    animation: `bugParticle ${1.2 + i * 0.1}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'ghost':
+        return (
+          <>
+            {/* Ghostly mist */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-20"
+              style={{
+                background: `radial-gradient(circle, ${typeColor}30 0%, transparent 70%)`,
+                animation: 'ghostMist 3s ease-in-out infinite alternate'
+              }}
+            />
+          </>
+        )
+      
+      case 'steel':
+        return (
+          <>
+            {/* Metallic shine */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-30"
+              style={{
+                background: `linear-gradient(45deg, transparent 30%, ${typeColor}40 50%, transparent 70%)`,
+                animation: 'steelShine 2s ease-in-out infinite'
+              }}
+            />
+          </>
+        )
+      
+      case 'fighting':
+        return (
+          <>
+            {/* Fighting energy */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-40"
+              style={{
+                background: `conic-gradient(from 0deg, ${typeColor}50, transparent, ${typeColor}50)`,
+                animation: 'fightingEnergy 1.5s ease-in-out infinite'
+              }}
+            />
+          </>
+        )
+      
+      case 'poison':
+        return (
+          <>
+            {/* Poison bubbles */}
+            <div className="absolute inset-0">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-3 h-3 rounded-full opacity-50"
+                  style={{
+                    background: `radial-gradient(circle, ${typeColor}, transparent)`,
+                    left: `${25 + i * 20}%`,
+                    top: `${30 + i * 15}%`,
+                    animation: `poisonBubble ${2 + i * 0.3}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.4}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'fairy':
+        return (
+          <>
+            {/* Fairy sparkles */}
+            <div className="absolute inset-0">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 rounded-full opacity-70"
+                  style={{
+                    background: typeColor,
+                    left: `${15 + i * 12}%`,
+                    top: `${20 + i * 10}%`,
+                    animation: `fairySparkle ${1.5 + i * 0.1}s ease-in-out infinite`,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )
+      
+      case 'dark':
+        return (
+          <>
+            {/* Dark aura */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-30"
+              style={{
+                background: `radial-gradient(circle, ${typeColor}40 0%, transparent 60%)`,
+                animation: 'darkAura 2.5s ease-in-out infinite alternate'
+              }}
+            />
+          </>
+        )
+      
+      default: // normal
+        return (
+          <>
+            {/* Gentle glow for normal types */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-20"
+              style={{
+                background: `radial-gradient(circle, ${typeColor}30 0%, transparent 70%)`,
+                animation: 'gentleGlow 3s ease-in-out infinite alternate'
+              }}
+            />
+          </>
+        )
+    }
   }
 
   // Type-specific hover colors
@@ -152,20 +520,19 @@ export const PokemonCard: React.FC<PokemonCardProps> = ({
           <img
             src={pokemon.sprites.front_default || (pokemon.sprites.other as any)?.['official-artwork']?.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`}
             alt={`${formatName(pokemon.name)} front view`}
-            className="w-full h-full object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-2"
+            className="w-full h-full object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:rotate-2 relative z-10"
             style={{
-              filter: isHovered ? 'drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2))' : 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))'
+              filter: isHovered 
+                ? `drop-shadow(0 15px 30px rgba(0, 0, 0, 0.3)) brightness(1.1) contrast(1.1)` 
+                : 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)) brightness(1) contrast(1)',
+              imageRendering: 'crisp-edges'
             }}
           />
-          {/* Glow effect on hover */}
+          {/* Type-specific battle effects on hover */}
           {isHovered && (
-            <div 
-              className="absolute inset-0 rounded-full opacity-30 blur-xl"
-              style={{
-                background: `linear-gradient(45deg, ${getTypeColor(primaryType)}, transparent)`,
-                animation: 'pulse 2s infinite'
-              }}
-            />
+            <div className="absolute inset-0 pointer-events-none">
+              {getTypeAnimation(primaryType)}
+            </div>
           )}
         </div>
 
