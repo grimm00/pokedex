@@ -250,14 +250,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
             {/* Basic Info */}
             <div className="flex-1">
               <div className="mb-4">
-                <h3 
-                  className="text-lg font-semibold mb-2 bg-clip-text text-transparent"
-                  style={{
-                    background: `linear-gradient(to right, ${typeColor}, #374151)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                  }}
-                >
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">
                   Types
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -274,27 +267,13 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <h3 
-                    className="text-lg font-semibold mb-1 bg-clip-text text-transparent"
-                    style={{
-                      background: `linear-gradient(to right, ${typeColor}, #374151)`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent'
-                    }}
-                  >
+                  <h3 className="text-lg font-semibold mb-1 text-gray-800">
                     Height
                   </h3>
                   <p className="text-2xl font-bold text-gray-900">{formatHeight(pokemon.height)}</p>
                 </div>
                 <div>
-                  <h3 
-                    className="text-lg font-semibold mb-1 bg-clip-text text-transparent"
-                    style={{
-                      background: `linear-gradient(to right, ${typeColor}, #374151)`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent'
-                    }}
-                  >
+                  <h3 className="text-lg font-semibold mb-1 text-gray-800">
                     Weight
                   </h3>
                   <p className="text-2xl font-bold text-gray-900">{formatWeight(pokemon.weight)}</p>
@@ -302,14 +281,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
               </div>
 
               <div>
-                <h3 
-                  className="text-lg font-semibold mb-2 bg-clip-text text-transparent"
-                  style={{
-                    background: `linear-gradient(to right, ${typeColor}, #374151)`,
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                  }}
-                >
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">
                   Abilities
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -328,14 +300,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
           {/* Stats */}
           <div>
-            <h3 
-              className="text-lg font-semibold mb-4 bg-clip-text text-transparent"
-              style={{
-                background: `linear-gradient(to right, ${typeColor}, #374151)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}
-            >
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">
               Base Stats
             </h3>
             <div className="space-y-3">
