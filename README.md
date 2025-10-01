@@ -1,6 +1,6 @@
 # Pokedex - Pokemon Database Application
 
-A modern, full-stack Pokemon database application built with React, Flask, and Docker. Features real Pokemon data from PokeAPI, user authentication, favorites management, and comprehensive testing infrastructure.
+A modern, full-stack Pokemon database application built with React, Flask, and Docker. Features 386 Pokemon from Generations 1-3 (Kanto, Johto, Hoenn), user authentication, favorites management, generation filtering, and comprehensive testing infrastructure.
 
 ## 🎯 Project Goals
 
@@ -16,33 +16,48 @@ This project serves as a hands-on learning experience for understanding:
 ```
 pokedex/
 ├── admin/                    # Project planning and documentation
+│   ├── docs/                # Project status and maintenance docs
 │   ├── planning/            # ADRs, roadmap, and project planning
+│   │   ├── architecture/    # Architecture Decision Records (ADRs)
+│   │   ├── phases/          # Development phase documentation
+│   │   └── features/        # Feature planning and specifications
 │   ├── technical/           # Technical guides and implementation docs
 │   ├── testing/             # Testing documentation and scripts
-│   └── collaboration/       # Chat logs and collaboration history
+│   └── chat-logs/           # Development session logs (2024-2025)
 ├── backend/                 # Flask REST API
 │   ├── models/              # SQLAlchemy models (Pokemon, User, Audit)
 │   ├── routes/              # API endpoints (auth, pokemon, users, cache)
 │   ├── services/            # Business logic services
 │   │   ├── cache.py         # Redis caching system
-│   │   ├── security.py      # Security features and rate limiting
-│   │   └── pokeapi_client.py # PokeAPI integration client
+│   │   ├── pokeapi_client.py # PokeAPI integration client
+│   │   └── security.py      # Security features and rate limiting
 │   ├── utils/               # Utility scripts and tools
-│   │   ├── pokemon_seeder.py # Data seeding logic
-│   │   └── seed_pokemon.py  # CLI entry point for seeding
+│   │   ├── pokemon_seeder.py # Data seeding logic (386 Pokemon)
+│   │   ├── generation_config.py # Generation filtering configuration
+│   │   └── validators.py    # Data validation utilities
 │   ├── app.py               # Main Flask application
 │   └── database.py          # Database configuration
 ├── frontend/                # React TypeScript Frontend
 │   ├── src/
 │   │   ├── components/      # React components
-│   │   │   └── pokemon/     # Pokemon-specific components
+│   │   │   ├── pokemon/     # Pokemon-specific components
+│   │   │   │   ├── PokemonCard.tsx      # Individual Pokemon cards
+│   │   │   │   ├── PokemonModal.tsx     # Pokemon detail modals
+│   │   │   │   ├── PokemonSearch.tsx   # Search functionality
+│   │   │   │   ├── GenerationFilter.tsx # Generation filtering
+│   │   │   │   └── BulkSelection.tsx   # Bulk favorites operations
+│   │   │   └── ui/          # Reusable UI components
 │   │   ├── pages/           # Page components
 │   │   ├── services/        # API service layer
 │   │   ├── store/           # Zustand state management
 │   │   ├── types/           # TypeScript type definitions
-│   │   └── utils/           # Utility functions
+│   │   └── utils/           # Utility functions (sprites, etc.)
 │   ├── package.json         # Node.js dependencies
 │   └── vite.config.ts       # Vite configuration
+├── docs/                    # Documentation
+│   ├── guides/              # Technical guides
+│   │   └── docker-containerization-guide.md # Docker setup guide
+│   └── syntax/              # Code syntax documentation
 ├── tests/                   # Centralized testing framework
 │   ├── unit/                # Unit tests (frontend & backend)
 │   ├── integration/         # Integration tests
@@ -51,12 +66,40 @@ pokedex/
 ├── migrations/              # Database migrations (Flask-Migrate)
 ├── instance/                # SQLite database (not in git)
 ├── requirements.txt         # Python dependencies
-├── package.json             # Root package.json for scripts
-├── Dockerfile              # Container configuration
+├── package.json             # Root package.json for centralized scripts
+├── Dockerfile              # Multi-stage container configuration
 ├── docker-compose.yml      # Multi-container setup
 ├── .dockerignore           # Docker build exclusions
 └── .gitignore              # Git ignore rules
 ```
+
+## ✨ Current Features
+
+### 🎮 **Pokemon Database**
+- **386 Pokemon**: Complete Generations 1-3 (Kanto, Johto, Hoenn)
+- **Generation Filtering**: Filter by Kanto, Johto, or Hoenn regions
+- **Advanced Search**: Search by name, type, and generation
+- **Pagination**: Efficient loading with "Load More" functionality
+- **Detailed Views**: Comprehensive Pokemon information with stats, abilities, and types
+
+### 🔐 **User Management**
+- **JWT Authentication**: Secure user registration and login
+- **Favorites System**: Add/remove Pokemon to/from favorites
+- **Bulk Operations**: Select multiple Pokemon for bulk favorites management
+- **User Profiles**: Personal dashboard and preferences
+
+### 🎨 **User Interface**
+- **Modern Design**: Clean, responsive interface with Tailwind CSS
+- **Animated Sprites**: Static and animated Pokemon sprites from PokeAPI
+- **Interactive Cards**: Hover effects and type-based color schemes
+- **Modal Details**: Detailed Pokemon information in elegant modals
+- **Skeleton Loading**: Smooth loading states and transitions
+
+### 🚀 **Performance & Reliability**
+- **Redis Caching**: 50-80% performance improvement
+- **Database Optimization**: Indexed queries and efficient pagination
+- **Health Monitoring**: Comprehensive health checks and monitoring
+- **Error Handling**: Graceful error handling and user feedback
 
 ## 🚀 Getting Started
 
@@ -87,7 +130,7 @@ cd pokedex
 ```bash
 git clone https://github.com/yourusername/pokedex.git
 cd pokedex
-docker-compose up --build
+docker compose up --build
 ```
 
 **Access the application:**
@@ -203,6 +246,8 @@ To run both frontend and backend together:
 - `GET /api/v1/pokemon/{id}` - Get specific Pokemon details
 - `GET /api/v1/pokemon?type=fire` - Filter by type
 - `GET /api/v1/pokemon?search=char` - Search by name
+- `GET /api/v1/pokemon?generation=2` - Filter by generation (1=Kanto, 2=Johto, 3=Hoenn)
+- `GET /api/v1/pokemon/generations` - Get all available generations
 
 ### Authentication Endpoints
 - `POST /api/v1/auth/register` - User registration
@@ -238,7 +283,7 @@ To run both frontend and backend together:
 ### Phase 2: Backend Development ✅
 - [x] Database design and setup (SQLite with migrations)
 - [x] API development (Flask-RESTful with JWT auth)
-- [x] External API integration (PokeAPI with 151 Pokemon)
+- [x] External API integration (PokeAPI with 386 Pokemon - Generations 1-3)
 - [x] Backend testing (40/40 tests passing - 100% coverage)
 - [x] Security implementation (rate limiting, validation, audit logging)
 - [x] Performance optimization (database indexes, query optimization)
@@ -246,7 +291,7 @@ To run both frontend and backend together:
 
 ### Phase 3: Frontend Development ✅
 - [x] UI/UX design with modern React components
-- [x] Component development (PokemonCard, PokemonSearch, Navigation, Dashboard)
+- [x] Component development (PokemonCard, PokemonModal, PokemonSearch, GenerationFilter, BulkSelection)
 - [x] State management with Zustand
 - [x] Frontend testing (69/70 tests passing - 98.6% coverage)
 - [x] Responsive design with Tailwind CSS
@@ -299,7 +344,7 @@ To run both frontend and backend together:
 - **Monitoring**: Health checks and performance monitoring
 
 ### External Integrations
-- **PokeAPI**: Real Pokemon data integration (151 Pokemon)
+- **PokeAPI**: Real Pokemon data integration (386 Pokemon - Generations 1-3)
 - **Data Seeding**: Custom CLI tools for data management
 
 ### Development Tools
