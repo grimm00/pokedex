@@ -16,7 +16,14 @@ This guide provides comprehensive instructions for setting up, developing, and m
 # Clone and setup everything
 git clone <repository-url>
 cd pokedex
-./scripts/setup.sh
+
+# Set up environment
+cp env.example .env
+# Edit .env with your configuration
+
+# Install dependencies
+cd frontend && npm install
+cd ../backend && pip install -r requirements.txt
 ```
 
 ## 🏗️ Development Workflow
@@ -30,7 +37,7 @@ cd backend
 pip install -r requirements.txt
 
 # Set up environment
-cp ../env.example .env
+cp env.example .env
 # Edit .env with your configuration
 
 # Initialize database
@@ -57,8 +64,11 @@ npm run dev
 
 ### **Full-Stack Development**
 ```bash
-# From project root
-npm run dev  # Starts both backend and frontend
+# Backend (from project root)
+python -m backend.app
+
+# Frontend (use alias or direct command)
+pokedex-frontend  # or: cd frontend && npm run dev
 ```
 
 ## 🧪 Testing
@@ -135,7 +145,8 @@ python -c "from app import app; from utils.pokemon_seeder import pokemon_seeder;
 ### **Environment Variables**
 ```bash
 # Backend (.env)
-DATABASE_URL=sqlite:///pokedex_dev.db
+DATABASE_URL=sqlite:///backend/instance/pokedex_dev.db
+FLASK_INSTANCE_PATH=backend/instance
 REDIS_URL=redis://localhost:6379/0
 SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-secret
@@ -263,5 +274,27 @@ docker compose up --build
 
 ---
 
+## 🎯 Quick Commands
+
+### **Development Aliases**
+```bash
+# Use the pokedex-frontend alias (if configured)
+pokedex-frontend
+
+# Or run directly
+cd frontend && npm run dev
+```
+
+### **Backend Commands**
+```bash
+# From project root
+python -m backend.app
+
+# Or from backend directory
+cd backend && python -m app
+```
+
+---
+
 **Last Updated**: October 1, 2025  
-**Status**: ✅ Comprehensive Development Guide
+**Status**: ✅ Comprehensive Development Guide (Updated for v1.1.1)
