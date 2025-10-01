@@ -12,6 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API documentation with Swagger/OpenAPI (planned)
 - Advanced Pokemon features (evolution chains, regional variants) (planned)
 
+## [1.1.1] - 2025-10-01 - **RELEASED** 🐛
+
+### Fixed
+- Database connection issues after directory structure reorganization
+- Flask instance path configuration to properly handle absolute paths
+- Automatic conversion of relative SQLite paths to absolute paths
+- Environment variable handling for DATABASE_URL and FLASK_INSTANCE_PATH
+- Root directory cleanup (removed duplicate files and unnecessary package.json)
+
+### Technical Improvements
+- Enhanced backend/app.py with robust database path resolution
+- Updated env.example with correct configuration paths
+- Improved project structure organization
+
 ## [1.1.0] - 2025-10-01 - **RELEASED** 🎉
 
 ### Added
