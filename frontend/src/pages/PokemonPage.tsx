@@ -4,9 +4,11 @@ import { PokemonCard } from '@/components/pokemon/PokemonCard'
 import { PokemonModal } from '@/components/pokemon/PokemonModal'
 import { PokemonSearchMemo as PokemonSearch } from '@/components/pokemon/PokemonSearch'
 import { PokemonGridSkeleton } from '@/components/ui/SkeletonLoader'
+import GenerationFilter from '@/components/pokemon/GenerationFilter'
 import { usePokemonStore } from '@/store/pokemonStore'
 import { useAuthStore } from '@/store/authStore'
 import { useFavoritesStore } from '@/store/favoritesStore'
+import { generationService, Generation } from '@/services/generationService'
 
 // Memoized PokemonPage to prevent unnecessary re-renders
 const PokemonPageComponent: React.FC = () => {
@@ -25,6 +27,9 @@ const PokemonPageComponent: React.FC = () => {
 
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedGeneration, setSelectedGeneration] = useState<number | 'all'>('all')
+  const [generations, setGenerations] = useState<Generation[]>([])
+  const [generationsLoading, setGenerationsLoading] = useState(false)
   const hasFetched = useRef(false)
 
   // Fetch Pokemon data on component mount
@@ -41,6 +46,23 @@ const PokemonPageComponent: React.FC = () => {
       getFavorites(user.id)
     }
   }, [user, isAuthenticated, getFavorites])
+
+  // Fetch generations data
+  useEffect(() => {
+    const fetchGenerations = async () => {
+      setGenerationsLoading(true)
+      try {
+        const response = await generationService.getGenerations()
+        setGenerations(response.generations)
+      } catch (error) {
+        console.error('Failed to fetch generations:', error)
+      } finally {
+        setGenerationsLoading(false)
+      }
+    }
+
+    fetchGenerations()
+  }, [])
 
   const handlePokemonClick = useCallback((selectedPokemon: any) => {
     setSelectedPokemon(selectedPokemon)
@@ -76,6 +98,12 @@ const PokemonPageComponent: React.FC = () => {
     } catch (error) {
       console.error('Clear search failed:', error)
     }
+  }, [fetchPokemon])
+
+  const handleGenerationChange = useCallback((generation: number | 'all') => {
+    setSelectedGeneration(generation)
+    // Fetch Pokemon with generation filter
+    fetchPokemon({ generation: generation === 'all' ? undefined : generation })
   }, [fetchPokemon])
 
   // Handle ESC key to close modal
@@ -163,6 +191,14 @@ const PokemonPageComponent: React.FC = () => {
       <PokemonSearch
         onSearch={handleSearch}
         onClear={handleClearSearch}
+      />
+
+      {/* Generation Filter */}
+      <GenerationFilter
+        selectedGeneration={selectedGeneration}
+        onGenerationChange={handleGenerationChange}
+        generations={generations}
+        isLoading={generationsLoading}
       />
 
       {/* Login Prompt for Unauthenticated Users */}

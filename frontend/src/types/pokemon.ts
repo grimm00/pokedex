@@ -83,6 +83,7 @@ export interface PokemonSearchParams {
   search?: string
   type?: string
   sort?: string
+  generation?: number
   page?: number
   per_page?: number
 }

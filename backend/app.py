@@ -153,6 +153,7 @@ from backend.routes import pokemon_routes, user_routes, auth_routes, cache_route
 api.add_resource(pokemon_routes.PokemonList, '/pokemon')
 api.add_resource(pokemon_routes.PokemonDetail, '/pokemon/<int:pokemon_id>')
 api.add_resource(pokemon_routes.PokemonTypes, '/pokemon/types')
+api.add_resource(pokemon_routes.GenerationList, '/pokemon/generations')
 api.add_resource(auth_routes.AuthRegister, '/auth/register')
 api.add_resource(auth_routes.AuthLogin, '/auth/login')
 

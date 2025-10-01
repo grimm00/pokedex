@@ -4,6 +4,7 @@ from backend.database import db
 from backend.models.pokemon import Pokemon
 from backend.models.user import UserPokemon
 from backend.services.cache import pokemon_cache, cache_manager
+from backend.utils.generation_config import get_generation_range, get_generation_data, get_generation_summary
 import requests
 import os
 
@@ -20,6 +21,7 @@ class PokemonList(Resource):
         search = request.args.get('search', type=str)
         pokemon_type = request.args.get('type', type=str)
         sort_by = request.args.get('sort', type=str)
+        generation = request.args.get('generation', type=int)
         
         # Create cache parameters
         # For favorites sorting, we need to include user ID in cache key
@@ -34,6 +36,7 @@ class PokemonList(Resource):
                     'search': search,
                     'type': pokemon_type,
                     'sort': sort_by,
+                    'generation': generation,
                     'user_id': user_id  # Include user ID for favorites sorting
                 }
             except Exception:
@@ -43,7 +46,8 @@ class PokemonList(Resource):
                     'per_page': per_page,
                     'search': search,
                     'type': pokemon_type,
-                    'sort': sort_by
+                    'sort': sort_by,
+                    'generation': generation
                 }
         else:
             cache_params = {
@@ -51,7 +55,8 @@ class PokemonList(Resource):
                 'per_page': per_page,
                 'search': search,
                 'type': pokemon_type,
-                'sort': sort_by
+                'sort': sort_by,
+                'generation': generation
             }
         
         # Check cache first
@@ -73,6 +78,16 @@ class PokemonList(Resource):
             query = query.filter(
                 db.func.json_extract(Pokemon.types, '$').op('LIKE')(f'%"{pokemon_type}"%')
             )
+        
+        # Apply generation filter
+        if generation:
+            gen_range = get_generation_range(generation)
+            if gen_range:
+                start_id, end_id = gen_range
+                query = query.filter(
+                    Pokemon.pokemon_id >= start_id,
+                    Pokemon.pokemon_id <= end_id
+                )
         
         # Apply sorting
         if sort_by:
@@ -333,3 +348,46 @@ class PokemonTypes(Resource):
         types_list = sorted(list(all_types))
         
         return types_list
+
+class GenerationList(Resource):
+    """Handle GET /api/v1/pokemon/generations - Get all available Pokemon generations"""
+    
+    def get(self):
+        """Get all available Pokemon generations with metadata"""
+        try:
+            # Get generation summary from config
+            summary = get_generation_summary()
+            
+            # Add Pokemon counts from database for each generation
+            generations_with_counts = []
+            for gen_info in summary['generations']:
+                # Count Pokemon in database for this generation
+                pokemon_count = Pokemon.query.filter(
+                    Pokemon.pokemon_id >= gen_info['start_id'],
+                    Pokemon.pokemon_id <= gen_info['end_id']
+                ).count()
+                
+                generations_with_counts.append({
+                    'generation': gen_info['generation'],
+                    'name': gen_info['name'],
+                    'region': gen_info['region'],
+                    'year': gen_info['year'],
+                    'pokemon_count': pokemon_count,
+                    'expected_count': gen_info['pokemon_count'],
+                    'start_id': gen_info['start_id'],
+                    'end_id': gen_info['end_id'],
+                    'color': gen_info['color'],
+                    'games': gen_info['games'],
+                    'description': gen_info['description'],
+                    'is_complete': pokemon_count == gen_info['pokemon_count']
+                })
+            
+            return {
+                'generations': generations_with_counts,
+                'total_generations': summary['total_generations'],
+                'total_pokemon': summary['total_pokemon'],
+                'available_generations': summary['available_generations']
+            }
+            
+        except Exception as e:
+            return {'error': f'Failed to get generations: {str(e)}'}, 500
