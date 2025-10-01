@@ -18,15 +18,31 @@ from backend.services.cache import cache_manager
 load_dotenv()
 
 # Initialize Flask app with explicit instance path
-# Use current working directory to find the backend instance folder
-app = Flask(__name__, instance_path=os.path.join(os.getcwd(), 'backend', 'instance'))
+# Use environment variable or default to backend instance folder (must be absolute path)
+instance_path = os.environ.get('FLASK_INSTANCE_PATH', os.path.join(os.getcwd(), 'backend', 'instance'))
+if not os.path.isabs(instance_path):
+    instance_path = os.path.abspath(instance_path)
+app = Flask(__name__, instance_path=instance_path)
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 
-    f'sqlite:///{os.path.join(app.instance_path, "pokedex_dev.db")}'
-)
+
+# Database configuration - ensure absolute path
+env_database_url = os.environ.get('DATABASE_URL', '')
+if env_database_url.startswith('sqlite:///'):
+    # Convert relative SQLite path to absolute path
+    relative_path = env_database_url.replace('sqlite:///', '')
+    if not os.path.isabs(relative_path):
+        # Make it relative to the project root
+        absolute_path = os.path.join(os.getcwd(), relative_path)
+        database_url = f'sqlite:///{absolute_path}'
+    else:
+        database_url = env_database_url
+else:
+    # Use instance path for default
+    database_url = f'sqlite:///{os.path.join(app.instance_path, "pokedex_dev.db")}'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # JWT Configuration
