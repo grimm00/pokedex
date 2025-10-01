@@ -17,12 +17,9 @@ from backend.services.cache import cache_manager
 # Load environment variables
 load_dotenv()
 
-# Initialize Flask app with explicit instance path
-# Use environment variable or default to backend instance folder (must be absolute path)
-instance_path = os.environ.get('FLASK_INSTANCE_PATH', os.path.join(os.getcwd(), 'backend', 'instance'))
-if not os.path.isabs(instance_path):
-    instance_path = os.path.abspath(instance_path)
-app = Flask(__name__, instance_path=instance_path)
+# Initialize Flask app without instance path
+# We'll handle database path directly in configuration
+app = Flask(__name__)
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
@@ -39,8 +36,9 @@ if env_database_url.startswith('sqlite:///'):
     else:
         database_url = env_database_url
 else:
-    # Use instance path for default
-    database_url = f'sqlite:///{os.path.join(app.instance_path, "pokedex_dev.db")}'
+    # Default to backend/pokedex_dev.db
+    default_path = os.path.join(os.getcwd(), 'backend', 'pokedex_dev.db')
+    database_url = f'sqlite:///{default_path}'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
