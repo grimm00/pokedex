@@ -8,7 +8,7 @@ import GenerationFilter from '@/components/pokemon/GenerationFilter'
 import { usePokemonStore } from '@/store/pokemonStore'
 import { useAuthStore } from '@/store/authStore'
 import { useFavoritesStore } from '@/store/favoritesStore'
-import { generationService, Generation } from '@/services/generationService'
+import { generationService, type Generation } from '@/services/generationService'
 
 // Memoized PokemonPage to prevent unnecessary re-renders
 const PokemonPageComponent: React.FC = () => {

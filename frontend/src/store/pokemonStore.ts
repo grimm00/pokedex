@@ -71,7 +71,7 @@ export const usePokemonStore = create<PokemonStore>()(
           set((state) => {
             // If this is a search/filter operation, only update filteredPokemon
             // If this is the initial load or clear, update both arrays
-            const isSearchOrFilter = params && (params.search || params.type || params.sort)
+            const isSearchOrFilter = params && (params.search || params.type || params.sort || params.generation)
             
             if (isSearchOrFilter) {
               // Search/filter: only update filteredPokemon, preserve original pokemon array

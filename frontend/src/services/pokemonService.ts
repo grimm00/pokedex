@@ -14,6 +14,9 @@ export const pokemonService = {
     if (params?.sort) {
       searchParams.append('sort', params.sort)
     }
+    if (params?.generation) {
+      searchParams.append('generation', params.generation.toString())
+    }
     if (params?.page) {
       searchParams.append('page', params.page.toString())
     }
