@@ -17,14 +17,14 @@ from backend.services.cache import cache_manager
 # Load environment variables
 load_dotenv()
 
-# Initialize Flask app
-app = Flask(__name__)
+# Initialize Flask app with proper instance folder
+app = Flask(__name__, instance_relative_config=True)
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 
-    'sqlite:///pokedex_dev.db'
+    'sqlite:///instance/pokedex_dev.db'
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
