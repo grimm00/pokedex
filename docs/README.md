@@ -1,52 +1,48 @@
 # Pokedex Documentation
 
-Welcome to the Pokedex project documentation! This directory contains all user-facing documentation for the Pokedex application.
+Welcome to the Pokedex project documentation! This directory contains user-facing documentation and guides for the Pokedex application.
 
 ## 📚 Documentation Structure
 
-### Getting Started
-- [Installation Guide](getting-started/installation.md)
-- [Quick Start](getting-started/quick-start.md)
-- [Configuration](getting-started/configuration.md)
+### Technical Guides
+- [Docker Containerization Guide](guides/docker-containerization-guide.md) - Complete Docker setup and deployment guide
 
-### API Documentation
-- [API Overview](api/overview.md)
-- [Authentication](api/authentication.md)
-- [Pokemon Endpoints](api/pokemon.md)
-- [User Endpoints](api/users.md)
-- [Error Handling](api/errors.md)
-
-### Development
-- [Development Setup](development/setup.md)
-- [Contributing Guidelines](development/contributing.md)
-- [Code Style Guide](development/code-style.md)
-- [Testing Guide](development/testing.md)
-
-### Deployment
-- [Deployment Overview](deployment/overview.md)
-- [Docker Deployment](deployment/docker.md)
-- [AWS Deployment](deployment/aws.md)
-- [Environment Variables](deployment/environment.md)
-
-### User Guide
-- [User Manual](user-guide/manual.md)
-- [FAQ](user-guide/faq.md)
-- [Troubleshooting](user-guide/troubleshooting.md)
+### Code Syntax Documentation
+- [App.py Syntax](syntax/app-py-syntax-updated.md) - Flask application syntax reference
+- [Auth Routes Syntax](syntax/auth-routes-syntax.md) - Authentication routes syntax
+- [Pokemon Model Syntax](syntax/pokemon-model-syntax.md) - Pokemon model syntax
+- [Pokemon Routes Syntax](syntax/pokemon-routes-syntax.md) - Pokemon API routes syntax
+- [User Model Syntax](syntax/user-model-syntax.md) - User model syntax
+- [User Routes Syntax](syntax/user-routes-syntax.md) - User API routes syntax
+- [Tailwind CSS Syntax](syntax/tailwind-css-syntax.md) - Tailwind CSS reference
+- [Vite Setup Syntax](syntax/vite-setup-syntax.md) - Vite configuration syntax
+- [Zustand State Syntax](syntax/zustand-state-syntax.md) - State management syntax
+- [Requirements.txt Syntax](syntax/requirements-txt-syntax.md) - Python dependencies syntax
 
 ## 🚀 Quick Links
 
-- [Live Demo](https://pokedex.example.com) (Coming Soon)
-- [API Documentation](https://api.pokedex.example.com/docs) (Coming Soon)
-- [GitHub Repository](https://github.com/yourusername/pokedex)
+- **Main Project**: [Root README](../README.md) - Complete project overview
+- **Admin Documentation**: [Admin Directory](../admin/README.md) - Project planning and technical docs
+- **Project Status**: [Status Dashboard](../admin/docs/PROJECT_STATUS_DASHBOARD.md) - Current project status
+- **Docker Setup**: [Docker Guide](guides/docker-containerization-guide.md) - Container setup
 
 ## 📝 Contributing to Documentation
 
 If you find errors or want to improve the documentation, please:
 1. Create an issue describing the problem
 2. Submit a pull request with your changes
-3. Follow our [Contributing Guidelines](development/contributing.md)
+3. Follow our [Contributing Guidelines](../CONTRIBUTING.md)
+
+## 🎯 Current Project Status
+
+- **386 Pokemon**: Complete Generations 1-3 (Kanto, Johto, Hoenn)
+- **Generation Filtering**: Filter by region
+- **User Authentication**: JWT-based auth system
+- **Favorites Management**: Add/remove Pokemon to/from favorites
+- **Docker Support**: Full containerization with docker-compose
+- **Modern UI**: React with TypeScript, Tailwind CSS, and animations
 
 ---
 
-*This documentation is automatically generated and updated with each release.*
+*This documentation is maintained alongside the project codebase.*
 

@@ -8,24 +8,28 @@ This directory contains all project documentation, planning, and administrative 
 admin/
 ├── docs/                    # All project documentation
 │   ├── architecture/         # Architecture Decision Records (ADRs)
-│   │   ├── adrs/           # ADR files
-│   │   └── database/       # Database design documents
+│   │   ├── adrs/           # ADR files (adr-001 through adr-006)
+│   │   ├── database/       # Database design documents
+│   │   └── project-structure-analysis.md
 │   ├── guides/             # Technical guides and documentation
-│   │   ├── guides/         # Implementation guides
 │   │   ├── implementation/ # Implementation documentation
 │   │   ├── quick-reference/ # Quick reference materials
-│   │   ├── security/       # Security implementation
+│   │   ├── security/       # Security implementation guides
 │   │   └── setup/         # Setup guides
 │   ├── phases/             # Development phase documentation
-│   │   ├── phase2-api-integration/ # Phase 2 docs
+│   │   ├── phase2-api-integration/ # Phase 2 API integration docs
 │   │   ├── phase3-authentication.md
 │   │   ├── phase4-favorites.md
-│   │   └── phase4b-enhanced-ux-plan.md
+│   │   ├── phase4b-enhanced-ux-plan.md
+│   │   ├── generation-filtering-plan.md
+│   │   └── johto-hoenn-expansion-plan.md
 │   ├── features/           # Feature documentation
 │   ├── planning-notes/     # Planning and brainstorming
 │   ├── progress/          # Progress tracking
 │   ├── testing/           # Testing planning
 │   ├── quick-reference/   # Quick reference docs
+│   ├── PROJECT_STATUS_DASHBOARD.md # Current project status
+│   ├── PROJECT_STATUS_MAINTENANCE.md # Status maintenance process
 │   ├── roadmap.md         # Project roadmap
 │   └── README.md          # Planning overview
 ├── chat-logs/              # Development session logs
@@ -92,11 +96,14 @@ admin/
 - [Phase 3: Authentication](docs/phases/phase3-authentication.md) - User authentication
 - [Phase 4: Favorites](docs/phases/phase4-favorites.md) - Favorites functionality
 - [Phase 4B: Enhanced UX](docs/phases/phase4b-enhanced-ux-plan.md) - UX improvements
+- [Generation Filtering](docs/phases/generation-filtering-plan.md) - Generation filtering system
+- [Johto/Hoenn Expansion](docs/phases/johto-hoenn-expansion-plan.md) - Pokemon expansion
 
 ### **Technical Documentation**
 - [Backend Overview](docs/guides/backend-overview.md) - Flask backend architecture
 - [Frontend Overview](docs/guides/frontend-overview.md) - React frontend architecture
 - [Security Implementation](docs/guides/security/) - Security features and practices
+- [Docker Containerization](../docs/guides/docker-containerization-guide.md) - Docker setup guide
 
 ### **Testing & Quality**
 - [Testing Strategy](testing/comprehensive-testing-strategy.md) - Testing approach
