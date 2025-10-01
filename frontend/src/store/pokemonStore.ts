@@ -19,6 +19,9 @@ interface PokemonState {
   page: number
   hasMore: boolean
   total: number
+
+  // Current filters (for loadMore)
+  currentFilters: PokemonSearchParams | null
 }
 
 interface PokemonActions {
@@ -53,6 +56,7 @@ const initialState: PokemonState = {
   page: 1,
   hasMore: true,
   total: 0,
+  currentFilters: null,
 }
 
 export const usePokemonStore = create<PokemonStore>()(
@@ -69,6 +73,9 @@ export const usePokemonStore = create<PokemonStore>()(
         try {
           const response = await pokemonService.getPokemon(params)
           set((state) => {
+            // Store current filters for loadMore
+            state.currentFilters = params || null
+            
             // If this is a search/filter operation, only update filteredPokemon
             // If this is the initial load or clear, update both arrays
             const isSearchOrFilter = params && (params.search || params.type || params.sort || params.generation)
@@ -116,7 +123,7 @@ export const usePokemonStore = create<PokemonStore>()(
       },
 
       loadMore: async () => {
-        const { page, hasMore, loading, pokemon } = get()
+        const { page, hasMore, loading, pokemon, currentFilters } = get()
         if (!hasMore || loading) return
 
         set((state) => {
@@ -125,7 +132,12 @@ export const usePokemonStore = create<PokemonStore>()(
 
         try {
           const nextPage = page + 1
-          const response = await pokemonService.getPokemon({ page: nextPage })
+          // Use current filters when loading more Pokemon
+          const loadMoreParams = { 
+            ...currentFilters, 
+            page: nextPage 
+          }
+          const response = await pokemonService.getPokemon(loadMoreParams)
           set((state) => {
             // Deduplicate Pokemon by pokemon_id to avoid duplicate keys
             const existingIds = new Set(pokemon.map(p => p.pokemon_id))
