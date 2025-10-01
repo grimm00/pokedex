@@ -317,9 +317,26 @@ class PokemonSeeder:
             db.session.rollback()
             return False
     
-    def get_seeding_stats(self) -> Dict[str, Any]:
-        """Get current seeding statistics"""
-        return self.stats.copy()
+    def seed_johto_pokemon(self, batch_size: int = 10) -> Dict[str, Any]:
+        """Seed all Johto Pokemon (Generation 2: IDs 152-251)"""
+        logger.info("Starting Johto Pokemon seeding (Generation 2: IDs 152-251)")
+        return self.seed_pokemon(start_id=152, end_id=251, batch_size=batch_size)
+    
+    def seed_hoenn_pokemon(self, batch_size: int = 10) -> Dict[str, Any]:
+        """Seed all Hoenn Pokemon (Generation 3: IDs 252-386)"""
+        logger.info("Starting Hoenn Pokemon seeding (Generation 3: IDs 252-386)")
+        return self.seed_pokemon(start_id=252, end_id=386, batch_size=batch_size)
+    
+    def seed_all_generations(self, batch_size: int = 10) -> Dict[str, Any]:
+        """Seed all Pokemon from Generations 1, 2, and 3 (IDs 1-386)"""
+        logger.info("Starting complete Pokemon seeding (Generations 1-3: IDs 1-386)")
+        return self.seed_pokemon(start_id=1, end_id=386, batch_size=batch_size)
+    
+    def seed_test_batch(self, start_id: int = 152, count: int = 5) -> Dict[str, Any]:
+        """Seed a small test batch for verification"""
+        end_id = start_id + count - 1
+        logger.info(f"Starting test batch seeding (IDs {start_id}-{end_id})")
+        return self.seed_pokemon(start_id=start_id, end_id=end_id, batch_size=5)
     
     def clear_pokemon_data(self) -> int:
         """Clear all Pokemon data from database"""

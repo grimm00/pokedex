@@ -138,7 +138,7 @@ def handle_api_error(func):
 ## Data Seeding Strategy
 
 ### **Initial Seeding**
-- **Scope**: First 151 Pokemon (Generation 1)
+- **Scope**: First 386 Pokemon (Generations 1-3: Kanto, Johto, Hoenn)
 - **Batch Size**: 10 Pokemon per batch
 - **Progress Tracking**: Real-time progress updates
 - **Error Recovery**: Continue seeding after errors
@@ -314,7 +314,7 @@ class PokeAPIMetrics:
   - CLI management tool (`backend/utils/seed_pokemon.py`)
 
 - **Database Integration**
-  - **151 Pokemon successfully seeded** (IDs 1-151) - **COMPLETE GEN 1 SET!**
+  - **386 Pokemon successfully seeded** (IDs 1-386) - **COMPLETE GEN 1-3 SET!**
   - Real PokeAPI data: names, types, abilities, stats, sprites
   - All API endpoints working with real data
   - Frontend integration with animated sprites from PokeAPI
@@ -326,9 +326,9 @@ class PokeAPIMetrics:
 
 ### **API Testing Results:**
 ```bash
-✅ GET /api/v1/pokemon - Returns all 151 Pokemon (complete Gen 1 set)
+✅ GET /api/v1/pokemon - Returns all 386 Pokemon (complete Gen 1-3 set)
 ✅ GET /api/v1/pokemon/1 - Returns bulbasaur details
-✅ GET /api/v1/pokemon/151 - Returns mew details (final Gen 1 Pokemon)
+✅ GET /api/v1/pokemon/386 - Returns deoxys details (final Gen 3 Pokemon)
 ✅ GET /api/v1/pokemon?type=fire - Returns fire types
 ✅ GET /api/v1/pokemon?search=char - Returns charmander
 ✅ Frontend integration - All visual features working
