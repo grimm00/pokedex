@@ -36,7 +36,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend application code (excludes files in .dockerignore)
 COPY backend/ ./backend/
-COPY migrations/ ./migrations/
 
 # Copy built frontend from previous stage
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist

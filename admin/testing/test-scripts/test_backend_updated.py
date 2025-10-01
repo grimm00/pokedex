@@ -273,7 +273,7 @@ def main():
             print("🎉 At least one backend instance is running and responding!")
         else:
             print("⚠️  No backend instances are currently running")
-            print("   To start local backend: export DATABASE_URL='sqlite:///$(pwd)/instance/pokedex_dev.db' && python3 -m backend.app")
+            print("   To start local backend: export DATABASE_URL='sqlite:///$(pwd)/backend/instance/pokedex_dev.db' && python3 -m backend.app")
             print("   To start containerized backend: docker-compose up --build")
     else:
         print("\n❌ Backend structure or imports have issues that need to be fixed")

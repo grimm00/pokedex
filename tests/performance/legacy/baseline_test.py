@@ -173,7 +173,7 @@ def main():
             return
     except requests.exceptions.RequestException:
         print("❌ Server is not running. Please start the server first.")
-        print("   Command: export DATABASE_URL='sqlite:///$(pwd)/instance/pokedex_dev.db' && python3 -m backend.app")
+        print("   Command: export DATABASE_URL='sqlite:///$(pwd)/backend/instance/pokedex_dev.db' && python3 -m backend.app")
         return
     
     # Run tests

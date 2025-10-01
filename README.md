@@ -35,6 +35,8 @@ pokedex/
 │   │   ├── pokemon_seeder.py # Data seeding logic (386 Pokemon)
 │   │   ├── generation_config.py # Generation filtering configuration
 │   │   └── validators.py    # Data validation utilities
+│   ├── migrations/          # Database migrations (Flask-Migrate)
+│   ├── instance/            # SQLite database (not in git)
 │   ├── app.py               # Main Flask application
 │   └── database.py          # Database configuration
 ├── frontend/                # React TypeScript Frontend
@@ -69,8 +71,6 @@ pokedex/
 │   ├── deploy.sh            # Deployment automation
 │   ├── health-check.sh      # Health monitoring
 │   └── test-*.sh            # Testing automation scripts
-├── migrations/              # Database migrations (Flask-Migrate)
-├── instance/                # SQLite database (not in git)
 ├── requirements.txt         # Python dependencies
 ├── package.json             # Root package.json for centralized scripts
 ├── Dockerfile              # Multi-stage container configuration
