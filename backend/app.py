@@ -24,7 +24,7 @@ app = Flask(__name__, instance_relative_config=True)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 
-    'sqlite:///instance/pokedex_dev.db'
+    'sqlite:///pokedex_dev.db'
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
