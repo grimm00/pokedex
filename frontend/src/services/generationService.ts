@@ -27,7 +27,7 @@ class GenerationService {
     async getGenerations(): Promise<GenerationListResponse> {
         try {
             const response = await apiClient.get('/api/v1/pokemon/generations')
-            return response.data
+            return response.data as GenerationListResponse
         } catch (error) {
             console.error('Failed to fetch generations:', error)
             throw new Error('Failed to fetch Pokemon generations')

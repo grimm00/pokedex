@@ -29,7 +29,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({ pokemon, isOpen, onC
 
   const { user, isAuthenticated } = useAuthStore()
   const { isFavorite, toggleFavorite, loading } = useFavoritesStore()
-  const [animatedSpriteLoaded, setAnimatedSpriteLoaded] = useState(false)
+  const [, setAnimatedSpriteLoaded] = useState(false)
   const [useAnimatedSprite, setUseAnimatedSprite] = useState(false)
   const [spriteLoading, setSpriteLoading] = useState(false)
 
