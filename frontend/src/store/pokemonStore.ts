@@ -75,20 +75,21 @@ export const usePokemonStore = create<PokemonStore>()(
           set((state) => {
             // Store current filters for loadMore
             state.currentFilters = params || null
-            
+
             // If this is a search/filter operation, only update filteredPokemon
             // If this is the initial load or clear, update both arrays
             const isSearchOrFilter = params && (params.search || params.type || params.sort || params.generation)
-            
+
             if (isSearchOrFilter) {
-              // Search/filter: only update filteredPokemon, preserve original pokemon array
+              // Search/filter: completely replace filteredPokemon
               state.filteredPokemon = response.pokemon
             } else {
               // Initial load or clear: update both arrays
               state.pokemon = response.pokemon
               state.filteredPokemon = response.pokemon
             }
-            
+
+            // Always update pagination state from response
             state.total = response.pagination.total
             state.page = response.pagination.page
             state.hasMore = response.pagination.has_next
@@ -123,7 +124,7 @@ export const usePokemonStore = create<PokemonStore>()(
       },
 
       loadMore: async () => {
-        const { page, hasMore, loading, pokemon, currentFilters } = get()
+        const { page, hasMore, loading, filteredPokemon, currentFilters } = get()
         if (!hasMore || loading) return
 
         set((state) => {
@@ -133,18 +134,25 @@ export const usePokemonStore = create<PokemonStore>()(
         try {
           const nextPage = page + 1
           // Use current filters when loading more Pokemon
-          const loadMoreParams = { 
-            ...currentFilters, 
-            page: nextPage 
+          const loadMoreParams = {
+            ...currentFilters,
+            page: nextPage
           }
           const response = await pokemonService.getPokemon(loadMoreParams)
           set((state) => {
             // Deduplicate Pokemon by pokemon_id to avoid duplicate keys
-            const existingIds = new Set(pokemon.map(p => p.pokemon_id))
+            const existingIds = new Set(filteredPokemon.map(p => p.pokemon_id))
             const newPokemon = response.pokemon.filter(p => !existingIds.has(p.pokemon_id))
 
-            state.pokemon = [...pokemon, ...newPokemon]
-            state.filteredPokemon = [...state.filteredPokemon, ...newPokemon]
+            // Only append if we have new Pokemon
+            if (newPokemon.length > 0) {
+              state.filteredPokemon = [...state.filteredPokemon, ...newPokemon]
+              // Also update the main pokemon array if we're not in a filtered state
+              if (!currentFilters || (!currentFilters.search && !currentFilters.type && !currentFilters.generation)) {
+                state.pokemon = [...state.pokemon, ...newPokemon]
+              }
+            }
+
             state.page = nextPage
             state.hasMore = response.pagination.has_next
             state.loading = false
