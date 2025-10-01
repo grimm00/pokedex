@@ -62,7 +62,13 @@ pokedex/
 │   ├── unit/                # Unit tests (frontend & backend)
 │   ├── integration/         # Integration tests
 │   ├── performance/         # Performance tests
-│   └── docker/              # Docker testing environment
+│   ├── docker/              # Docker testing environment
+│   └── run-tests.sh         # Unified test runner (see tests/README.md)
+├── scripts/                 # Utility scripts (see scripts/README.md)
+│   ├── setup.sh             # Initial project setup
+│   ├── deploy.sh            # Deployment automation
+│   ├── health-check.sh      # Health monitoring
+│   └── test-*.sh            # Testing automation scripts
 ├── migrations/              # Database migrations (Flask-Migrate)
 ├── instance/                # SQLite database (not in git)
 ├── requirements.txt         # Python dependencies
@@ -125,6 +131,8 @@ git clone https://github.com/yourusername/pokedex.git
 cd pokedex
 ./setup.sh
 ```
+
+> 📖 **For detailed development instructions**, see [DEVELOPMENT.md](DEVELOPMENT.md) - comprehensive guide covering setup, testing, debugging, and deployment.
 
 #### Option 2: Docker Setup
 ```bash
