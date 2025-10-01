@@ -17,8 +17,8 @@ from backend.services.cache import cache_manager
 # Load environment variables
 load_dotenv()
 
-# Initialize Flask app with proper instance folder
-app = Flask(__name__, instance_relative_config=True)
+# Initialize Flask app with explicit instance path
+app = Flask(__name__, instance_path=os.path.join(os.getcwd(), 'instance'))
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
