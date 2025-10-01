@@ -18,8 +18,8 @@ from backend.services.cache import cache_manager
 load_dotenv()
 
 # Initialize Flask app without instance path
-# We'll handle database path directly in configuration
-app = Flask(__name__)
+# Explicitly disable instance folder to prevent Flask from creating one
+app = Flask(__name__, instance_relative_config=False)
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
@@ -36,8 +36,8 @@ if env_database_url.startswith('sqlite:///'):
     else:
         database_url = env_database_url
 else:
-    # Default to backend/pokedex_dev.db
-    default_path = os.path.join(os.getcwd(), 'backend', 'pokedex_dev.db')
+    # Default to backend/instance/pokedex_dev.db (Flask standard)
+    default_path = os.path.join(os.getcwd(), 'backend', 'instance', 'pokedex_dev.db')
     database_url = f'sqlite:///{default_path}'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url

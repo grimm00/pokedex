@@ -145,7 +145,7 @@ python -c "from app import app; from utils.pokemon_seeder import pokemon_seeder;
 ### **Environment Variables**
 ```bash
 # Backend (.env)
-DATABASE_URL=sqlite:///backend/pokedex_dev.db
+DATABASE_URL=sqlite:///backend/instance/pokedex_dev.db
 REDIS_URL=redis://localhost:6379/0
 SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-secret
