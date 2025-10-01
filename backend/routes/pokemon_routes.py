@@ -114,7 +114,7 @@ class PokemonList(Resource):
             query = query.order_by(Pokemon.pokemon_id.asc())
         
         # Apply pagination
-        per_page = min(per_page, 100)  # Limit max items per page
+        per_page = min(per_page, 100)  # Limit max items per page for performance
         
         # Special handling for favorites sorting - manual sort after fetch
         if sort_by == 'favorites':
