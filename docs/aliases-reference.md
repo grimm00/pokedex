@@ -24,6 +24,7 @@ gf-sync              # Sync develop branch with main
 ```bash
 sf <name>            # Start new feature branch (short for start-feature)
 fix <name>           # Start new fix branch  
+chore <name>         # Start new chore branch
 hotfix <name>        # Start hotfix branch from main
 wf-release <version> # Prepare release with version bump
 wf-sync              # Sync develop with main
@@ -42,6 +43,7 @@ gf-sync              # Sync develop with main
 ```bash
 sf user-authentication    # Enhanced workflow helper
 fix search-performance    # Enhanced workflow helper
+chore update-dependencies # Enhanced workflow helper
 hotfix security-patch     # Enhanced workflow helper
 wf-release 1.3.0         # Enhanced release management
 ```

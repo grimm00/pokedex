@@ -79,6 +79,23 @@ case "$1" in
         echo "   3. Create PR: fix/$2 → $DEVELOP_BRANCH"
         ;;
         
+    "start-chore"|"chore")
+        if [ -z "$2" ]; then
+            echo "${RED}Usage: $0 start-chore <chore-name>${NC}"
+            exit 1
+        fi
+        echo "${GREEN}🔧 Starting new chore: $2${NC}"
+        git checkout $DEVELOP_BRANCH
+        git pull origin $DEVELOP_BRANCH
+        git checkout -b "chore/$2"
+        echo "${GREEN}✅ Created and switched to chore/$2${NC}"
+        echo "${YELLOW}💡 Next steps:${NC}"
+        echo "   1. Complete the maintenance task"
+        echo "   2. Run: $0 push (or $0 pr to create PR)"
+        echo "   3. Create PR: chore/$2 → $DEVELOP_BRANCH"
+        echo "${CYAN}💡 Common chore tasks: dependencies, docs, refactoring, cleanup${NC}"
+        ;;
+        
     "start-hotfix"|"hotfix")
         if [ -z "$2" ]; then
             echo "${RED}Usage: $0 start-hotfix <hotfix-name>${NC}"
@@ -353,6 +370,7 @@ case "$1" in
         print_section "🌳 Git Flow"
         echo "  ${CYAN}start-feature, sf${NC} <name>   Start new feature branch"
         echo "  ${CYAN}start-fix, fix${NC} <name>      Start new fix branch"
+        echo "  ${CYAN}start-chore, chore${NC} <name>  Start new chore branch"
         echo "  ${CYAN}start-hotfix, hotfix${NC} <name> Start hotfix branch"
         echo "  ${CYAN}sync, sync-develop${NC}         Sync develop with main"
         
@@ -385,6 +403,7 @@ case "$1" in
         echo "${YELLOW}Examples:${NC}"
         echo "  $0 sf user-authentication"
         echo "  $0 fix search-bug"
+        echo "  $0 chore update-dependencies"
         echo "  $0 pr"
         echo "  $0 release 1.3.0"
         echo "  $0 status"

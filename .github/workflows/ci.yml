@@ -2,7 +2,7 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main, develop, feat/*, fix/* ]
+    branches: [ main, develop, feat/*, fix/*, chore/* ]
   pull_request:
     branches: [ main, develop ]
 
