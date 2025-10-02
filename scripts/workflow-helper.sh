@@ -217,12 +217,12 @@ case "$1" in
         generate_status() {
             print_header
             print_section "📊 Git Status"
-            git status --porcelain=v1 2>/dev/null || git status
+            git --no-pager status --porcelain=v1 2>/dev/null || git --no-pager status
             
             print_section "🌳 Branch Information"
             echo "Current branch: $(git branch --show-current)"
             echo "Recent commits:"
-            git  log --oneline -5
+            git --no-pager log --oneline -5
             
             print_section "📋 Pull Requests"
             if command -v gh &> /dev/null; then
@@ -260,7 +260,7 @@ case "$1" in
         {
             print_header
             print_section "📊 Git Status"
-            git status
+            git --no-pager status
             
             print_section "🌳 Branch Information"
             echo "Current branch: $(git branch --show-current)"
