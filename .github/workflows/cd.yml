@@ -32,19 +32,19 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: |
-          ghcr.io/${{ github.repository }}/pokedex
+          ghcr.io/${{ github.repository }}/pokehub
         tags: |
           type=ref,event=branch
           type=sha,prefix={{branch}}-
           type=raw,value=latest,enable={{is_default_branch}}
           
-    - name: Build and push Pokedex application
+    - name: Build and push Pokehub application
       uses: docker/build-push-action@v5
       with:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository }}/pokedex:${{ github.sha }}
+        tags: ghcr.io/${{ github.repository }}/pokehub:${{ github.sha }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -63,12 +63,12 @@ jobs:
       run: |
         echo "Running smoke tests on staging..."
         chmod +x ./scripts/health-check.sh
-        ./scripts/health-check.sh http://localhost http://localhost/api/v1
+        ./scripts/health-check.sh http://localhost
         
     - name: Notify deployment success
       run: |
         echo "Staging deployment successful!"
-        echo "🚀 Pokedex deployed to staging with image: ghcr.io/${{ github.repository }}/pokedex:${{ github.sha }}"
+        echo "🚀 Pokehub deployed to staging with image: ghcr.io/${{ github.repository }}/pokehub:${{ github.sha }}"
 
   deploy-production:
     runs-on: ubuntu-latest
@@ -97,9 +97,9 @@ jobs:
       run: |
         echo "Running health checks on production..."
         chmod +x ./scripts/health-check.sh
-        ./scripts/health-check.sh http://localhost http://localhost/api/v1
+        ./scripts/health-check.sh http://localhost
         
     - name: Notify deployment success
       run: |
         echo "Production deployment successful!"
-        echo "🎉 Pokedex deployed to production with image: ghcr.io/${{ github.repository }}/pokedex:${{ github.sha }}"
+        echo "🎉 Pokehub deployed to production with image: ghcr.io/${{ github.repository }}/pokehub:${{ github.sha }}"

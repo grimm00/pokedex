@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# GitHub Secrets Setup Script for Pokedex Project
+# GitHub Secrets Setup Script for Pokehub Project
 # This script helps you set up GitHub secrets for CI/CD deployment
 
 set -e
 
-echo "🔧 GitHub Secrets Setup for Pokedex Project"
+echo "🔧 GitHub Secrets Setup for Pokehub Project"
 echo "=============================================="
 
 # Check if GitHub CLI is installed
@@ -25,8 +25,9 @@ echo "✅ GitHub CLI is installed and authenticated"
 
 # Check if we're in the right repository
 REPO=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')
-if [ "$REPO" != "grimm00/pokedex" ]; then
-    echo "❌ Not in the correct repository. Current: $REPO, Expected: grimm00/pokedex"
+if [ "$REPO" != "grimm00/pokehub" ]; then
+    echo "❌ Not in the correct repository. Current: $REPO, Expected: grimm00/pokehub"
+    echo "ℹ️  Note: If you haven't renamed the GitHub repo yet, update this script or rename the repo first"
     exit 1
 fi
 
@@ -67,7 +68,7 @@ echo "📋 Setting up GitHub secrets..."
 echo "You can modify any values before confirming."
 
 # Set up secrets
-set_secret "DATABASE_URL" "sqlite:///instance/pokedex_dev.db" "SQLite database connection string"
+set_secret "DATABASE_URL" "sqlite:///backend/instance/pokehub_dev.db" "SQLite database connection string"
 set_secret "JWT_SECRET_KEY" "$JWT_SECRET" "JWT signing key for authentication tokens"
 set_secret "REDIS_URL" "redis://localhost:6379/0" "Redis connection string for caching"
 set_secret "SECRET_KEY" "$FLASK_SECRET" "Flask secret key for sessions"
@@ -84,7 +85,7 @@ echo ""
 echo "✅ GitHub secrets setup complete!"
 echo ""
 echo "Next steps:"
-echo "1. Go to https://github.com/grimm00/pokedex/settings/actions"
+echo "1. Go to https://github.com/grimm00/pokehub/settings/actions"
 echo "2. Set workflow permissions to 'Read and write'"
 echo "3. Create 'staging' and 'production' environments"
 echo "4. Re-run the failed workflows to test the configuration"

@@ -58,7 +58,7 @@ function App() {
                       </svg>
                       <span>Favorites</span>
                       {favoritePokemonIds.size > 0 && (
-                        <span 
+                        <span
                           className="bg-blue-100 text-blue-700 text-sm px-2 py-1 rounded-md font-medium min-w-[1.5rem] text-center"
                           aria-label={`${favoritePokemonIds.size} favorites`}
                         >

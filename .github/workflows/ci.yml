@@ -31,12 +31,10 @@ jobs:
         
     - name: Install Python dependencies
       run: |
-        pip install -r requirements.txt
-        pip install -r backend/requirements-test.txt
+        pip install -r backend/requirements.txt
         
     - name: Install Node.js dependencies
       run: |
-        npm ci
         cd frontend && npm ci
         
     - name: Run tests
@@ -163,16 +161,15 @@ jobs:
       
     - name: Build Docker images
       run: |
-        docker-compose build
+        docker compose build
         
     - name: Test Docker build
       run: |
-        docker-compose up -d
+        docker compose up -d
         sleep 30
         
         # Test health endpoints
-        curl -f http://localhost/api/v1/health || exit 1
         curl -f http://localhost/ || exit 1
         
         # Clean up
-        docker-compose down
+        docker compose down

@@ -16,9 +16,9 @@ export const AuthPage: React.FC = () => {
         }
     }, [isAuthenticated, navigate])
 
-  const handleAuthSuccess = () => {
-    navigate('/dashboard')
-  }
+    const handleAuthSuccess = () => {
+        navigate('/dashboard')
+    }
 
     const switchToRegister = () => {
         setIsLogin(false)
