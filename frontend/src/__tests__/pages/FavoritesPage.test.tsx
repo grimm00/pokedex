@@ -206,7 +206,7 @@ describe('FavoritesPage', () => {
         render(<FavoritesWithRouter />)
 
         await waitFor(() => {
-            const images = screen.getAllByAltText(/front view/)
+            const images = screen.getAllByAltText(/static view/)
             expect(images).toHaveLength(2)
             expect(images[0]).toHaveAttribute('src', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png')
             expect(images[1]).toHaveAttribute('src', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png')

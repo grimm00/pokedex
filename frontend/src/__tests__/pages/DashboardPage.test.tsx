@@ -144,7 +144,7 @@ describe('DashboardPage', () => {
 
         await waitFor(() => {
             expect(screen.getByText('No favorites yet')).toBeInTheDocument()
-            expect(screen.getByText('Start adding Pokemon to your favorites by browsing the Pokedex')).toBeInTheDocument()
+            expect(screen.getByText('Explore the complete Pokehub')).toBeInTheDocument()
         })
     })
 
