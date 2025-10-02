@@ -137,39 +137,22 @@ jobs:
     - name: Check test results
       run: |
         cd tests/docker
-        docker compose -f docker-compose.test.yml up --build -d
-        sleep 30
         
-        # Check backend test results
-        BACKEND_CONTAINER_ID=$(docker compose -f docker-compose.test.yml ps -q test-backend)
-        if [ -n "$BACKEND_CONTAINER_ID" ]; then
-          BACKEND_EXIT_CODE=$(docker inspect -f '{{.State.ExitCode}}' $BACKEND_CONTAINER_ID)
-          echo "Backend test exit code: $BACKEND_EXIT_CODE"
+        # Run tests and capture exit code
+        echo "Running Docker tests..."
+        if docker compose -f docker-compose.test.yml up --build --abort-on-container-exit; then
+          echo "✅ All Docker tests passed!"
+          DOCKER_EXIT_CODE=0
         else
-          echo "Backend container not found"
-          BACKEND_EXIT_CODE=1
-        fi
-        
-        # Check frontend test results
-        FRONTEND_CONTAINER_ID=$(docker compose -f docker-compose.test.yml ps -q test-frontend)
-        if [ -n "$FRONTEND_CONTAINER_ID" ]; then
-          FRONTEND_EXIT_CODE=$(docker inspect -f '{{.State.ExitCode}}' $FRONTEND_CONTAINER_ID)
-          echo "Frontend test exit code: $FRONTEND_EXIT_CODE"
-        else
-          echo "Frontend container not found"
-          FRONTEND_EXIT_CODE=1
+          echo "❌ Docker tests failed!"
+          DOCKER_EXIT_CODE=1
         fi
         
         # Clean up
         docker compose -f docker-compose.test.yml down
         
-        # Fail if any tests failed
-        if [ "$BACKEND_EXIT_CODE" != "0" ] || [ "$FRONTEND_EXIT_CODE" != "0" ]; then
-          echo "Tests failed!"
-          exit 1
-        fi
-        
-        echo "All tests passed!"
+        # Exit with the test result
+        exit $DOCKER_EXIT_CODE
 
   build:
     runs-on: ubuntu-latest
