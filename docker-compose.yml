@@ -1,12 +1,12 @@
 services:
-  pokedex-app:
+  pokehub-app:
     build: .
     ports:
       - "80:80" # Frontend + API served on port 80
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=True
-      - DATABASE_URL=sqlite:////app/backend/instance/pokedex_dev.db
+      - DATABASE_URL=sqlite:////app/backend/instance/pokehub_dev.db
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=dev-secret-key
       - JWT_SECRET_KEY=dev-jwt-secret

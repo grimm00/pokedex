@@ -13,11 +13,11 @@ export const HomePage: React.FC = () => {
         {/* Hero Section */}
         <div className="mb-12">
           <h1 className="text-6xl font-bold text-gray-900 mb-6">
-            Pokedex
+            Pokehub
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Discover, explore, and catch 'em all! Browse through hundreds of Pokemon,
-            learn about their types, abilities, and stats in our comprehensive Pokedex.
+            learn about their types, abilities, and stats in our comprehensive Pokehub.
           </p>
 
           {isAuthenticated ? (

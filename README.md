@@ -1,4 +1,4 @@
-# Pokedex - Pokemon Database Application
+# Pokehub - Your Pokemon Universe
 
 A modern, full-stack Pokemon database application built with React, Flask, and Docker. Features 386 Pokemon from Generations 1-3 (Kanto, Johto, Hoenn), user authentication, favorites management, generation filtering, and comprehensive testing infrastructure.
 

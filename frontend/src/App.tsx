@@ -28,7 +28,7 @@ function App() {
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center h-16">
               <Link to="/" className="text-2xl font-pokemon font-bold text-blue-600">
-                Pokedex
+                Pokehub
               </Link>
 
               <div className="flex items-center space-x-4">
@@ -119,7 +119,7 @@ function App() {
         {/* Footer */}
         <footer className="bg-gray-800 text-white py-8 mt-12">
           <div className="container mx-auto px-4 text-center">
-            <p>&copy; 2024 Pokedex. Built with React, TypeScript, and Tailwind CSS.</p>
+            <p>&copy; 2024 Pokehub. Built with React, TypeScript, and Tailwind CSS.</p>
           </div>
         </footer>
       </div>

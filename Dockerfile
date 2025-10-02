@@ -105,7 +105,7 @@ RUN echo 'server { \
 # Set environment variables
 ENV FLASK_APP=backend.app
 ENV FLASK_ENV=production
-ENV DATABASE_URL=sqlite:////app/backend/instance/pokedex_dev.db
+ENV DATABASE_URL=sqlite:////app/backend/instance/pokehub_dev.db
 ENV REDIS_URL=redis://localhost:6379/0
 ENV BUILD_DATE=2024-12-19T21:00:00Z
 

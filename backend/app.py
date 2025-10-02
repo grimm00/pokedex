@@ -36,8 +36,8 @@ if env_database_url.startswith('sqlite:///'):
     else:
         database_url = env_database_url
 else:
-    # Default to backend/instance/pokedex_dev.db (Flask standard)
-    default_path = os.path.join(os.getcwd(), 'backend', 'instance', 'pokedex_dev.db')
+    # Default to backend/instance/pokehub_dev.db (Flask standard)
+    default_path = os.path.join(os.getcwd(), 'backend', 'instance', 'pokehub_dev.db')
     database_url = f'sqlite:///{default_path}'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url

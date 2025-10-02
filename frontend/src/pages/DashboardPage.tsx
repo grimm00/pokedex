@@ -53,7 +53,7 @@ export const DashboardPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Browse Pokemon</h3>
-                <p className="text-gray-600">Explore the complete Pokedex</p>
+                <p className="text-gray-600">Explore the complete Pokehub</p>
               </div>
             </div>
           </Link>
@@ -213,7 +213,7 @@ export const DashboardPage: React.FC = () => {
             <div className="text-center py-8">
               <div className="text-gray-500 text-lg mb-4">No favorites yet</div>
               <p className="text-gray-400 mb-4">
-                Start adding Pokemon to your favorites by browsing the Pokedex
+                Start adding Pokemon to your favorites by browsing the Pokehub
               </p>
               <Link
                 to="/pokemon"
@@ -286,7 +286,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="text-3xl font-bold text-purple-600 mb-2">
                   {favoritePokemon.length > 0 ? Math.round(favoritePokemon.length / 151 * 100) : 0}%
                 </div>
-                <div className="text-gray-600">Pokedex Completion</div>
+                <div className="text-gray-600">Pokehub Completion</div>
               </div>
             </div>
           </div>
