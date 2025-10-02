@@ -78,7 +78,7 @@ describe('PokemonCard', () => {
     it('renders pokemon image correctly', () => {
         render(<PokemonCard pokemon={mockPokemon} />)
 
-        const image = screen.getByAltText('Bulbasaur front view')
+        const image = screen.getByAltText('Bulbasaur static view')
         expect(image).toBeInTheDocument()
         expect(image).toHaveAttribute('src', mockPokemon.sprites.front_default)
     })
@@ -127,7 +127,7 @@ describe('PokemonCard', () => {
         render(<PokemonCard pokemon={mockPokemon} />)
 
         const card = screen.getByText('Bulbasaur').closest('div')
-        expect(card).toHaveClass('hover:scale-105')
+        expect(card).toHaveClass('cursor-pointer', 'group', 'relative', 'overflow-hidden')
     })
 
     it('renders with different pokemon data', () => {
