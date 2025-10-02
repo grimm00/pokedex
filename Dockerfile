@@ -116,5 +116,9 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
-# Start Redis, Flask app, and nginx
-CMD ["sh", "-c", "redis-server --daemonize yes && python -c \"from backend.app import app; from backend.utils.pokemon_seeder import pokemon_seeder; app.app_context().push(); result = pokemon_seeder.seed_all_generations(); print(f'✅ Seeded {result['successful']} Pokemon from Generations 1-3')\" && python -m backend.app & nginx -g 'daemon off;'"]
+# Copy startup script
+COPY scripts/docker-startup.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-startup.sh
+
+# Start application using startup script
+CMD ["/usr/local/bin/docker-startup.sh"]
