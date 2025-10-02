@@ -247,6 +247,25 @@ To run both frontend and backend together:
    - Open http://localhost:3001 in your browser
    - The frontend will automatically connect to the backend API
 
+## 🌳 Development Workflow
+
+We use **Git Flow** for organized development:
+
+```
+main (production) ← develop (integration) ← feat/* (features)
+```
+
+**Quick Start:**
+```bash
+# Start new feature
+./scripts/git-flow-helper.sh start-feature my-feature
+
+# Check status  
+./scripts/git-flow-helper.sh status
+```
+
+> 📖 **For detailed workflow and contributing guidelines**, see [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## 🔌 API Endpoints
 
 ### Pokemon Endpoints
@@ -383,7 +402,15 @@ To run both frontend and backend together:
 - [ADR-006: Deployment Strategy](./admin/docs/architecture/adrs/adr-006-deployment-strategy.md) - Deployment and CI/CD strategy
 ## 🤝 Contributing
 
-This is a learning project, but contributions and suggestions are welcome! Please see our [contributing guidelines](CONTRIBUTING.md) for details.
+Contributions are welcome! This is a learning project focused on full-stack development best practices.
+
+**Quick Start:**
+1. Fork the repository
+2. Use our Git Flow: `./scripts/git-flow-helper.sh start-feature your-feature`
+3. Make changes and test thoroughly
+4. Create PR to `develop` branch
+
+> 📖 **For detailed guidelines, workflow, and setup**, see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## 📝 License
 
