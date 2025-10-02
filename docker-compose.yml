@@ -6,7 +6,7 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=True
-      - DATABASE_URL=sqlite:////app/instance/pokedex_dev.db
+      - DATABASE_URL=sqlite:////app/backend/instance/pokedex_dev.db
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=dev-secret-key
       - JWT_SECRET_KEY=dev-jwt-secret

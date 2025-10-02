@@ -5,10 +5,25 @@
 
 ## 🐳 **Current Docker Setup**
 
+### **How Docker Compose Works**
+```yaml
+# docker-compose.yml
+services:
+  pokedex-app:
+    build: .  # ← This tells Docker to use the Dockerfile in the root directory
+```
+
+**The Flow:**
+1. `docker compose up` reads `docker-compose.yml`
+2. Sees `build: .` for `pokedex-app` service
+3. Runs `docker build .` using the `Dockerfile`
+4. Creates the container with all the multi-stage build steps
+5. Starts the container with the configured environment
+
 ### **Architecture**
 - **Multi-stage build**: Frontend (Node.js) + Backend (Python/Flask)
 - **Services**: Main app container + Redis container
-- **Web Server**: Nginx reverse proxy
+- **Web Server**: Nginx reverse proxy (embedded in main container)
 - **Database**: SQLite with persistent storage
 
 ### **Container Configuration**

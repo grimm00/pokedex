@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better Docker layer caching
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend application code (excludes files in .dockerignore)
@@ -40,8 +40,8 @@ COPY backend/ ./backend/
 # Copy built frontend from previous stage
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
-# Create instance directory for SQLite database
-RUN mkdir -p instance && chmod 777 instance
+# Create backend instance directory for SQLite database
+RUN mkdir -p backend/instance && chmod 777 backend/instance
 
 # Configure nginx to serve frontend and proxy API with proper cache headers
 RUN echo 'server { \
@@ -105,7 +105,7 @@ RUN echo 'server { \
 # Set environment variables
 ENV FLASK_APP=backend.app
 ENV FLASK_ENV=production
-ENV DATABASE_URL=sqlite:////app/instance/pokedex_dev.db
+ENV DATABASE_URL=sqlite:////app/backend/instance/pokedex_dev.db
 ENV REDIS_URL=redis://localhost:6379/0
 ENV BUILD_DATE=2024-12-19T21:00:00Z
 
@@ -117,4 +117,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
 # Start Redis, Flask app, and nginx
-CMD ["sh", "-c", "redis-server --daemonize yes && python -m flask db upgrade && python -c \"from backend.app import app; from backend.utils.pokemon_seeder import pokemon_seeder; app.app_context().push(); result = pokemon_seeder.seed_all_generations(); print(f'✅ Seeded {result['successful']} Pokemon from Generations 1-3')\" && python -m backend.app & nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "redis-server --daemonize yes && python -c \"from backend.app import app; from backend.utils.pokemon_seeder import pokemon_seeder; app.app_context().push(); result = pokemon_seeder.seed_all_generations(); print(f'✅ Seeded {result['successful']} Pokemon from Generations 1-3')\" && python -m backend.app & nginx -g 'daemon off;'"]
