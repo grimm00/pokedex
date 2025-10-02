@@ -2,6 +2,15 @@
 
 This document lists all the convenient aliases added to your `.zshrc` for Pokehub development.
 
+## 🚀 Comprehensive Workflow Helper
+
+### Main Workflow Commands
+```bash
+wf                   # Show workflow helper menu
+wf-help              # Show detailed help
+wf-status            # Show comprehensive project status
+```
+
 ## 🌳 Git Flow Aliases
 
 ### Main Git Flow Helper
@@ -11,20 +20,30 @@ gf-status            # Show current Git Flow status
 gf-sync              # Sync develop branch with main
 ```
 
-### Branch Management
+### Enhanced Git Flow (Workflow Helper Integration)
+```bash
+sf <name>            # Start new feature branch (short for start-feature)
+fix <name>           # Start new fix branch  
+hotfix <name>        # Start hotfix branch from main
+wf-release <version> # Prepare release with version bump
+wf-sync              # Sync develop with main
+```
+
+### Legacy Git Flow Helper
 ```bash
 gf-feature <name>    # Start new feature branch from develop
 gf-fix <name>        # Start new fix branch from develop  
 gf-hotfix <name>     # Start hotfix branch from main
 gf-release <version> # Prepare release with version bump
+gf-sync              # Sync develop with main
 ```
 
 ### Examples
 ```bash
-gf-feature user-authentication
-gf-fix search-performance
-gf-hotfix security-patch
-gf-release 1.3.0
+sf user-authentication    # Enhanced workflow helper
+fix search-performance    # Enhanced workflow helper
+hotfix security-patch     # Enhanced workflow helper
+wf-release 1.3.0         # Enhanced release management
 ```
 
 ## 🚀 Pokehub Development Shortcuts
@@ -40,6 +59,33 @@ pokehub-backend     # Start the backend server
 pokehub-test        # Run all tests (frontend + backend)
 pokehub-setup       # Run project setup script
 pokedex-frontend    # Start frontend development server
+wf-dev              # Start both backend and frontend servers
+wf-test             # Run comprehensive test suite
+```
+
+## 📝 GitHub Integration Aliases
+
+### Pull Request Management
+```bash
+pr                  # Create PR (auto-detects target branch)
+pr-main             # Create PR to main branch
+prs                 # List open pull requests
+prv [number]        # View PR in browser
+```
+
+### CI/CD Integration
+```bash
+ci                  # Show GitHub Actions workflow status
+ci-logs [run-id]    # Show workflow logs
+```
+
+## 🔄 Enhanced Workflow Aliases
+
+### Development Workflow
+```bash
+wf-push             # Push current branch to origin
+wf-pull             # Pull current branch from origin
+wf-clean            # Clean up merged branches
 ```
 
 ## 📋 Git Workflow Shortcuts
@@ -63,35 +109,56 @@ gpull               # Pull current branch from origin
 glog                # Show last 10 commits in oneline format
 ```
 
-## 🔄 Typical Workflow Examples
+## 🔄 Enhanced Workflow Examples
 
-### Starting New Feature
+### Complete Feature Development Workflow
 ```bash
-gf-feature user-profiles    # Creates feat/user-profiles from develop
+# Start new feature
+sf user-profiles           # Creates feat/user-profiles from develop
 # Work on your feature...
-gpush                       # Push to origin/feat/user-profiles
+wf-test                    # Run all tests
+wf-push                    # Push to origin
+pr                         # Create PR (auto-detects target: develop)
 ```
 
-### Bug Fix Workflow
+### Bug Fix Workflow with GitHub Integration
 ```bash
-gf-fix broken-search       # Creates fix/broken-search from develop
+fix broken-search          # Creates fix/broken-search from develop
 # Fix the issue...
-gpush                      # Push to origin/fix/broken-search
+wf-test                    # Verify fix with tests
+pr                         # Create PR and open in browser
+prs                        # Check PR status
 ```
 
-### Quick Status Check
+### Hotfix Workflow
 ```bash
-gf-status                  # See Git Flow status
-gst                        # See git status
-glog                       # See recent commits
+hotfix security-patch      # Creates fix/security-patch from main
+# Fix critical issue...
+pr-main                    # Create PR to main branch
+# After merge to main:
+wf-sync                    # Sync develop with main changes
 ```
 
 ### Development Session
 ```bash
 pokehub                    # Navigate to project
-gf-status                  # Check current state
-pokehub-backend            # Start backend (Terminal 1)
-pokedex-frontend           # Start frontend (Terminal 2)
+wf-status                  # Comprehensive project status
+wf-dev                     # Start both servers automatically
+```
+
+### Release Management
+```bash
+wf-release 1.3.0          # Prepare release with version bump
+pr-main                    # Create PR to main
+# After merge and deployment:
+wf-clean                   # Clean up merged branches
+```
+
+### CI/CD Monitoring
+```bash
+ci                         # Check GitHub Actions status
+ci-logs 12345              # View specific workflow run logs
+prs                        # Check open PRs
 ```
 
 ## 💡 Tips
