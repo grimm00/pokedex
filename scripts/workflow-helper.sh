@@ -324,7 +324,19 @@ case "$1" in
         ;;
         
     "clean"|"cleanup")
-        echo "${GREEN}🧹 Cleaning up merged branches${NC}"
+        # Check for --yes flag or CI environment for non-interactive mode
+        FORCE_YES=false
+        if [ "$2" = "--yes" ] || [ "$2" = "-y" ] || [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+            FORCE_YES=true
+            if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+                echo "${GREEN}🧹 Cleaning up merged branches (CI environment detected - auto-confirming)${NC}"
+            else
+                echo "${GREEN}🧹 Cleaning up merged branches (non-interactive mode)${NC}"
+            fi
+        else
+            echo "${GREEN}🧹 Cleaning up merged branches${NC}"
+        fi
+        
         git checkout $DEVELOP_BRANCH
         git pull origin $DEVELOP_BRANCH
         
@@ -354,9 +366,16 @@ case "$1" in
             echo "${YELLOW}Found merged remote branches:${NC}"
             echo "$REMOTE_MERGED_BRANCHES"
             
-            # Ask for confirmation before deleting remote branches
-            echo "${YELLOW}⚠️  Delete these remote branches? (y/N):${NC}"
-            read -r CONFIRM
+            # Handle confirmation based on mode
+            if [ "$FORCE_YES" = true ]; then
+                echo "${YELLOW}Auto-confirming remote branch deletion (--yes flag)${NC}"
+                CONFIRM="y"
+            else
+                # Ask for confirmation before deleting remote branches
+                echo "${YELLOW}⚠️  Delete these remote branches? (y/N):${NC}"
+                read -r CONFIRM
+            fi
+            
             if [[ $CONFIRM =~ ^[Yy]$ ]]; then
                 echo "${YELLOW}Deleting remote merged branches...${NC}"
                 echo "$REMOTE_MERGED_BRANCHES" | xargs -I {} git push origin --delete {}
@@ -451,7 +470,9 @@ case "$1" in
         echo "  ${CYAN}status, st${NC}                 Show comprehensive status"
         echo "  ${CYAN}status --export${NC} [file]     Export status to file"
         echo "  ${CYAN}export-status${NC} [file]       Export detailed status report"
-        echo "  ${CYAN}clean, cleanup${NC}             Clean merged branches (local + remote with confirmation)"
+        echo "  ${CYAN}clean, cleanup${NC} [--yes]     Clean merged branches (local + remote with confirmation)"
+        echo "    ${YELLOW}--yes, -y${NC}                 Skip confirmation prompts (for CI/automation)"
+        echo "    ${YELLOW}Note:${NC} Auto-confirms in CI environments (CI, GITHUB_ACTIONS)"
         echo "  ${CYAN}release, rel${NC} <version>     Prepare release"
         
         print_section "🔄 CI/CD"
