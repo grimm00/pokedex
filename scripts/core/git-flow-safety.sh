@@ -3,51 +3,37 @@
 # Git Flow Safety Checks
 # Automated checks to ensure proper Git Flow workflow compliance
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
-NC='\033[0m' # No Color
+# Get the script directory for relative imports
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Configuration
-MAIN_BRANCH="main"
-DEVELOP_BRANCH="develop"
-PROTECTED_BRANCHES=("main" "develop" "master")
+# Source shared utilities
+if [ -f "$SCRIPT_DIR/git-flow-utils.sh" ]; then
+    source "$SCRIPT_DIR/git-flow-utils.sh"
+else
+    echo "❌ Error: git-flow-utils.sh not found. Please ensure all Git Flow scripts are properly installed."
+    exit 1
+fi
 
-# Function to print colored output
-print_status() {
-    local status=$1
-    local message=$2
-    case $status in
-        "ERROR")   echo -e "${RED}❌ $message${NC}" ;;
-        "WARNING") echo -e "${YELLOW}⚠️  $message${NC}" ;;
-        "SUCCESS") echo -e "${GREEN}✅ $message${NC}" ;;
-        "INFO")    echo -e "${BLUE}ℹ️  $message${NC}" ;;
-        "HEADER")  echo -e "${BOLD}${CYAN}$message${NC}" ;;
-    esac
-}
+# Initialize Git Flow utilities
+if ! init_git_flow_utils; then
+    exit 1
+fi
 
 # Check if current branch is appropriate for development
 check_current_branch() {
-    local current_branch=$(git branch --show-current)
+    local current_branch=$(get_current_branch)
     
-    print_status "HEADER" "🌳 Branch Safety Check"
+    print_section "🌳 Branch Safety Check"
     
     # Check if on protected branch
-    for protected in "${PROTECTED_BRANCHES[@]}"; do
-        if [ "$current_branch" = "$protected" ]; then
-            print_status "ERROR" "Currently on protected branch: $current_branch"
-            print_status "WARNING" "You should not develop directly on $current_branch"
-            echo -e "${YELLOW}💡 Recommended actions:${NC}"
-            echo "   1. Create a feature branch: git checkout -b feat/your-feature"
-            echo "   2. Or switch to develop: git checkout $DEVELOP_BRANCH"
-            return 1
-        fi
-    done
+    if is_protected_branch "$current_branch"; then
+        print_status "ERROR" "Currently on protected branch: $current_branch"
+        print_status "WARNING" "You should not develop directly on $current_branch"
+        echo -e "${YELLOW}💡 Recommended actions:${NC}"
+        echo "   1. Create a feature branch: git checkout -b feat/your-feature"
+        echo "   2. Or switch to develop: git checkout $DEVELOP_BRANCH"
+        return 1
+    fi
     
     # Check if on develop (acceptable for small changes)
     if [ "$current_branch" = "$DEVELOP_BRANCH" ]; then
@@ -57,19 +43,19 @@ check_current_branch() {
     fi
     
     # Check if on a proper feature branch
-    if [[ "$current_branch" =~ ^(feat|fix|chore|hotfix)/ ]]; then
+    if is_valid_branch_name "$current_branch"; then
         print_status "SUCCESS" "Working on feature branch: $current_branch"
         return 0
     fi
     
     print_status "WARNING" "Unusual branch name: $current_branch"
-    print_status "INFO" "Consider using conventional branch names: feat/, fix/, chore/"
+    print_status "INFO" "Consider using conventional branch names: ${BRANCH_PREFIXES[*]}"
     return 0
 }
 
 # Check for uncommitted changes
 check_working_directory() {
-    print_status "HEADER" "📁 Working Directory Check"
+    print_section "📁 Working Directory Check"
     
     if ! git diff-index --quiet HEAD --; then
         print_status "WARNING" "You have uncommitted changes"
@@ -87,10 +73,11 @@ check_working_directory() {
 
 # Check for open PRs that might conflict
 check_open_prs() {
-    print_status "HEADER" "🔄 Pull Request Check"
+    print_section "🔄 Pull Request Check"
     
-    if ! command -v gh &> /dev/null; then
+    if ! command_exists "gh"; then
         print_status "WARNING" "GitHub CLI not installed - cannot check PRs"
+        print_status "INFO" "Install GitHub CLI for PR conflict detection: https://cli.github.com/"
         return 0
     fi
     
@@ -120,7 +107,7 @@ check_open_prs() {
 
 # Check for potential merge conflicts
 check_merge_conflicts() {
-    print_status "HEADER" "⚠️  Merge Conflict Check"
+    print_section "⚠️  Merge Conflict Check"
     
     local current_branch=$(git branch --show-current)
     
@@ -157,7 +144,7 @@ check_merge_conflicts() {
 
 # Check repository health
 check_repository_health() {
-    print_status "HEADER" "🏥 Repository Health Check"
+    print_section "🏥 Repository Health Check"
     
     # Check for large files
     local large_files=$(find . -name "*.log" -o -name "*.tmp" -o -name "node_modules" -o -name ".DS_Store" -o -name "*.cache" 2>/dev/null | head -5)
@@ -187,8 +174,13 @@ check_repository_health() {
 run_safety_checks() {
     local exit_code=0
     
-    echo -e "${BOLD}${CYAN}🛡️  Git Flow Safety Checks${NC}"
-    echo -e "${CYAN}═══════════════════════════${NC}"
+    print_header "🛡️  Git Flow Safety Checks"
+    echo ""
+    
+    # Check dependencies first
+    if ! check_dependencies; then
+        return 1
+    fi
     echo ""
     
     # Run all checks
@@ -221,18 +213,16 @@ run_safety_checks() {
 
 # Auto-fix function
 auto_fix() {
-    print_status "HEADER" "🔧 Auto-Fix Suggestions"
+    print_section "🔧 Auto-Fix Suggestions"
     
-    local current_branch=$(git branch --show-current)
+    local current_branch=$(get_current_branch)
     
     # If on protected branch, suggest creating feature branch
-    for protected in "${PROTECTED_BRANCHES[@]}"; do
-        if [ "$current_branch" = "$protected" ]; then
-            echo -e "${YELLOW}💡 Auto-fix available:${NC}"
-            echo "   Create feature branch: git checkout -b feat/$(date +%Y%m%d)-work"
-            return 0
-        fi
-    done
+    if is_protected_branch "$current_branch"; then
+        echo -e "${YELLOW}💡 Auto-fix available:${NC}"
+        echo "   Create feature branch: git checkout -b feat/$(date +%Y%m%d)-work"
+        return 0
+    fi
     
     # If behind develop, suggest rebase
     local behind_count=$(git rev-list --count HEAD..origin/$DEVELOP_BRANCH 2>/dev/null || echo "0")

@@ -3,13 +3,39 @@
 # Git Hooks Installer for Git Flow Safety
 # Installs pre-commit and other Git hooks for automated safety checks
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-BOLD='\033[1m'
-NC='\033[0m' # No Color
+# Get the script directory for relative imports
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source shared utilities
+if [ -f "$SCRIPT_DIR/../core/git-flow-utils.sh" ]; then
+    source "$SCRIPT_DIR/../core/git-flow-utils.sh"
+    init_git_flow_utils >/dev/null 2>&1
+else
+    # Fallback colors if utils not available
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    CYAN='\033[0;36m'
+    BOLD='\033[1m'
+    NC='\033[0m' # No Color
+    
+    print_status() {
+        local msg_type=$1
+        local message=$2
+        case $msg_type in
+            "ERROR")   echo -e "${RED}❌ $message${NC}" ;;
+            "WARNING") echo -e "${YELLOW}⚠️  $message${NC}" ;;
+            "SUCCESS") echo -e "${GREEN}✅ $message${NC}" ;;
+            "INFO")    echo -e "${CYAN}ℹ️  $message${NC}" ;;
+        esac
+    }
+    
+    print_header() {
+        local title=$1
+        echo -e "${BOLD}${CYAN}$title${NC}"
+        echo -e "${CYAN}$(printf '═%.0s' $(seq 1 ${#title}))${NC}"
+    }
+fi
 
 PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 
@@ -21,8 +47,7 @@ fi
 HOOKS_DIR="$PROJECT_ROOT/.git/hooks"
 SOURCE_HOOKS_DIR="$PROJECT_ROOT/scripts/core/git-hooks"
 
-echo -e "${BOLD}${CYAN}🪝 Installing Git Flow Safety Hooks${NC}"
-echo -e "${CYAN}═══════════════════════════════════${NC}"
+print_header "🪝 Installing Git Flow Safety Hooks"
 echo ""
 
 # Check if hooks directory exists
@@ -53,7 +78,7 @@ for hook_file in "$SOURCE_HOOKS_DIR"/*; do
         fi
         
         # Install new hook
-        echo -e "${GREEN}✅ Installing $hook_name${NC}"
+        print_status "SUCCESS" "Installing $hook_name"
         cp "$hook_file" "$target_hook"
         chmod +x "$target_hook"
     fi
