@@ -22,7 +22,7 @@ echo "🌱 Seeding Pokemon data..."
 SEEDING_TIMEOUT=${POKEMON_SEEDING_TIMEOUT:-120}
 
 # Get generation range dynamically from config
-GEN_RANGE=$(cd /app && python -c "from backend.utils.generation_config import get_generation_range_string; print(get_generation_range_string())" 2>/dev/null || echo "1-5")
+GEN_RANGE=$(cd /app && python -c "from backend.utils.generation_config import get_generation_range_string; print(get_generation_range_string())" 2>/dev/null || echo "unknown")
 
 cd /app && timeout ${SEEDING_TIMEOUT}s python -c "
 from backend.app import app

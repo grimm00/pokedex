@@ -10,11 +10,31 @@
 
 - [Overview](#-overview)
 - [Completed Improvements](#-completed-improvements)
+  - [Session 1: Core Sourcery Recommendations](#session-1-core-sourcery-recommendations-pr-10---merged)
+  - [Session 2: Enhanced Usability](#session-2-enhanced-usability-pr-11---merged)
+  - [Session 3: Squash Merge Detection](#session-3-squash-merge-detection-pr-15---merged)
+  - [Session 4: Documentation Organization](#session-4-documentation-organization-pr-19---merged)
+  - [Session 5: Configuration & Cleanup](#session-5-configuration--cleanup-improvements-pr-20-21---merged)
 - [Future Improvement Opportunities](#-future-improvement-opportunities)
-  - [Code Organization](#category-code-organization)
-  - [Advanced Features](#category-advanced-features)
-  - [Configuration Management](#category-configuration-management)
-  - [Documentation Optimization](#category-documentation-optimization)
+  - **Code Organization**
+    - [1. Split Large Refactors into Smaller PRs](#1-split-large-refactors-into-smaller-prs)
+  - **Advanced Features**
+    - [2. Structured Logging Output](#2-structured-logging-output)
+    - [3. Performance Metrics](#3-performance-metrics)
+    - [4. Custom Error Handlers](#4-custom-error-handlers)
+    - [5. Configuration Profiles](#5-configuration-profiles)
+  - **Documentation**
+    - [6. Interactive Examples](#6-interactive-examples)
+    - [7. Troubleshooting Guide](#7-troubleshooting-guide)
+  - **Configuration Management**
+    - [8. Parameterize Docker Seeding Timeout](#8-parameterize-docker-seeding-timeout) ✅ DONE
+    - [9. Dynamic Generation Range in Messages](#9-dynamic-generation-range-in-messages) ✅ DONE
+  - **Documentation Optimization**
+    - [10. Streamline Troubleshooting Documentation](#10-streamline-troubleshooting-documentation)
+  - **Performance & Optimization**
+    - [11. Batch GitHub API Calls in Cleanup](#11-batch-github-api-calls-in-cleanup)
+    - [12. Preflight Check for GitHub CLI](#12-preflight-check-for-github-cli)
+    - [13. Simplify Branch Deletion Loop](#13-simplify-branch-deletion-loop)
 - [Implementation Priority Matrix](#-updated-implementation-priority-matrix)
 - [Recommendation](#-recommendation)
 - [Notes for Future Sessions](#-notes-for-future-sessions)
