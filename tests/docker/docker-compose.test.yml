@@ -28,7 +28,7 @@ services:
   test-frontend:
     build:
       context: ../../frontend
-      dockerfile: Dockerfile.test
+      dockerfile: config/docker/Dockerfile.test
     environment:
       - VITE_API_URL=http://test-backend:5000
       - NODE_ENV=test

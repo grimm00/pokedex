@@ -4,13 +4,13 @@
     "version": "1.2.1",
     "type": "module",
     "scripts": {
-        "dev": "vite",
-        "build": "tsc -b && vite build",
-        "lint": "eslint .",
-        "preview": "vite preview",
-        "test": "vitest",
-        "test:ui": "vitest --ui",
-        "test:run": "vitest --run"
+        "dev": "vite --config config/vite.config.ts",
+        "build": "tsc -b config/tsconfig.app.json && vite build --config config/vite.config.ts",
+        "lint": "eslint . --config config/eslint.config.js",
+        "preview": "vite preview --config config/vite.config.ts",
+        "test": "vitest --config config/vitest.config.ts",
+        "test:ui": "vitest --ui --config config/vitest.config.ts",
+        "test:run": "vitest --run --config config/vitest.config.ts"
     },
     "dependencies": {
         "clsx": "^2.1.1",
