@@ -304,7 +304,7 @@ case "$1" in
         git pull origin $DEVELOP_BRANCH
         
         # Get merged branches (excluding main, develop, and current branch)
-        MERGED_BRANCHES=$(git branch --merged | grep -E "(feat/|fix/)" | grep -v "\*" | tr -d ' ')
+        MERGED_BRANCHES=$(git branch --merged | grep -E "(feat/|fix/|chore/)" | grep -v "\*" | tr -d ' ')
         
         if [ -n "$MERGED_BRANCHES" ]; then
             echo "${YELLOW}Deleting merged branches:${NC}"
@@ -392,7 +392,7 @@ case "$1" in
         echo "  ${CYAN}status, st${NC}                 Show comprehensive status"
         echo "  ${CYAN}status --export${NC} [file]     Export status to file"
         echo "  ${CYAN}export-status${NC} [file]       Export detailed status report"
-        echo "  ${CYAN}clean, cleanup${NC}             Clean merged branches"
+        echo "  ${CYAN}clean, cleanup${NC}             Clean merged branches (feat/, fix/, chore/)"
         echo "  ${CYAN}release, rel${NC} <version>     Prepare release"
         
         print_section "🔄 CI/CD"
