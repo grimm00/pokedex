@@ -163,11 +163,33 @@ This log documents the troubleshooting process for CI/CD failures encountered du
    - 🔍 **Need container logs:** Must see what's happening inside container
 
 ### **✅ Solution Applied - Attempt #2**
-- **Status:** 🔧 **IN PROGRESS** - Investigate timing and get container logs
-- **Next Steps:** 
-  1. Increase CI wait time from 30s to 45s
-  2. Add container log output to CI for debugging
-  3. Test locally to verify container behavior
+- **Status:** ❌ **PARTIAL SUCCESS** - Container logs revealed the real issue
+- **Applied Fixes:**
+  1. ✅ Increased CI wait time from 30s to 45s
+  2. ✅ Added container log output to CI for debugging
+  3. ✅ Fixed all script path references after directory reorganization
+
+### **🔍 Final Root Cause Identified - Issue #3**
+8. **Container logs analysis:**
+   ```
+   pokehub-app-1  | 🚀 Starting Pokehub application...
+   pokehub-app-1  | 📡 Starting Redis server...  ✅
+   pokehub-app-1  | 🗄️ Initializing database...  ✅
+   pokehub-app-1  | ✅ Database tables created successfully  ✅
+   pokehub-app-1  | 🌱 Seeding Pokemon data...  ❌ HANGS HERE
+   # Flask backend never starts!
+   ```
+
+9. **Real Issue:** Pokemon seeding is blocking/failing, preventing Flask from starting
+   - Seeding process hangs or takes too long
+   - Flask backend never reaches `python -m backend.app &`
+   - Nginx starts but has no backend to proxy to
+   - Health check fails: no Flask app running on port 5000
+
+### **✅ Solution Applied - Attempt #3**
+- **Status:** 🔧 **IN PROGRESS** - Fix Pokemon seeding blocking issue
+- **Root Cause:** Pokemon seeding process preventing Flask startup
+- **Fix:** Make seeding non-blocking or add timeout/error handling
 
 ---
 

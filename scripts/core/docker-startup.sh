@@ -17,9 +17,9 @@ with app.app_context():
     print('✅ Database tables created successfully')
 "
 
-# Seed Pokemon data
+# Seed Pokemon data (with timeout and error handling)
 echo "🌱 Seeding Pokemon data..."
-cd /app && python -c "
+cd /app && timeout 30s python -c "
 from backend.app import app
 from backend.utils.pokemon_seeder import pokemon_seeder
 with app.app_context():
@@ -29,7 +29,10 @@ with app.app_context():
     except Exception as e:
         print(f'⚠️ Pokemon seeding failed: {e}')
         print('🔄 Application will continue without seeded data')
-"
+" || {
+    echo "⚠️ Pokemon seeding timed out after 30 seconds"
+    echo "🔄 Application will continue without seeded data"
+}
 
 # Start Flask app in the background
 echo "🐍 Starting Flask backend..."
