@@ -98,7 +98,7 @@ check_documentation() {
     fi
     
     # Check if verification script exists
-    if [ -f "scripts/verify-project-status.sh" ]; then
+    if [ -f "scripts/monitoring/verify-project-status.sh" ]; then
         echo -e "${GREEN}✅ Status verification script exists${NC}"
     else
         echo -e "${RED}❌ Status verification script missing${NC}"
@@ -154,7 +154,7 @@ provide_next_steps() {
     fi
     
     echo "2. Update PROJECT_STATUS_DASHBOARD.md with any changes"
-    echo "3. Run full verification: ./scripts/verify-project-status.sh"
+    echo "3. Run full verification: ./scripts/monitoring/verify-project-status.sh"
     echo "4. Commit any documentation updates"
     echo "5. Plan next week's priorities"
     echo ""

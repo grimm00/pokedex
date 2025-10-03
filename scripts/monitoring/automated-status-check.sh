@@ -201,7 +201,7 @@ generate_report() {
         fi
         
         echo ""
-        echo "Run './scripts/verify-project-status.sh' for detailed analysis"
+        echo "Run './scripts/monitoring/verify-project-status.sh' for detailed analysis"
         exit $total_issues
     fi
 }

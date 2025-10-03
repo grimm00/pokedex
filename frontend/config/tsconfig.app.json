@@ -24,7 +24,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     /* Path mapping */
-    "baseUrl": ".",
+    "baseUrl": "..",
     "paths": {
       "@/*": [
         "./src/*"
@@ -32,13 +32,13 @@
     }
   },
   "include": [
-    "src"
+    "../src"
   ],
   "exclude": [
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx",
-    "src/**/*.spec.ts",
-    "src/**/*.spec.tsx",
-    "src/test-utils/**/*"
+    "../src/**/*.test.ts",
+    "../src/**/*.test.tsx",
+    "../src/**/*.spec.ts",
+    "../src/**/*.spec.tsx",
+    "../src/__tests__/**/*"
   ]
 }
