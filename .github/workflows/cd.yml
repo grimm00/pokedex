@@ -52,8 +52,8 @@ jobs:
     - name: Deploy to staging
       run: |
         echo "Deploying to staging environment..."
-        chmod +x ./scripts/deploy.sh
-        ./scripts/deploy.sh staging ${{ github.sha }}
+        chmod +x ./scripts/deployment/deploy.sh
+        ./scripts/deployment/deploy.sh staging ${{ github.sha }}
       env:
         DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         REDIS_URL: ${{ secrets.STAGING_REDIS_URL }}
@@ -62,8 +62,8 @@ jobs:
     - name: Run smoke tests
       run: |
         echo "Running smoke tests on staging..."
-        chmod +x ./scripts/health-check.sh
-        ./scripts/health-check.sh http://localhost
+        chmod +x ./scripts/core/health-check.sh
+        ./scripts/core/health-check.sh http://localhost
         
     - name: Notify deployment success
       run: |
@@ -86,8 +86,8 @@ jobs:
     - name: Deploy to production
       run: |
         echo "Deploying to production environment..."
-        chmod +x ./scripts/deploy.sh
-        ./scripts/deploy.sh production ${{ github.sha }}
+        chmod +x ./scripts/deployment/deploy.sh
+        ./scripts/deployment/deploy.sh production ${{ github.sha }}
       env:
         DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
         REDIS_URL: ${{ secrets.PRODUCTION_REDIS_URL }}
@@ -96,8 +96,8 @@ jobs:
     - name: Run health checks
       run: |
         echo "Running health checks on production..."
-        chmod +x ./scripts/health-check.sh
-        ./scripts/health-check.sh http://localhost
+        chmod +x ./scripts/core/health-check.sh
+        ./scripts/core/health-check.sh http://localhost
         
     - name: Notify deployment success
       run: |

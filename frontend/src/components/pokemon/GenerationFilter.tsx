@@ -45,20 +45,21 @@ const GenerationFilter: React.FC<GenerationFilterProps> = ({
                 Filter by Generation:
             </div>
 
-            <div className="generation-chips flex flex-wrap gap-2">
+            <div className="generation-chips flex flex-wrap gap-3">
                 {/* All Generations Option */}
                 <button
                     className={`generation-chip ${selectedGeneration === 'all'
-                            ? 'active bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                            : 'bg-white text-gray-700 border border-gray-300 hover:border-gray-400'
-                        } px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2`}
+                            ? 'active bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-105'
+                            : 'bg-white text-gray-700 border border-gray-300 hover:border-gray-400 hover:shadow-md'
+                        } px-5 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 min-w-[140px]`}
                     onClick={() => onGenerationChange('all')}
                 >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center justify-center gap-2">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                         </svg>
-                        All Generations
+                        <span className="hidden sm:inline">All Generations</span>
+                        <span className="sm:hidden">All</span>
                     </span>
                 </button>
 

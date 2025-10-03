@@ -17,7 +17,7 @@ class ApiClient {
 
   constructor() {
     this.config = {
-      baseURL: 'http://localhost:5000', // Use direct backend URL for now
+      baseURL: '', // Use relative URLs - nginx will proxy /api/ to backend
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',

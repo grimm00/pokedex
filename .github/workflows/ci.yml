@@ -2,7 +2,7 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main, develop, feat/*, fix/* ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
 
@@ -172,9 +172,17 @@ jobs:
     - name: Test Docker build
       run: |
         docker compose up -d
-        sleep 30
+        
+        # Wait longer for container to be ready (healthcheck needs 40s)
+        echo "⏰ Waiting 45 seconds for containers to be ready..."
+        sleep 45
+        
+        # Show container logs for debugging
+        echo "📋 Container logs:"
+        docker compose logs pokehub-app || true
         
         # Test health endpoints
+        echo "🔍 Testing health endpoint..."
         curl -f http://localhost/ || exit 1
         
         # Clean up
