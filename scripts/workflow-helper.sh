@@ -372,8 +372,26 @@ case "$1" in
         # Fetch and prune to sync with remote
         gf_git_fetch origin
         
-        # Get remote branches that are merged into develop
-        REMOTE_MERGED_BRANCHES=$(git branch -r --merged origin/$DEVELOP_BRANCH | grep -E "origin/(feat/|fix/|chore/)" | sed 's|origin/||' | tr -d ' ')
+        # Get ALL remote feature branches (not just merged ones, since squash merges don't show as merged)
+        ALL_REMOTE_BRANCHES=$(git branch -r | grep -E "origin/(feat/|fix/|chore/)" | sed 's|origin/||' | sed 's|^[[:space:]]*||' | tr -d ' ')
+        
+        # Check each branch via GitHub API to see if its PR is merged
+        REMOTE_MERGED_BRANCHES=""
+        if [ -n "$ALL_REMOTE_BRANCHES" ]; then
+            echo "${CYAN}Checking PR status for remote branches...${NC}"
+            for branch in $ALL_REMOTE_BRANCHES; do
+                # Check if there's a merged PR for this branch
+                PR_STATE=$(gh pr list --head "$branch" --state merged --json state --jq '.[0].state' 2>/dev/null || echo "")
+                if [ "$PR_STATE" = "MERGED" ]; then
+                    if [ -z "$REMOTE_MERGED_BRANCHES" ]; then
+                        REMOTE_MERGED_BRANCHES="$branch"
+                    else
+                        REMOTE_MERGED_BRANCHES="$REMOTE_MERGED_BRANCHES
+$branch"
+                    fi
+                fi
+            done
+        fi
         
         if [ -n "$REMOTE_MERGED_BRANCHES" ]; then
             echo "${YELLOW}Found merged remote branches:${NC}"
