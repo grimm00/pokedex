@@ -24,7 +24,17 @@ curl -s "http://localhost/api/v1/pokemon?per_page=1000" | \
 ```
 
 ### **Quick Fix** (for 649 Pokemon):
-1. Update `scripts/core/docker-startup.sh` line 22: `timeout 120s`
+
+**Option A: Environment Variables (Recommended)** ✅
+1. Update `.env` file:
+   ```bash
+   POKEMON_SEEDING_TIMEOUT=120
+   HEALTHCHECK_START_PERIOD=130
+   ```
+2. Rebuild: `docker compose down && docker compose build --no-cache && docker compose up -d`
+
+**Option B: Direct File Edit**
+1. Update `scripts/core/docker-startup.sh` line 23: `SEEDING_TIMEOUT=120`
 2. Update `docker-compose.yml` line 22: `start_period: 130s`
 3. Rebuild: `docker compose down && docker compose build --no-cache && docker compose up -d`
 
