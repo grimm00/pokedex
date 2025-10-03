@@ -327,10 +327,20 @@ class PokemonSeeder:
         logger.info("Starting Hoenn Pokemon seeding (Generation 3: IDs 252-386)")
         return self.seed_pokemon(start_id=252, end_id=386, batch_size=batch_size)
     
+    def seed_sinnoh_pokemon(self, batch_size: int = 10) -> Dict[str, Any]:
+        """Seed all Sinnoh Pokemon (Generation 4: IDs 387-493)"""
+        logger.info("Starting Sinnoh Pokemon seeding (Generation 4: IDs 387-493)")
+        return self.seed_pokemon(start_id=387, end_id=493, batch_size=batch_size)
+    
+    def seed_unova_pokemon(self, batch_size: int = 10) -> Dict[str, Any]:
+        """Seed all Unova Pokemon (Generation 5: IDs 494-649)"""
+        logger.info("Starting Unova Pokemon seeding (Generation 5: IDs 494-649)")
+        return self.seed_pokemon(start_id=494, end_id=649, batch_size=batch_size)
+    
     def seed_all_generations(self, batch_size: int = 10) -> Dict[str, Any]:
-        """Seed all Pokemon from Generations 1, 2, and 3 (IDs 1-386)"""
-        logger.info("Starting complete Pokemon seeding (Generations 1-3: IDs 1-386)")
-        return self.seed_pokemon(start_id=1, end_id=386, batch_size=batch_size)
+        """Seed all Pokemon from Generations 1-5 (IDs 1-649)"""
+        logger.info("Starting complete Pokemon seeding (Generations 1-5: IDs 1-649)")
+        return self.seed_pokemon(start_id=1, end_id=649, batch_size=batch_size)
     
     def seed_test_batch(self, start_id: int = 152, count: int = 5) -> Dict[str, Any]:
         """Seed a small test batch for verification"""

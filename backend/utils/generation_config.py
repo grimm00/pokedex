@@ -54,18 +54,28 @@ GENERATIONS: Dict[int, GenerationData] = {
         icon="hoenn-icon.png",
         description="A tropical region with diverse landscapes and weather"
     ),
-    # Future generations can be easily added here:
-    # 4: GenerationData(
-    #     name="Sinnoh",
-    #     region="Sinnoh",
-    #     start_id=387,
-    #     end_id=493,
-    #     year=2006,
-    #     games=["Diamond", "Pearl", "Platinum"],
-    #     color="#9b59b6",
-    #     icon="sinnoh-icon.png",
-    #     description="A mountainous region with ancient legends"
-    # ),
+    4: GenerationData(
+        name="Sinnoh",
+        region="Sinnoh",
+        start_id=387,
+        end_id=493,
+        year=2006,
+        games=["Diamond", "Pearl", "Platinum"],
+        color="#9b59b6",
+        icon="sinnoh-icon.png",
+        description="A mountainous region with ancient legends and mythical Pokemon"
+    ),
+    5: GenerationData(
+        name="Unova",
+        region="Unova",
+        start_id=494,
+        end_id=649,
+        year=2010,
+        games=["Black", "White", "Black 2", "White 2"],
+        color="#2c3e50",
+        icon="unova-icon.png",
+        description="A modern region with diverse cities and new Pokemon species"
+    )
 }
 
 def get_generation_by_id(pokemon_id: int) -> Optional[int]:
