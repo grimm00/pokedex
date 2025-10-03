@@ -156,7 +156,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [test, docker-test]
+    # Temporarily removed dependencies for faster troubleshooting
+    # needs: [test, docker-test]
     
     steps:
     - name: Checkout code

@@ -85,7 +85,7 @@ This log documents the troubleshooting process for CI/CD failures encountered du
 ### **✅ Solution Applied**
 - **File Modified:** `frontend/config/vite.config.ts` (line 23)
 - **Change:** Updated `outDir: '../dist'` back to `outDir: 'dist'` for Docker compatibility
-- **Commit:** `[PENDING]` - "fix: correct frontend build output directory for Docker"
+- **Commit:** `062fe28` - "fix: correct frontend build output directory for Docker compatibility"
 
 ### **📊 Impact**
 - **Before:** Frontend builds to `../dist`, Docker can't find `/app/frontend/dist`
@@ -100,12 +100,87 @@ This log documents the troubleshooting process for CI/CD failures encountered du
 
 ---
 
+## 📋 **Issue #3: Docker Health Check Failure - Connection Reset**
+
+### **🚨 Problem Identified**
+- **Failure Point:** CI/CD Build Job (after Issues #1 & #2 fixes)
+- **Error Message:** `curl: (56) Recv failure: Connection reset by peer`
+- **Root Cause:** Health check endpoint failing after 30-second wait
+
+### **🔍 Investigation Process**
+1. **Monitored CI/CD after Issue #2 fix:**
+   ```bash
+   gh pr checks 7
+   # Result: build job failing again, but containers starting successfully
+   ```
+
+2. **Retrieved health check failure logs:**
+   ```bash
+   gh run view 18227731245 --log-failed
+   # Revealed: curl -f http://localhost/ failing with connection reset
+   ```
+
+3. **Analysis:**
+   - Containers start successfully: `pokehub-pokehub-app-1 Started`
+   - 30-second wait completes
+   - Health check fails: connection reset by peer
+   - **Likely Issue:** App not ready after 30s or health endpoint misconfigured
+
+### **✅ Solution Applied**
+- **Status:** 🔧 **IN PROGRESS** - Investigating health check timing/endpoint
+- **Next Steps:** Check if 30s is sufficient, verify health endpoint works
+
+---
+
 ## 🔄 **Current Status**
 
 - **Issue #1:** ✅ **RESOLVED** - Docker startup script path corrected
-- **Issue #2:** 🔧 **IN PROGRESS** - Frontend dist path mismatch identified, fix pending
-- **Next Steps:** Apply Issue #2 fix and monitor CI/CD validation
+- **Issue #2:** ✅ **RESOLVED** - Frontend dist path mismatch corrected  
+- **Issue #3:** 🔧 **IN PROGRESS** - Docker health check connection failure
 - **Other Jobs:** Unit, integration, performance, and docker-test jobs all passing
+
+## 💡 **CI/CD Optimization Discussion**
+
+**User Question:** "Do all tests need to run every time when we're stuck on build job?"
+
+**Answer:** Absolutely not! Great observation. Here are optimization strategies:
+
+### **🎯 Current Inefficiency:**
+- Running unit (45s) + integration (31s) + performance (32s) + docker-test (1m25s) = ~3.5 minutes
+- Then build job runs for another 1m20s
+- **Total:** ~5 minutes per iteration for a build-specific issue
+
+### **⚡ Optimization Options:**
+
+1. **Skip Dependencies for Build Testing:**
+   ```yaml
+   build:
+     runs-on: ubuntu-latest
+     # Remove: needs: [test, docker-test]  # Skip for troubleshooting
+   ```
+
+2. **Conditional Job Execution:**
+   ```yaml
+   build:
+     if: github.event.pull_request.draft == false  # Only run on ready PRs
+   ```
+
+3. **Parallel Execution:**
+   ```yaml
+   build:
+     needs: []  # Run in parallel with tests, not after
+   ```
+
+4. **Manual Trigger for Build-Only:**
+   ```yaml
+   workflow_dispatch:  # Allow manual triggering
+     inputs:
+       skip_tests:
+         description: 'Skip test jobs'
+         type: boolean
+   ```
+
+**Recommendation:** For troubleshooting, temporarily remove `needs: [test, docker-test]` from build job to run it independently.
 
 ---
 
