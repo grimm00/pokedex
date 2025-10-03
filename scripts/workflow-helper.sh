@@ -303,17 +303,47 @@ case "$1" in
         git checkout $DEVELOP_BRANCH
         git pull origin $DEVELOP_BRANCH
         
-        # Get merged branches (excluding main, develop, and current branch)
+        # Clean up local branches
+        echo "${CYAN}🔍 Checking local branches...${NC}"
         MERGED_BRANCHES=$(git branch --merged | grep -E "(feat/|fix/|chore/)" | grep -v "\*" | tr -d ' ')
         
         if [ -n "$MERGED_BRANCHES" ]; then
-            echo "${YELLOW}Deleting merged branches:${NC}"
+            echo "${YELLOW}Deleting local merged branches:${NC}"
             echo "$MERGED_BRANCHES"
             echo "$MERGED_BRANCHES" | xargs git branch -d
             echo "${GREEN}✅ Local cleanup complete${NC}"
         else
-            echo "${YELLOW}No merged branches to clean up${NC}"
+            echo "${YELLOW}No local merged branches to clean up${NC}"
         fi
+        
+        # Clean up remote branches
+        echo "${CYAN}🔍 Checking remote branches...${NC}"
+        
+        # Fetch and prune to sync with remote
+        git fetch --prune origin
+        
+        # Get remote branches that are merged into develop
+        REMOTE_MERGED_BRANCHES=$(git branch -r --merged origin/$DEVELOP_BRANCH | grep -E "origin/(feat/|fix/|chore/)" | sed 's|origin/||' | tr -d ' ')
+        
+        if [ -n "$REMOTE_MERGED_BRANCHES" ]; then
+            echo "${YELLOW}Found merged remote branches:${NC}"
+            echo "$REMOTE_MERGED_BRANCHES"
+            
+            # Ask for confirmation before deleting remote branches
+            echo "${YELLOW}⚠️  Delete these remote branches? (y/N):${NC}"
+            read -r CONFIRM
+            if [[ $CONFIRM =~ ^[Yy]$ ]]; then
+                echo "${YELLOW}Deleting remote merged branches...${NC}"
+                echo "$REMOTE_MERGED_BRANCHES" | xargs -I {} git push origin --delete {}
+                echo "${GREEN}✅ Remote cleanup complete${NC}"
+            else
+                echo "${YELLOW}Skipped remote branch deletion${NC}"
+            fi
+        else
+            echo "${YELLOW}No remote merged branches to clean up${NC}"
+        fi
+        
+        echo "${GREEN}🎉 Branch cleanup complete!${NC}"
         ;;
 
     # Release Management
@@ -392,7 +422,7 @@ case "$1" in
         echo "  ${CYAN}status, st${NC}                 Show comprehensive status"
         echo "  ${CYAN}status --export${NC} [file]     Export status to file"
         echo "  ${CYAN}export-status${NC} [file]       Export detailed status report"
-        echo "  ${CYAN}clean, cleanup${NC}             Clean merged branches (feat/, fix/, chore/)"
+        echo "  ${CYAN}clean, cleanup${NC}             Clean merged branches (local + remote with confirmation)"
         echo "  ${CYAN}release, rel${NC} <version>     Prepare release"
         
         print_section "🔄 CI/CD"
