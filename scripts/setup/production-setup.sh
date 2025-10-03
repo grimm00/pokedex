@@ -36,9 +36,9 @@ setup_github_secrets() {
     echo -e "${YELLOW}🔑 Setting up GitHub Secrets...${NC}"
     
     # Run the existing GitHub secrets setup
-    if [ -f "$PROJECT_ROOT/scripts/setup-github-secrets.sh" ]; then
+    if [ -f "$PROJECT_ROOT/scripts/setup/setup-github-secrets.sh" ]; then
         echo "Running GitHub secrets setup..."
-        "$PROJECT_ROOT/scripts/setup-github-secrets.sh"
+        "$PROJECT_ROOT/scripts/setup/setup-github-secrets.sh"
     else
         echo -e "${RED}❌ GitHub secrets setup script not found${NC}"
         return 1
@@ -51,9 +51,9 @@ setup_production_secrets() {
     echo -e "${YELLOW}🏭 Setting up Production Secrets...${NC}"
     
     # Run the existing production secrets setup
-    if [ -f "$PROJECT_ROOT/scripts/setup-production-secrets.sh" ]; then
+    if [ -f "$PROJECT_ROOT/scripts/setup/setup-production-secrets.sh" ]; then
         echo "Running production secrets setup..."
-        "$PROJECT_ROOT/scripts/setup-production-secrets.sh"
+        "$PROJECT_ROOT/scripts/setup/setup-production-secrets.sh"
     else
         echo -e "${RED}❌ Production secrets setup script not found${NC}"
         return 1

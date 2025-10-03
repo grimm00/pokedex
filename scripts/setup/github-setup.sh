@@ -57,9 +57,9 @@ setup_ci_cd() {
     echo -e "${YELLOW}🔄 Setting up CI/CD Configuration...${NC}"
     
     # Run the existing setup scripts
-    if [ -f "$PROJECT_ROOT/scripts/setup-github-ci-cd.sh" ]; then
+    if [ -f "$PROJECT_ROOT/scripts/setup/setup-github-ci-cd.sh" ]; then
         echo "Running CI/CD setup..."
-        "$PROJECT_ROOT/scripts/setup-github-ci-cd.sh"
+        "$PROJECT_ROOT/scripts/setup/setup-github-ci-cd.sh"
     else
         echo -e "${RED}❌ CI/CD setup script not found${NC}"
         return 1
