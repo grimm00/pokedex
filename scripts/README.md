@@ -1,110 +1,172 @@
-# Scripts Directory
+# 🛠️ Pokehub Scripts Directory
 
-This directory contains utility scripts for development, deployment, testing, and project management.
+This directory contains all automation scripts for the Pokehub project, organized by function for better maintainability.
 
-## 📁 Script Categories
+## 📁 Directory Structure
 
-### **Development & Setup**
-- `setup.sh` - Initial project setup script
-- `test-docker.sh` - Docker testing utilities
-
-### **GitHub & CI/CD**
-- `setup-github-ci-cd.sh` - Complete GitHub Actions setup
-- `setup-github-secrets.sh` - GitHub secrets configuration
-- `configure-github-permissions.sh` - GitHub workflow permissions
-- `setup-production-secrets.sh` - Production environment secrets
-
-### **Deployment & Operations**
-- `deploy.sh` - Application deployment script
-- `rollback.sh` - Rollback deployment script
-- `health-check.sh` - Health check utilities
-- `invalidate-cache.sh` - Cache invalidation script
-
-### **Testing & Quality**
-- `test-phase4b-comprehensive.sh` - Comprehensive Phase 4B testing
-- `test-phase4b-quick.sh` - Quick Phase 4B validation
-- `test-phase4b-simple.sh` - Simple Phase 4B testing
-
-### **Project Management**
-- `verify-project-status.sh` - Project status verification
-- `automated-status-check.sh` - Automated status monitoring
-- `weekly-status-review.sh` - Weekly project review
-
-## 🚀 Quick Reference
-
-### **Development Setup**
-```bash
-# Initial setup
-./scripts/setup.sh
-
-# Test Docker setup
-./scripts/test-docker.sh
+```
+scripts/
+├── workflow-helper.sh          # 🌟 Main workflow automation tool
+├── core/                       # Essential operational scripts
+├── deployment/                 # CI/CD and deployment scripts
+├── setup/                      # Initial project setup scripts
+├── monitoring/                 # Status and monitoring scripts
+├── testing/                    # Test automation scripts
+└── deprecated/                 # Legacy scripts (kept for reference)
 ```
 
-### **GitHub Setup**
-```bash
-# Complete GitHub Actions setup
-./scripts/setup-github-ci-cd.sh
+## 🌟 Main Tool
 
-# Configure secrets
-./scripts/setup-github-secrets.sh
+### `workflow-helper.sh`
+The primary automation tool that provides:
+- **Git Flow**: Feature/fix/hotfix branch management
+- **GitHub Integration**: PR creation, status checking, CI/CD monitoring
+- **Development**: Start servers, run tests, push/pull operations
+- **Repository Management**: Branch cleanup, status reporting, releases
+
+**Quick Start:**
+```bash
+./scripts/workflow-helper.sh help          # Show all commands
+./scripts/workflow-helper.sh status        # Project status
+./scripts/workflow-helper.sh sf my-feature # Start feature branch
 ```
 
-### **Deployment**
+## 📂 Core Scripts (`core/`)
+
+Essential operational scripts for the application:
+
+| Script | Purpose |
+|--------|---------|
+| `docker-startup.sh` | Container initialization and startup sequence |
+| `health-check.sh` | Application health monitoring |
+| `invalidate-cache.sh` | Cache management and invalidation |
+
+## 🚀 Deployment Scripts (`deployment/`)
+
+CI/CD and deployment automation:
+
+| Script | Purpose |
+|--------|---------|
+| `deploy.sh` | Application deployment automation |
+| `rollback.sh` | Deployment rollback procedures |
+| `test-docker.sh` | Docker container testing |
+
+## ⚙️ Setup Scripts (`setup/`)
+
+Initial project configuration and setup:
+
+| Script | Purpose |
+|--------|---------|
+| `github-setup.sh` | 🔄 Consolidated GitHub CI/CD and permissions setup |
+| `production-setup.sh` | 🔄 Consolidated production and secrets configuration |
+| `security-toggle.sh` | 🔄 Consolidated security scans enable/disable |
+| `configure-github-permissions.sh` | Legacy: GitHub permissions (use github-setup.sh) |
+| `setup-github-ci-cd.sh` | Legacy: CI/CD setup (use github-setup.sh) |
+| `setup-github-secrets.sh` | Legacy: GitHub secrets (use production-setup.sh) |
+| `setup-production-secrets.sh` | Legacy: Production secrets (use production-setup.sh) |
+
+**Recommended Usage:**
 ```bash
-# Deploy application
-./scripts/deploy.sh
+# Complete GitHub setup
+./scripts/setup/github-setup.sh
 
-# Health check
-./scripts/health-check.sh
+# Production environment setup
+./scripts/setup/production-setup.sh
 
-# Rollback if needed
-./scripts/rollback.sh
+# Toggle security scans
+./scripts/setup/security-toggle.sh enable
 ```
 
-### **Testing**
-```bash
-# Comprehensive testing
-./scripts/test-phase4b-comprehensive.sh
+## 📊 Monitoring Scripts (`monitoring/`)
 
-# Quick validation
-./scripts/test-phase4b-quick.sh
+Project status and monitoring automation:
+
+| Script | Purpose |
+|--------|---------|
+| `automated-status-check.sh` | CI/CD status verification |
+| `verify-project-status.sh` | Project state validation |
+| `weekly-status-review.sh` | Weekly progress reporting |
+
+## 🧪 Testing Scripts (`testing/`)
+
+Test automation organized by feature/phase:
+
+### Phase 4B Testing (`testing/phase4b/`)
+| Script | Purpose |
+|--------|---------|
+| `comprehensive.sh` | Full Phase 4B feature testing |
+| `quick.sh` | CI/CD optimized quick validation |
+| `simple.sh` | Basic functionality validation |
+
+## 🗑️ Deprecated Scripts (`deprecated/`)
+
+Legacy scripts kept for reference:
+
+| Script | Status | Replacement |
+|--------|--------|-------------|
+| `git-flow-helper.sh` | ❌ Superseded | `workflow-helper.sh` |
+| `enable-security-scans.sh` | ❌ Consolidated | `setup/security-toggle.sh enable` |
+| `disable-security-scans.sh` | ❌ Consolidated | `setup/security-toggle.sh disable` |
+
+## 🔧 Shell Aliases
+
+The project includes comprehensive shell aliases for common operations:
+
+```bash
+# Main workflow commands
+wf                    # Direct workflow helper access
+status               # Project status
+sf <name>            # Start feature branch
+fix <name>           # Start fix branch
+chore <name>         # Start chore branch
+cleanup              # Clean merged branches
+
+# GitHub integration
+pr                   # Create pull request
+prs                  # List pull requests
+ci                   # CI/CD status
+
+# Development
+wf-dev               # Start development servers
+wf-test              # Run tests
 ```
 
-### **Project Management**
-```bash
-# Verify project status
-./scripts/verify-project-status.sh
+## 📋 Usage Examples
 
-# Weekly review
-./scripts/weekly-status-review.sh
+### Starting a New Feature
+```bash
+sf user-authentication          # Start feature branch
+# ... make changes ...
+wf-push                        # Push changes
+pr                            # Create pull request
 ```
 
-## 📝 Script Documentation
+### Project Status Check
+```bash
+status                        # Comprehensive status
+ci                           # CI/CD status
+./scripts/monitoring/verify-project-status.sh  # Detailed verification
+```
 
-Each script includes:
-- **Purpose**: What the script does
-- **Usage**: How to run it
-- **Dependencies**: What's required
-- **Output**: What to expect
-- **Error Handling**: How errors are managed
+### Setup New Environment
+```bash
+./scripts/setup/github-setup.sh      # Configure GitHub
+./scripts/setup/production-setup.sh  # Configure production
+```
 
-## 🔧 Customization
+## 🔄 Recent Improvements
 
-Scripts are designed to be:
-- **Configurable**: Environment variables for customization
-- **Portable**: Work across different environments
-- **Maintainable**: Clear structure and documentation
-- **Testable**: Include validation and error checking
+- **Consolidated Scripts**: Reduced from 21 to 15 scripts by eliminating redundancy
+- **Better Organization**: Logical grouping by function
+- **Enhanced Workflow**: Single `workflow-helper.sh` replaces multiple tools
+- **Improved Aliases**: Comprehensive shell integration
+- **Clear Documentation**: Better structure and usage examples
 
-## 🚨 Important Notes
+## 🚀 Getting Started
 
-- **Permissions**: Some scripts may require `chmod +x` to execute
-- **Environment**: Ensure proper environment variables are set
-- **Dependencies**: Check script dependencies before running
-- **Backup**: Always backup before running deployment scripts
+1. **Use the main workflow tool**: `./scripts/workflow-helper.sh help`
+2. **Set up aliases**: Source your shell configuration to load aliases
+3. **Start development**: `sf my-feature` to begin working
+4. **Check status**: `status` for comprehensive project overview
 
----
-
-**Last Updated**: October 1, 2025  
-**Status**: ✅ Organized and Documented
+For detailed command help, run any script with `--help` or check the workflow helper: `./scripts/workflow-helper.sh help`
