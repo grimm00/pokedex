@@ -17,9 +17,13 @@ This document tracks minor Sourcery feedback and improvement opportunities ident
 2. ✅ Function/variable namespacing with `gf_`/`GF_` prefixes
 3. ✅ Comprehensive Git error handling with safe wrappers
 
-### **Session 2: Enhanced Usability (PR #11 - OPEN)**
+### **Session 2: Enhanced Usability (PR #11 - MERGED)**
 4. ✅ Backwards compatibility with deprecated aliases
 5. ✅ Verbose/debug mode for troubleshooting
+
+### **Session 3: Squash Merge Detection (PR #15 - MERGED)**
+6. ✅ GitHub API integration for detecting squash-merged branches
+7. ✅ Enhanced cleanup command for modern GitHub workflows
 
 ---
 
@@ -219,6 +223,114 @@ gf_load_profile "$GF_PROFILE"
 - **Usage Patterns**: Will this improve common workflows?
 - **Maintenance Burden**: Does benefit outweigh complexity?
 - **Team Capacity**: Do we have resources for implementation and support?
+
+---
+
+### **Category: Configuration Management**
+
+#### 8. **Parameterize Docker Seeding Timeout**
+**Sourcery Feedback**: "Consider parameterizing the seeding timeout (and corresponding healthcheck start_period) via environment variables or a shared config so you don't need to hard-code matching values in multiple files."
+
+**Current Status**: Hardcoded in `docker-startup.sh` (120s) and `docker-compose.yml` (130s)  
+**Priority**: 🟡 MEDIUM (Reduces duplication, improves maintainability)  
+**Implementation Ideas**:
+```bash
+# .env or config file
+POKEMON_SEEDING_TIMEOUT=120
+HEALTHCHECK_START_PERIOD=130
+
+# docker-startup.sh
+timeout ${POKEMON_SEEDING_TIMEOUT}s python -c "..."
+
+# docker-compose.yml
+healthcheck:
+  start_period: ${HEALTHCHECK_START_PERIOD}s
+```
+
+**Benefits**:
+- Single source of truth for timeout values
+- Easier to adjust for different Pokemon counts
+- Reduces risk of mismatched timeout values
+- Better for different deployment environments
+
+**Files to Update**:
+- `scripts/core/docker-startup.sh`
+- `docker-compose.yml`
+- `.env.example`
+
+---
+
+#### 9. **Dynamic Generation Range in Messages**
+**Sourcery Feedback**: "Rather than hard-coding the '1-5' generation range in your startup script's print statements, derive it dynamically from your seeder configuration to avoid forgetting to update these messages when adding new generations."
+
+**Current Status**: Hardcoded "Generations 1-5" in print statements  
+**Priority**: 🟡 MEDIUM (Prevents message inconsistencies)  
+**Implementation Ideas**:
+```bash
+# Get generation range from Python
+GEN_RANGE=$(python -c "
+from backend.utils.generation_config import GENERATIONS
+gen_nums = sorted([g.generation_number for g in GENERATIONS.values()])
+print(f'{gen_nums[0]}-{gen_nums[-1]}')
+")
+
+# Use in messages
+print(f'✅ Seeded {result["successful"]} Pokemon from Generations {GEN_RANGE}')
+```
+
+**Benefits**:
+- Automatically reflects actual seeded generations
+- No manual message updates when adding generations
+- Single source of truth (generation_config.py)
+- Prevents documentation drift
+
+**Files to Update**:
+- `scripts/core/docker-startup.sh`
+- `backend/utils/pokemon_seeder.py` (return generation info)
+
+---
+
+### **Category: Documentation Optimization**
+
+#### 10. **Streamline Troubleshooting Documentation**
+**Sourcery Feedback**: "The new troubleshooting guide is very detailed—consider trimming it down to key steps or linking to an external document to reduce in-repo maintenance overhead."
+
+**Current Status**: Very comprehensive `docker-seeding-timeout.md` (383 lines)  
+**Priority**: 🟢 LOW (Documentation organization)  
+**Implementation Ideas**:
+- Option A: Split into "Quick Reference" (in repo) and "Detailed Guide" (Wiki/external docs)
+- Option B: Keep detailed in repo, add TL;DR section at top
+- Option C: Move to `/docs` directory with versioned documentation
+
+**Benefits**:
+- Faster access to quick solutions
+- Reduced git diff noise for doc updates
+- Easier to maintain detailed guides externally
+- Better organization for different user needs
+
+**Trade-offs**:
+- External docs require separate hosting
+- May reduce discoverability
+- Version sync challenges between repo and external docs
+
+**Recommendation**: Keep in repo but add "Quick Reference" section at top
+
+---
+
+## 📊 Updated Implementation Priority Matrix
+
+| Enhancement | Impact | Effort | Priority | Target Version |
+|------------|--------|--------|----------|---------------|
+| Smaller PRs (Process) | Medium | Low | 🟢 LOW | Ongoing |
+| **Parameterize Seeding Timeout** | **Medium** | **Low** | **🟡 MEDIUM** | **1.x** |
+| **Dynamic Generation Messages** | **Medium** | **Low** | **🟡 MEDIUM** | **1.x** |
+| **Streamline Troubleshooting Docs** | **Low** | **Low** | **🟢 LOW** | **1.x** |
+| Structured Logging | Medium | Medium | 🟢 LOW | 2.x |
+| Performance Metrics | Low | Low | 🟢 LOW | 2.x |
+| Custom Error Handlers | Low | High | 🟢 LOW | 3.x |
+| Configuration Profiles | Medium | Medium | 🟢 LOW | 2.x |
+| Interactive Examples | Medium | Medium | 🟢 LOW | 2.x |
+| Troubleshooting Guide | High | Low | 🟢 LOW | 1.x |
 
 ---
 
