@@ -117,7 +117,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
 # Copy startup script
-COPY scripts/docker-startup.sh /usr/local/bin/
+COPY scripts/core/docker-startup.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-startup.sh
 
 # Start application using startup script
