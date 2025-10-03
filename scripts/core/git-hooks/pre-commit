@@ -18,61 +18,61 @@ else
     CYAN='\033[0;36m'
     NC='\033[0m' # No Color
     
-    print_status() {
+    gf_gf_print_status() {
         local msg_type=$1
         local message=$2
         case $msg_type in
-            "ERROR")   echo -e "${RED}❌ $message${NC}" ;;
-            "WARNING") echo -e "${YELLOW}⚠️  $message${NC}" ;;
-            "SUCCESS") echo -e "${GREEN}✅ $message${NC}" ;;
-            "INFO")    echo -e "${CYAN}ℹ️  $message${NC}" ;;
+            "ERROR")   echo -e "${GF_RED}❌ $message${GF_NC}" ;;
+            "WARNING") echo -e "${GF_YELLOW}⚠️  $message${GF_NC}" ;;
+            "SUCCESS") echo -e "${GF_GREEN}✅ $message${GF_NC}" ;;
+            "INFO")    echo -e "${GF_CYAN}ℹ️  $message${GF_NC}" ;;
         esac
     }
 fi
 
-echo -e "${CYAN}🛡️  Running pre-commit safety checks...${NC}"
+echo -e "${GF_CYAN}🛡️  Running pre-commit safety checks...${GF_NC}"
 
 # Run basic safety checks (skip working directory check since we're committing)
 if [ -f "$PROJECT_ROOT/scripts/core/git-flow-safety.sh" ]; then
     # Run individual checks that make sense for pre-commit
-    echo -e "${CYAN}Checking branch safety...${NC}"
+    echo -e "${GF_CYAN}Checking branch safety...${GF_NC}"
     if ! "$PROJECT_ROOT/scripts/core/git-flow-safety.sh" branch; then
-        echo -e "${RED}❌ Branch safety check failed${NC}"
-        echo -e "${YELLOW}💡 Consider switching to a feature branch before committing${NC}"
+        echo -e "${GF_RED}❌ Branch safety check failed${GF_NC}"
+        echo -e "${GF_YELLOW}💡 Consider switching to a feature branch before committing${GF_NC}"
         exit 1
     fi
     
-    echo -e "${CYAN}Checking for potential conflicts...${NC}"
+    echo -e "${GF_CYAN}Checking for potential conflicts...${GF_NC}"
     if ! "$PROJECT_ROOT/scripts/core/git-flow-safety.sh" conflicts; then
-        echo -e "${RED}❌ Potential merge conflicts detected${NC}"
-        echo -e "${YELLOW}💡 Resolve conflicts before committing${NC}"
+        echo -e "${GF_RED}❌ Potential merge conflicts detected${GF_NC}"
+        echo -e "${GF_YELLOW}💡 Resolve conflicts before committing${GF_NC}"
         exit 1
     fi
     
-    echo -e "${GREEN}✅ Pre-commit safety checks passed${NC}"
+    echo -e "${GF_GREEN}✅ Pre-commit safety checks passed${GF_NC}"
 else
-    echo -e "${YELLOW}⚠️  Safety check script not found, skipping...${NC}"
+    echo -e "${GF_YELLOW}⚠️  Safety check script not found, skipping...${GF_NC}"
 fi
 
 # Additional checks for specific file types
-echo -e "${CYAN}Checking for sensitive files...${NC}"
+echo -e "${GF_CYAN}Checking for sensitive files...${GF_NC}"
 
 # Check for accidentally committed sensitive files
 if git diff --cached --name-only | grep -E "\.(env|key|pem|p12|pfx)$|\.env\.|secrets|password"; then
-    echo -e "${RED}❌ Potentially sensitive files detected in commit:${NC}"
+    echo -e "${GF_RED}❌ Potentially sensitive files detected in commit:${GF_NC}"
     git diff --cached --name-only | grep -E "\.(env|key|pem|p12|pfx)$|\.env\.|secrets|password"
-    echo -e "${YELLOW}💡 Remove sensitive files from commit or add to .gitignore${NC}"
+    echo -e "${GF_YELLOW}💡 Remove sensitive files from commit or add to .gitignore${GF_NC}"
     exit 1
 fi
 
 # Check for large files (>10MB)
 large_files=$(git diff --cached --name-only | xargs -I {} find {} -size +10M 2>/dev/null)
 if [ -n "$large_files" ]; then
-    echo -e "${RED}❌ Large files detected in commit (>10MB):${NC}"
+    echo -e "${GF_RED}❌ Large files detected in commit (>10MB):${GF_NC}"
     echo "$large_files"
-    echo -e "${YELLOW}💡 Consider using Git LFS for large files${NC}"
+    echo -e "${GF_YELLOW}💡 Consider using Git LFS for large files${GF_NC}"
     exit 1
 fi
 
-echo -e "${GREEN}🎉 All pre-commit checks passed!${NC}"
+echo -e "${GF_GREEN}🎉 All pre-commit checks passed!${GF_NC}"
 exit 0

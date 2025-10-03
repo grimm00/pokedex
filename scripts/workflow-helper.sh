@@ -6,8 +6,21 @@
 
 set -e
 
-MAIN_BRANCH="main"
-DEVELOP_BRANCH="develop"
+# Get the script directory for relative imports
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source Git Flow utilities for safe Git operations
+if [ -f "$SCRIPT_DIR/core/git-flow-utils.sh" ]; then
+    source "$SCRIPT_DIR/core/git-flow-utils.sh"
+    gf_init_git_flow_utils >/dev/null 2>&1
+else
+    echo "❌ Error: git-flow-utils.sh not found. Please ensure all Git Flow scripts are properly installed."
+    exit 1
+fi
+
+# Use Git Flow configuration
+MAIN_BRANCH="$GF_MAIN_BRANCH"
+DEVELOP_BRANCH="$GF_DEVELOP_BRANCH"
 PROJECT_DIR="/Users/cdwilson/Projects/pokedex"
 
 # Colors for output (only if terminal supports it)
@@ -62,9 +75,9 @@ case "$1" in
         fi
         
         echo "${GREEN}🌱 Starting new feature: $2${NC}"
-        git checkout $DEVELOP_BRANCH
-        git pull origin $DEVELOP_BRANCH
-        git checkout -b "feat/$2"
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
+        gf_git_checkout "feat/$2" true
         echo "${GREEN}✅ Created and switched to feat/$2${NC}"
         echo "${YELLOW}💡 Next steps:${NC}"
         echo "   1. Make your changes"
@@ -78,9 +91,9 @@ case "$1" in
             exit 1
         fi
         echo "${GREEN}🐛 Starting new fix: $2${NC}"
-        git checkout $DEVELOP_BRANCH
-        git pull origin $DEVELOP_BRANCH
-        git checkout -b "fix/$2"
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
+        gf_git_checkout "fix/$2" true
         echo "${GREEN}✅ Created and switched to fix/$2${NC}"
         echo "${YELLOW}💡 Next steps:${NC}"
         echo "   1. Fix the issue"
@@ -94,9 +107,9 @@ case "$1" in
             exit 1
         fi
         echo "${GREEN}🔧 Starting new chore: $2${NC}"
-        git checkout $DEVELOP_BRANCH
-        git pull origin $DEVELOP_BRANCH
-        git checkout -b "chore/$2"
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
+        gf_git_checkout "chore/$2" true
         echo "${GREEN}✅ Created and switched to chore/$2${NC}"
         echo "${YELLOW}💡 Next steps:${NC}"
         echo "   1. Complete the maintenance task"
@@ -111,9 +124,9 @@ case "$1" in
             exit 1
         fi
         echo "${RED}🚨 Starting hotfix: $2${NC}"
-        git checkout $MAIN_BRANCH
-        git pull origin $MAIN_BRANCH
-        git checkout -b "fix/$2"
+        gf_git_checkout $MAIN_BRANCH
+        gf_git_pull origin $MAIN_BRANCH
+        gf_git_checkout "fix/$2" true
         echo "${GREEN}✅ Created and switched to fix/$2${NC}"
         echo "${YELLOW}💡 Next steps:${NC}"
         echo "   1. Fix the critical issue"
@@ -138,14 +151,14 @@ case "$1" in
         fi
         
         echo "${GREEN}📝 Creating PR: $CURRENT_BRANCH → $TARGET${NC}"
-        git push origin "$CURRENT_BRANCH"
+        gf_git_push origin "$CURRENT_BRANCH"
         gh pr create --base "$TARGET" --head "$CURRENT_BRANCH" --web
         ;;
         
     "pr-main")
         CURRENT_BRANCH=$(git branch --show-current)
         echo "${GREEN}📝 Creating PR: $CURRENT_BRANCH → $MAIN_BRANCH${NC}"
-        git push origin "$CURRENT_BRANCH"
+        gf_git_push origin "$CURRENT_BRANCH"
         gh pr create --base "$MAIN_BRANCH" --head "$CURRENT_BRANCH" --web
         ;;
         
@@ -166,21 +179,21 @@ case "$1" in
     "push"|"p")
         CURRENT_BRANCH=$(git branch --show-current)
         echo "${GREEN}⬆️  Pushing $CURRENT_BRANCH to origin${NC}"
-        git push origin "$CURRENT_BRANCH"
+        gf_git_push origin "$CURRENT_BRANCH"
         ;;
         
     "pull")
         CURRENT_BRANCH=$(git branch --show-current)
         echo "${GREEN}⬇️  Pulling $CURRENT_BRANCH from origin${NC}"
-        git pull origin "$CURRENT_BRANCH"
+        gf_git_pull origin "$CURRENT_BRANCH"
         ;;
         
     "sync"|"sync-develop")
         echo "${GREEN}🔄 Syncing develop with main${NC}"
-        git checkout $DEVELOP_BRANCH
-        git pull origin $DEVELOP_BRANCH
-        git merge origin/$MAIN_BRANCH
-        git push origin $DEVELOP_BRANCH
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
+        gf_git_merge origin/$MAIN_BRANCH
+        gf_git_push origin $DEVELOP_BRANCH
         echo "${GREEN}✅ Develop branch synced with main${NC}"
         ;;
 
@@ -324,9 +337,21 @@ case "$1" in
         ;;
         
     "clean"|"cleanup")
-        echo "${GREEN}🧹 Cleaning up merged branches${NC}"
-        git checkout $DEVELOP_BRANCH
-        git pull origin $DEVELOP_BRANCH
+        # Check for --yes flag or CI environment for non-interactive mode
+        FORCE_YES=false
+        if [ "$2" = "--yes" ] || [ "$2" = "-y" ] || [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+            FORCE_YES=true
+            if [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+                echo "${GREEN}🧹 Cleaning up merged branches (CI environment detected - auto-confirming)${NC}"
+            else
+                echo "${GREEN}🧹 Cleaning up merged branches (non-interactive mode)${NC}"
+            fi
+        else
+            echo "${GREEN}🧹 Cleaning up merged branches${NC}"
+        fi
+        
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
         
         # Clean up local branches
         echo "${CYAN}🔍 Checking local branches...${NC}"
@@ -345,7 +370,7 @@ case "$1" in
         echo "${CYAN}🔍 Checking remote branches...${NC}"
         
         # Fetch and prune to sync with remote
-        git fetch --prune origin
+        gf_git_fetch origin
         
         # Get remote branches that are merged into develop
         REMOTE_MERGED_BRANCHES=$(git branch -r --merged origin/$DEVELOP_BRANCH | grep -E "origin/(feat/|fix/|chore/)" | sed 's|origin/||' | tr -d ' ')
@@ -354,12 +379,23 @@ case "$1" in
             echo "${YELLOW}Found merged remote branches:${NC}"
             echo "$REMOTE_MERGED_BRANCHES"
             
-            # Ask for confirmation before deleting remote branches
-            echo "${YELLOW}⚠️  Delete these remote branches? (y/N):${NC}"
-            read -r CONFIRM
+            # Handle confirmation based on mode
+            if [ "$FORCE_YES" = true ]; then
+                echo "${YELLOW}Auto-confirming remote branch deletion (--yes flag)${NC}"
+                CONFIRM="y"
+            else
+                # Ask for confirmation before deleting remote branches
+                echo "${YELLOW}⚠️  Delete these remote branches? (y/N):${NC}"
+                read -r CONFIRM
+            fi
+            
             if [[ $CONFIRM =~ ^[Yy]$ ]]; then
                 echo "${YELLOW}Deleting remote merged branches...${NC}"
-                echo "$REMOTE_MERGED_BRANCHES" | xargs -I {} git push origin --delete {}
+                echo "$REMOTE_MERGED_BRANCHES" | while read -r branch; do
+                    if ! gf_git_safe "git push origin --delete $branch" "Deleting remote branch $branch" false; then
+                        echo "${YELLOW}⚠️  Failed to delete remote branch: $branch${NC}"
+                    fi
+                done
                 echo "${GREEN}✅ Remote cleanup complete${NC}"
             else
                 echo "${YELLOW}Skipped remote branch deletion${NC}"
@@ -378,8 +414,8 @@ case "$1" in
             exit 1
         fi
         echo "${GREEN}📦 Preparing release: $2${NC}"
-        git checkout $DEVELOP_BRANCH
-        git pull origin $DEVELOP_BRANCH
+        gf_git_checkout $DEVELOP_BRANCH
+        gf_git_pull origin $DEVELOP_BRANCH
         
         # Update version in package.json
         sed -i.bak "s/\"version\": \".*\"/\"version\": \"$2\"/" frontend/package.json
@@ -387,7 +423,7 @@ case "$1" in
         
         git add frontend/package.json
         git commit -m "chore: bump version to $2"
-        git push origin $DEVELOP_BRANCH
+        gf_git_push origin $DEVELOP_BRANCH
         
         echo "${GREEN}✅ Version bumped to $2 in develop${NC}"
         echo "${YELLOW}💡 Next steps:${NC}"
@@ -451,7 +487,9 @@ case "$1" in
         echo "  ${CYAN}status, st${NC}                 Show comprehensive status"
         echo "  ${CYAN}status --export${NC} [file]     Export status to file"
         echo "  ${CYAN}export-status${NC} [file]       Export detailed status report"
-        echo "  ${CYAN}clean, cleanup${NC}             Clean merged branches (local + remote with confirmation)"
+        echo "  ${CYAN}clean, cleanup${NC} [--yes]     Clean merged branches (local + remote with confirmation)"
+        echo "    ${YELLOW}--yes, -y${NC}                 Skip confirmation prompts (for CI/automation)"
+        echo "    ${YELLOW}Note:${NC} Auto-confirms in CI environments (CI, GITHUB_ACTIONS)"
         echo "  ${CYAN}release, rel${NC} <version>     Prepare release"
         
         print_section "🔄 CI/CD"
