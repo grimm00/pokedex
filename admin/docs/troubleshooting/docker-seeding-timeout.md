@@ -6,6 +6,36 @@
 
 ---
 
+## ⚡ TL;DR - Quick Fix
+
+<details>
+<summary><b>Click to expand quick commands</b></summary>
+
+### **Problem**: Docker seeding times out, incomplete Pokemon data
+
+### **Quick Diagnosis**:
+```bash
+# Check seeding status
+docker compose logs pokehub-app | grep -E "(Seeded|timeout)"
+
+# Verify Pokemon count
+curl -s "http://localhost/api/v1/pokemon?per_page=1000" | \
+  python3 -c "import sys, json; data = json.load(sys.stdin); print(f'Total: {data[\"pagination\"][\"total\"]}')"
+```
+
+### **Quick Fix** (for 649 Pokemon):
+1. Update `scripts/core/docker-startup.sh` line 22: `timeout 120s`
+2. Update `docker-compose.yml` line 22: `start_period: 130s`
+3. Rebuild: `docker compose down && docker compose build --no-cache && docker compose up -d`
+
+### **Timeout Formula**: `(Total Pokemon × 0.2s) + 30s buffer`
+
+[Jump to detailed troubleshooting →](#-how-to-diagnose)
+
+</details>
+
+---
+
 ## 🎯 Problem Summary
 
 When adding more Pokemon generations to the application, the Docker container's Pokemon seeding process can timeout before completing, resulting in incomplete data and missing generations.
