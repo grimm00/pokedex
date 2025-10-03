@@ -33,25 +33,25 @@ fi
 # ============================================================================
 
 # Default configuration (can be overridden by environment variables or config file)
-DEFAULT_GF_MAIN_BRANCH="main"
-DEFAULT_GF_DEVELOP_BRANCH="develop"
-DEFAULT_GF_PROTECTED_BRANCHES=("main" "develop" "master")
-DEFAULT_GF_BRANCH_PREFIXES=("feat/" "fix/" "chore/" "hotfix/")
+DEFAULT_MAIN_BRANCH="main"
+DEFAULT_DEVELOP_BRANCH="develop"
+DEFAULT_PROTECTED_BRANCHES=("main" "develop" "master")
+DEFAULT_BRANCH_PREFIXES=("feat/" "fix/" "chore/" "hotfix/")
 
 # Load configuration from environment variables or use defaults
-GF_MAIN_BRANCH="${GIT_FLOW_MAIN_BRANCH:-$DEFAULT_MAIN_BRANCH}"
-GF_DEVELOP_BRANCH="${GIT_FLOW_DEVELOP_BRANCH:-$DEFAULT_DEVELOP_BRANCH}"
+GF_MAIN_BRANCH="${GIT_FLOW_MAIN_BRANCH:-${DEFAULT_MAIN_BRANCH}}"
+GF_DEVELOP_BRANCH="${GIT_FLOW_DEVELOP_BRANCH:-${DEFAULT_DEVELOP_BRANCH}}"
 
 # Load protected branches from env var (comma-separated) or use defaults
 if [ -n "${GIT_FLOW_PROTECTED_BRANCHES:-}" ]; then
-    IFS=',' read -ra PROTECTED_BRANCHES <<< "$GIT_FLOW_PROTECTED_BRANCHES"
+    IFS=',' read -ra GF_PROTECTED_BRANCHES <<< "$GIT_FLOW_PROTECTED_BRANCHES"
 else
     GF_PROTECTED_BRANCHES=("${DEFAULT_PROTECTED_BRANCHES[@]}")
 fi
 
 # Load branch prefixes from env var (comma-separated) or use defaults
 if [ -n "${GIT_FLOW_BRANCH_PREFIXES:-}" ]; then
-    IFS=',' read -ra BRANCH_PREFIXES <<< "$GIT_FLOW_BRANCH_PREFIXES"
+    IFS=',' read -ra GF_BRANCH_PREFIXES <<< "$GIT_FLOW_BRANCH_PREFIXES"
 else
     GF_BRANCH_PREFIXES=("${DEFAULT_BRANCH_PREFIXES[@]}")
 fi
@@ -78,8 +78,8 @@ load_config() {
             case $key in
                 "MAIN_BRANCH") GF_MAIN_BRANCH="$value" ;;
                 "DEVELOP_BRANCH") GF_DEVELOP_BRANCH="$value" ;;
-                "PROTECTED_BRANCHES") IFS=',' read -ra PROTECTED_BRANCHES <<< "$value" ;;
-                "BRANCH_PREFIXES") IFS=',' read -ra BRANCH_PREFIXES <<< "$value" ;;
+                "PROTECTED_BRANCHES") IFS=',' read -ra GF_PROTECTED_BRANCHES <<< "$value" ;;
+                "BRANCH_PREFIXES") IFS=',' read -ra GF_BRANCH_PREFIXES <<< "$value" ;;
             esac
         done < "$CONFIG_FILE"
     fi
@@ -191,6 +191,142 @@ gf_check_dependencies() {
     
     gf_print_status "SUCCESS" "All required dependencies available"
     return 0
+}
+
+# ============================================================================
+# GIT ERROR HANDLING
+# ============================================================================
+
+# Execute git command with error handling
+gf_git_safe() {
+    local cmd="$1"
+    local operation="$2"
+    local exit_on_error="${3:-true}"
+    
+    gf_print_status "INFO" "Executing: $operation..."
+    
+    if eval "$cmd" >/dev/null 2>&1; then
+        gf_print_status "SUCCESS" "$operation completed successfully"
+        return 0
+    else
+        local exit_code=$?
+        gf_print_status "ERROR" "$operation failed (exit code: $exit_code)"
+        
+        # Provide specific error guidance based on command type
+        case "$cmd" in
+            *"fetch"*|*"pull"*)
+                echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
+                echo "   - Network connectivity issues"
+                echo "   - Authentication failure (check SSH keys or tokens)"
+                echo "   - Remote repository unavailable"
+                echo "   - Firewall or proxy blocking Git operations"
+                ;;
+            *"push"*)
+                echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
+                echo "   - Authentication failure (check push permissions)"
+                echo "   - Branch protection rules preventing push"
+                echo "   - Network connectivity issues"
+                echo "   - Repository quota exceeded"
+                ;;
+            *"checkout"*|*"merge"*|*"rebase"*)
+                echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
+                echo "   - Uncommitted changes blocking operation"
+                echo "   - Merge conflicts need resolution"
+                echo "   - Branch does not exist"
+                echo "   - Working directory not clean"
+                ;;
+        esac
+        
+        if [ "$exit_on_error" = "true" ]; then
+            gf_print_status "ERROR" "Aborting due to Git operation failure"
+            exit $exit_code
+        fi
+        
+        return $exit_code
+    fi
+}
+
+# Safe git fetch with comprehensive error handling
+gf_git_fetch() {
+    local remote="${1:-origin}"
+    local branch="${2:-}"
+    local fetch_cmd="git fetch --prune $remote"
+    
+    if [ -n "$branch" ]; then
+        fetch_cmd="$fetch_cmd $branch"
+    fi
+    
+    gf_git_safe "$fetch_cmd" "Fetching from $remote" true
+}
+
+# Safe git pull with error handling
+gf_git_pull() {
+    local remote="${1:-origin}"
+    local branch="${2:-$(gf_get_current_branch)}"
+    
+    gf_git_safe "git pull $remote $branch" "Pulling $branch from $remote" true
+}
+
+# Safe git push with error handling
+gf_git_push() {
+    local remote="${1:-origin}"
+    local branch="${2:-$(gf_get_current_branch)}"
+    local force="${3:-false}"
+    
+    local push_cmd="git push $remote $branch"
+    if [ "$force" = "true" ]; then
+        push_cmd="$push_cmd --force-with-lease"
+    fi
+    
+    gf_git_safe "$push_cmd" "Pushing $branch to $remote" true
+}
+
+# Safe git checkout with error handling
+gf_git_checkout() {
+    local target="$1"
+    local create_new="${2:-false}"
+    
+    local checkout_cmd="git checkout"
+    if [ "$create_new" = "true" ]; then
+        checkout_cmd="$checkout_cmd -b"
+    fi
+    checkout_cmd="$checkout_cmd $target"
+    
+    gf_git_safe "$checkout_cmd" "Checking out $target" true
+}
+
+# Safe git merge with error handling
+gf_git_merge() {
+    local branch="$1"
+    local no_ff="${2:-false}"
+    
+    local merge_cmd="git merge"
+    if [ "$no_ff" = "true" ]; then
+        merge_cmd="$merge_cmd --no-ff"
+    fi
+    merge_cmd="$merge_cmd $branch"
+    
+    gf_git_safe "$merge_cmd" "Merging $branch" true
+}
+
+# Check network connectivity to Git remote
+gf_check_git_connectivity() {
+    local remote="${1:-origin}"
+    
+    gf_print_status "INFO" "Checking connectivity to $remote..."
+    
+    if git ls-remote --heads "$remote" >/dev/null 2>&1; then
+        gf_print_status "SUCCESS" "Git remote $remote is accessible"
+        return 0
+    else
+        gf_print_status "ERROR" "Cannot connect to Git remote $remote"
+        echo -e "${GF_YELLOW}💡 Troubleshooting steps:${GF_NC}"
+        echo "   1. Check network connection: ping github.com"
+        echo "   2. Verify SSH key: ssh -T git@github.com"
+        echo "   3. Check repository URL: git remote -v"
+        echo "   4. Try HTTPS instead of SSH or vice versa"
+        return 1
+    fi
 }
 
 # ============================================================================
@@ -323,6 +459,8 @@ export -f gf_get_current_branch gf_is_git_repo gf_get_project_root
 export -f gf_branch_exists gf_remote_branch_exists
 export -f gf_is_protected_branch gf_is_valid_branch_name
 export -f gf_show_config gf_create_default_config
+export -f gf_git_safe gf_git_fetch gf_git_pull gf_git_push
+export -f gf_git_checkout gf_git_merge gf_check_git_connectivity
 
 export GF_RED GF_GREEN GF_YELLOW GF_BLUE GF_PURPLE GF_CYAN GF_BOLD GF_NC
 export GF_MAIN_BRANCH GF_DEVELOP_BRANCH GF_PROTECTED_BRANCHES GF_BRANCH_PREFIXES

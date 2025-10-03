@@ -118,7 +118,7 @@ check_merge_conflicts() {
     fi
     
     # Fetch latest changes
-    git fetch origin $GF_DEVELOP_BRANCH >/dev/null 2>&1
+    gf_git_fetch origin $GF_DEVELOP_BRANCH
     
     # Check if current branch is behind develop
     local behind_count=$(git rev-list --count HEAD..origin/$GF_DEVELOP_BRANCH 2>/dev/null || echo "0")
