@@ -142,7 +142,7 @@ case "$1" in
         
     "pr-status"|"prs")
         echo "${GREEN}📋 Pull Request Status${NC}"
-        gh pr list --state open
+        PAGER="" gh pr list --state open
         ;;
         
     "pr-view"|"prv")
@@ -226,7 +226,7 @@ case "$1" in
             
             print_section "📋 Pull Requests"
             if command -v gh &> /dev/null; then
-                gh pr list --state open --limit 5 2>/dev/null || echo "No open PRs or GitHub CLI not authenticated"
+                PAGER="" gh pr list --state open --limit 5 2>/dev/null || echo "No open PRs or GitHub CLI not authenticated"
             else
                 echo "GitHub CLI not installed"
             fi
@@ -269,7 +269,7 @@ case "$1" in
             
             print_section "📋 Pull Requests"
             if command -v gh &> /dev/null; then
-                gh pr list --state all --limit 10 2>/dev/null || echo "No PRs or GitHub CLI not authenticated"
+                PAGER="" gh pr list --state all --limit 10 2>/dev/null || echo "No PRs or GitHub CLI not authenticated"
             else
                 echo "GitHub CLI not installed"
             fi
