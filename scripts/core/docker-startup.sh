@@ -19,7 +19,7 @@ with app.app_context():
 
 # Seed Pokemon data (with timeout and error handling)
 echo "🌱 Seeding Pokemon data..."
-cd /app && timeout 60s python -c "
+cd /app && timeout 120s python -c "
 from backend.app import app
 from backend.utils.pokemon_seeder import pokemon_seeder
 with app.app_context():
@@ -30,7 +30,7 @@ with app.app_context():
         print(f'⚠️ Pokemon seeding failed: {e}')
         print('🔄 Application will continue without seeded data')
 " || {
-    echo "⚠️ Pokemon seeding timed out after 60 seconds"
+    echo "⚠️ Pokemon seeding timed out after 120 seconds"
     echo "🔄 Application will continue without seeded data"
 }
 
