@@ -142,10 +142,32 @@ This log documents the troubleshooting process for CI/CD failures encountered du
    - Nginx starts but proxies to non-existent backend ❌
    - Health check fails: no working application ❌
 
-### **✅ Solution Applied**
-- **Status:** 🔧 **IN PROGRESS** - Fix Flask module path in docker-startup.sh
-- **Root Cause:** Flask backend not starting due to incorrect module path after directory restructure
-- **Fix:** Update startup script to use correct Python module path
+### **✅ Solution Applied - Attempt #1**
+- **Status:** ❌ **FAILED** - Module path fix didn't resolve the issue
+- **Applied Fix:** Added `cd /app &&` before all Python commands in docker-startup.sh
+- **Result:** Still getting "Connection reset by peer" after 30s wait
+
+### **🔍 Additional Investigation - Issue #3 Continued**
+6. **Timing analysis:**
+   ```yaml
+   # docker-compose.yml healthcheck:
+   start_period: 40s  # Container needs 40s to be ready
+   # CI/CD script:
+   sleep 30           # Only waits 30s before health check
+   ```
+
+7. **Potential issues:**
+   - ⏰ **Timing:** CI waits 30s, but container needs 40s to be ready
+   - 🐍 **Flask startup:** Backend might still be failing to start
+   - 🌐 **Nginx config:** Proxy configuration might be incorrect
+   - 🔍 **Need container logs:** Must see what's happening inside container
+
+### **✅ Solution Applied - Attempt #2**
+- **Status:** 🔧 **IN PROGRESS** - Investigate timing and get container logs
+- **Next Steps:** 
+  1. Increase CI wait time from 30s to 45s
+  2. Add container log output to CI for debugging
+  3. Test locally to verify container behavior
 
 ---
 
