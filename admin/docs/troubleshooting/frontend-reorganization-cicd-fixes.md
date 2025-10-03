@@ -126,9 +126,26 @@ This log documents the troubleshooting process for CI/CD failures encountered du
    - Health check fails: connection reset by peer
    - **Likely Issue:** App not ready after 30s or health endpoint misconfigured
 
+### **🔍 Root Cause Analysis**
+4. **Container startup script investigation:**
+   ```bash
+   # Reviewed scripts/core/docker-startup.sh
+   # Found: python -m backend.app & (line 36)
+   # Issue: Flask backend likely failing to start due to module path issues
+   ```
+
+5. **Container behavior:**
+   - Redis starts successfully ✅
+   - Database initialization runs ✅  
+   - Pokemon seeding runs ✅
+   - Flask backend fails to start ❌ (suspected)
+   - Nginx starts but proxies to non-existent backend ❌
+   - Health check fails: no working application ❌
+
 ### **✅ Solution Applied**
-- **Status:** 🔧 **IN PROGRESS** - Investigating health check timing/endpoint
-- **Next Steps:** Check if 30s is sufficient, verify health endpoint works
+- **Status:** 🔧 **IN PROGRESS** - Fix Flask module path in docker-startup.sh
+- **Root Cause:** Flask backend not starting due to incorrect module path after directory restructure
+- **Fix:** Update startup script to use correct Python module path
 
 ---
 

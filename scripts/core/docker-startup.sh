@@ -9,7 +9,7 @@ redis-server --daemonize yes
 
 # Initialize database tables
 echo "🗄️ Initializing database..."
-python -c "
+cd /app && python -c "
 from backend.app import app
 from backend.database import db
 with app.app_context():
@@ -19,7 +19,7 @@ with app.app_context():
 
 # Seed Pokemon data
 echo "🌱 Seeding Pokemon data..."
-python -c "
+cd /app && python -c "
 from backend.app import app
 from backend.utils.pokemon_seeder import pokemon_seeder
 with app.app_context():
@@ -33,7 +33,7 @@ with app.app_context():
 
 # Start Flask app in the background
 echo "🐍 Starting Flask backend..."
-python -m backend.app &
+cd /app && python -m backend.app &
 
 # Start nginx in the foreground
 echo "🌐 Starting nginx frontend..."
