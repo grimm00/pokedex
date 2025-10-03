@@ -196,54 +196,102 @@ gf_check_dependencies() {
 # ============================================================================
 # GIT ERROR HANDLING
 # ============================================================================
+#
+# Verbose/Debug Mode:
+#   Set GF_VERBOSE=true or GF_DEBUG=true to enable detailed output
+#   
+#   Examples:
+#     export GF_VERBOSE=true
+#     ./scripts/workflow-helper.sh push
+#     
+#     GF_DEBUG=true ./scripts/core/git-flow-safety.sh check
+#
+# In verbose mode:
+#   - Shows actual Git commands being executed
+#   - Displays real-time command output
+#   - Provides detailed error information
+#
 
 # Execute git command with error handling
 gf_git_safe() {
     local cmd="$1"
     local operation="$2"
     local exit_on_error="${3:-true}"
+    local verbose="${GF_VERBOSE:-${GF_DEBUG:-false}}"
     
     gf_print_status "INFO" "Executing: $operation..."
     
-    if eval "$cmd" >/dev/null 2>&1; then
+    # Show command being executed in verbose mode
+    if [ "$verbose" = "true" ]; then
+        echo -e "${GF_CYAN}🔍 Command: $cmd${GF_NC}" >&2
+    fi
+    
+    local output_file
+    local error_output=""
+    
+    local exit_code=0
+    
+    if [ "$verbose" = "true" ]; then
+        # In verbose mode, show output in real-time
+        if ! eval "$cmd" 2>&1; then
+            exit_code=$?
+        fi
+    else
+        # In quiet mode, capture output for error reporting
+        output_file=$(mktemp)
+        if ! eval "$cmd" >"$output_file" 2>&1; then
+            exit_code=$?
+            error_output=$(cat "$output_file" 2>/dev/null || echo "No error output available")
+        fi
+        rm -f "$output_file"
+    fi
+    
+    if [ $exit_code -eq 0 ]; then
         gf_print_status "SUCCESS" "$operation completed successfully"
         return 0
-    else
-        local exit_code=$?
-        gf_print_status "ERROR" "$operation failed (exit code: $exit_code)"
-        
-        # Provide specific error guidance based on command type
-        case "$cmd" in
-            *"fetch"*|*"pull"*)
-                echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
-                echo "   - Network connectivity issues"
-                echo "   - Authentication failure (check SSH keys or tokens)"
-                echo "   - Remote repository unavailable"
-                echo "   - Firewall or proxy blocking Git operations"
-                ;;
-            *"push"*)
-                echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
-                echo "   - Authentication failure (check push permissions)"
-                echo "   - Branch protection rules preventing push"
-                echo "   - Network connectivity issues"
-                echo "   - Repository quota exceeded"
-                ;;
-            *"checkout"*|*"merge"*|*"rebase"*)
-                echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
-                echo "   - Uncommitted changes blocking operation"
-                echo "   - Merge conflicts need resolution"
-                echo "   - Branch does not exist"
-                echo "   - Working directory not clean"
-                ;;
-        esac
-        
-        if [ "$exit_on_error" = "true" ]; then
-            gf_print_status "ERROR" "Aborting due to Git operation failure"
-            exit $exit_code
-        fi
-        
-        return $exit_code
     fi
+    
+    # Handle error case
+    gf_print_status "ERROR" "$operation failed (exit code: $exit_code)"
+    
+    # Show captured error output in quiet mode
+    if [ "$verbose" != "true" ] && [ -n "$error_output" ]; then
+        echo -e "${GF_YELLOW}📋 Error Output:${GF_NC}" >&2
+        echo "$error_output" | sed 's/^/   /' >&2
+        echo "" >&2
+    fi
+    
+    # Provide specific error guidance based on command type
+    case "$cmd" in
+        *"fetch"*|*"pull"*)
+            echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
+            echo "   - Network connectivity issues"
+            echo "   - Authentication failure (check SSH keys or tokens)"
+            echo "   - Remote repository unavailable"
+            echo "   - Firewall or proxy blocking Git operations"
+            ;;
+        *"push"*)
+            echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
+            echo "   - Authentication failure (check push permissions)"
+            echo "   - Branch protection rules preventing push"
+            echo "   - Network connectivity issues"
+            echo "   - Repository quota exceeded"
+            ;;
+        *"checkout"*|*"merge"*|*"rebase"*)
+            echo -e "${GF_YELLOW}💡 Possible causes:${GF_NC}"
+            echo "   - Uncommitted changes blocking operation"
+            echo "   - Merge conflicts need resolution"
+            echo "   - Branch does not exist"
+            echo "   - Working directory not clean"
+            ;;
+    esac
+    
+    if [ "$exit_on_error" = "true" ]; then
+        gf_print_status "ERROR" "Aborting due to Git operation failure"
+        exit $exit_code
+    fi
+    
+    return $exit_code
 }
 
 # Safe git fetch with comprehensive error handling
@@ -464,3 +512,112 @@ export -f gf_git_checkout gf_git_merge gf_check_git_connectivity
 
 export GF_RED GF_GREEN GF_YELLOW GF_BLUE GF_PURPLE GF_CYAN GF_BOLD GF_NC
 export GF_MAIN_BRANCH GF_DEVELOP_BRANCH GF_PROTECTED_BRANCHES GF_BRANCH_PREFIXES
+
+# ============================================================================
+# BACKWARDS COMPATIBILITY ALIASES (DEPRECATED)
+# ============================================================================
+# 
+# These aliases provide backwards compatibility for scripts using the old
+# function names. They will be removed in a future version.
+# 
+# Migration Guide:
+#   print_status     → gf_print_status
+#   command_exists   → gf_command_exists
+#   get_current_branch → gf_get_current_branch
+#   ... (see documentation for full list)
+#
+
+# Status and output functions (deprecated)
+print_status() { 
+    echo "⚠️  WARNING: print_status is deprecated. Use gf_print_status instead." >&2
+    gf_print_status "$@" 
+}
+print_section() { 
+    echo "⚠️  WARNING: print_section is deprecated. Use gf_print_section instead." >&2
+    gf_print_section "$@" 
+}
+print_header() { 
+    echo "⚠️  WARNING: print_header is deprecated. Use gf_print_header instead." >&2
+    gf_print_header "$@" 
+}
+
+# Utility functions (deprecated)
+command_exists() { 
+    echo "⚠️  WARNING: command_exists is deprecated. Use gf_command_exists instead." >&2
+    gf_command_exists "$@" 
+}
+check_dependencies() { 
+    echo "⚠️  WARNING: check_dependencies is deprecated. Use gf_check_dependencies instead." >&2
+    gf_check_dependencies "$@" 
+}
+
+# Git utility functions (deprecated)
+get_current_branch() { 
+    echo "⚠️  WARNING: get_current_branch is deprecated. Use gf_get_current_branch instead." >&2
+    gf_get_current_branch "$@" 
+}
+is_git_repo() { 
+    echo "⚠️  WARNING: is_git_repo is deprecated. Use gf_is_git_repo instead." >&2
+    gf_is_git_repo "$@" 
+}
+get_project_root() { 
+    echo "⚠️  WARNING: get_project_root is deprecated. Use gf_get_project_root instead." >&2
+    gf_get_project_root "$@" 
+}
+branch_exists() { 
+    echo "⚠️  WARNING: branch_exists is deprecated. Use gf_branch_exists instead." >&2
+    gf_branch_exists "$@" 
+}
+remote_branch_exists() { 
+    echo "⚠️  WARNING: remote_branch_exists is deprecated. Use gf_remote_branch_exists instead." >&2
+    gf_remote_branch_exists "$@" 
+}
+is_protected_branch() { 
+    echo "⚠️  WARNING: is_protected_branch is deprecated. Use gf_is_protected_branch instead." >&2
+    gf_is_protected_branch "$@" 
+}
+is_valid_branch_name() { 
+    echo "⚠️  WARNING: is_valid_branch_name is deprecated. Use gf_is_valid_branch_name instead." >&2
+    gf_is_valid_branch_name "$@" 
+}
+
+# Configuration functions (deprecated)
+show_config() { 
+    echo "⚠️  WARNING: show_config is deprecated. Use gf_show_config instead." >&2
+    gf_show_config "$@" 
+}
+create_default_config() { 
+    echo "⚠️  WARNING: create_default_config is deprecated. Use gf_create_default_config instead." >&2
+    gf_create_default_config "$@" 
+}
+init_git_flow_utils() { 
+    echo "⚠️  WARNING: init_git_flow_utils is deprecated. Use gf_init_git_flow_utils instead." >&2
+    gf_init_git_flow_utils "$@" 
+}
+
+# Export deprecated aliases for backwards compatibility
+export -f print_status print_section print_header
+export -f command_exists check_dependencies
+export -f get_current_branch is_git_repo get_project_root
+export -f branch_exists remote_branch_exists
+export -f is_protected_branch is_valid_branch_name
+export -f show_config create_default_config init_git_flow_utils
+
+# Legacy color variables (deprecated)
+RED="$GF_RED"
+GREEN="$GF_GREEN" 
+YELLOW="$GF_YELLOW"
+BLUE="$GF_BLUE"
+PURPLE="$GF_PURPLE"
+CYAN="$GF_CYAN"
+BOLD="$GF_BOLD"
+NC="$GF_NC"
+
+# Legacy config variables (deprecated)
+MAIN_BRANCH="$GF_MAIN_BRANCH"
+DEVELOP_BRANCH="$GF_DEVELOP_BRANCH"
+PROTECTED_BRANCHES=("${GF_PROTECTED_BRANCHES[@]}")
+BRANCH_PREFIXES=("${GF_BRANCH_PREFIXES[@]}")
+
+export RED GREEN YELLOW BLUE PURPLE CYAN BOLD NC
+export MAIN_BRANCH DEVELOP_BRANCH PROTECTED_BRANCHES BRANCH_PREFIXES
