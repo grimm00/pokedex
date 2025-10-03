@@ -280,3 +280,20 @@ def get_generation_colors() -> Dict[int, str]:
 def get_generation_names() -> Dict[int, str]:
     """Get name mapping for all generations"""
     return {gen_num: gen_data.name for gen_num, gen_data in GENERATIONS.items()}
+
+def get_generation_range_string() -> str:
+    """
+    Get generation range as a string (e.g., "1-5")
+    Useful for dynamic messages that shouldn't be hardcoded
+    
+    Returns:
+        String like "1-5" representing min-max generation range
+    """
+    if not GENERATIONS:
+        return "N/A"
+    
+    gen_nums = sorted(GENERATIONS.keys())
+    if len(gen_nums) == 1:
+        return str(gen_nums[0])
+    
+    return f"{gen_nums[0]}-{gen_nums[-1]}"
