@@ -355,7 +355,7 @@ case "$1" in
         
         # Clean up local branches
         echo "${CYAN}🔍 Checking local branches...${NC}"
-        MERGED_BRANCHES=$(git branch --merged | grep -E "(feat/|fix/|chore/)" | grep -v "\*" | tr -d ' ')
+        MERGED_BRANCHES=$(git branch --merged | grep -E "(feat/|fix/|chore/|docs/)" | grep -v "\*" | tr -d ' ')
         
         if [ -n "$MERGED_BRANCHES" ]; then
             echo "${YELLOW}Deleting local merged branches:${NC}"
@@ -373,7 +373,7 @@ case "$1" in
         gf_git_fetch origin
         
         # Get ALL remote feature branches (not just merged ones, since squash merges don't show as merged)
-        ALL_REMOTE_BRANCHES=$(git branch -r | grep -E "origin/(feat/|fix/|chore/)" | sed 's|origin/||' | sed 's|^[[:space:]]*||' | tr -d ' ')
+        ALL_REMOTE_BRANCHES=$(git branch -r | grep -E "origin/(feat/|fix/|chore/|docs/)" | sed 's|origin/||' | sed 's|^[[:space:]]*||' | tr -d ' ')
         
         # Check each branch via GitHub API to see if its PR is merged
         REMOTE_MERGED_BRANCHES=""
