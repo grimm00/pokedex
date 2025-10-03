@@ -52,6 +52,15 @@ case "$1" in
             echo "${RED}Usage: $0 start-feature <feature-name>${NC}"
             exit 1
         fi
+        
+        # Run safety checks first
+        echo "${CYAN}🛡️  Running pre-flight safety checks...${NC}"
+        if ! ./scripts/core/git-flow-safety.sh check; then
+            echo "${RED}❌ Safety checks failed. Please resolve issues before starting new feature.${NC}"
+            echo "${YELLOW}💡 Run: $0 safety-fix for suggestions${NC}"
+            exit 1
+        fi
+        
         echo "${GREEN}🌱 Starting new feature: $2${NC}"
         git checkout $DEVELOP_BRANCH
         git pull origin $DEVELOP_BRANCH
@@ -203,6 +212,22 @@ case "$1" in
     "frontend"|"fe")
         echo "${GREEN}⚛️  Starting frontend server${NC}"
         cd frontend && npm run dev
+        ;;
+
+    # Git Flow Safety
+    "safety"|"check"|"safe")
+        echo "${GREEN}🛡️  Running Git Flow safety checks${NC}"
+        ./scripts/core/git-flow-safety.sh check
+        ;;
+        
+    "safety-fix"|"fix")
+        echo "${GREEN}🔧 Git Flow auto-fix suggestions${NC}"
+        ./scripts/core/git-flow-safety.sh fix
+        ;;
+        
+    "install-hooks"|"hooks")
+        echo "${GREEN}🪝 Installing Git Flow safety hooks${NC}"
+        ./scripts/setup/install-git-hooks.sh
         ;;
 
     # Repository Management
@@ -398,11 +423,15 @@ case "$1" in
         echo ""
         
         print_section "🌳 Git Flow"
-        echo "  ${CYAN}start-feature, sf${NC} <name>   Start new feature branch"
+        echo "  ${CYAN}start-feature, sf${NC} <name>   Start new feature branch (with safety checks)"
         echo "  ${CYAN}start-fix, fix${NC} <name>      Start new fix branch"
         echo "  ${CYAN}start-chore, chore${NC} <name>  Start new chore branch"
         echo "  ${CYAN}start-hotfix, hotfix${NC} <name> Start hotfix branch"
         echo "  ${CYAN}sync, sync-develop${NC}         Sync develop with main"
+        echo ""
+        echo "  ${CYAN}safety, check, safe${NC}        Run Git Flow safety checks"
+        echo "  ${CYAN}safety-fix${NC}                 Show auto-fix suggestions"
+        echo "  ${CYAN}install-hooks, hooks${NC}       Install Git Flow safety hooks"
         
         print_section "📝 GitHub Integration"
         echo "  ${CYAN}pr, pull-request${NC}           Create PR (auto-detects target)"
