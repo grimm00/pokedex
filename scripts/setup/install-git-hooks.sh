@@ -19,28 +19,28 @@ else
     BOLD='\033[1m'
     NC='\033[0m' # No Color
     
-    print_status() {
+    gf_gf_print_status() {
         local msg_type=$1
         local message=$2
         case $msg_type in
-            "ERROR")   echo -e "${RED}❌ $message${NC}" ;;
-            "WARNING") echo -e "${YELLOW}⚠️  $message${NC}" ;;
-            "SUCCESS") echo -e "${GREEN}✅ $message${NC}" ;;
-            "INFO")    echo -e "${CYAN}ℹ️  $message${NC}" ;;
+            "ERROR")   echo -e "${GF_RED}❌ $message${GF_NC}" ;;
+            "WARNING") echo -e "${GF_YELLOW}⚠️  $message${GF_NC}" ;;
+            "SUCCESS") echo -e "${GF_GREEN}✅ $message${GF_NC}" ;;
+            "INFO")    echo -e "${GF_CYAN}ℹ️  $message${GF_NC}" ;;
         esac
     }
     
-    print_header() {
+    gf_gf_print_header() {
         local title=$1
-        echo -e "${BOLD}${CYAN}$title${NC}"
-        echo -e "${CYAN}$(printf '═%.0s' $(seq 1 ${#title}))${NC}"
+        echo -e "${GF_BOLD}${GF_CYAN}$title${GF_NC}"
+        echo -e "${GF_CYAN}$(printf '═%.0s' $(seq 1 ${#title}))${GF_NC}"
     }
 fi
 
 PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 
 if [ -z "$PROJECT_ROOT" ]; then
-    echo -e "${RED}❌ Not in a Git repository${NC}"
+    echo -e "${GF_RED}❌ Not in a Git repository${GF_NC}"
     exit 1
 fi
 
@@ -52,18 +52,18 @@ echo ""
 
 # Check if hooks directory exists
 if [ ! -d "$HOOKS_DIR" ]; then
-    echo -e "${RED}❌ Git hooks directory not found: $HOOKS_DIR${NC}"
+    echo -e "${GF_RED}❌ Git hooks directory not found: $HOOKS_DIR${GF_NC}"
     exit 1
 fi
 
 # Check if source hooks exist
 if [ ! -d "$SOURCE_HOOKS_DIR" ]; then
-    echo -e "${RED}❌ Source hooks directory not found: $SOURCE_HOOKS_DIR${NC}"
+    echo -e "${GF_RED}❌ Source hooks directory not found: $SOURCE_HOOKS_DIR${GF_NC}"
     exit 1
 fi
 
 # Install hooks
-echo -e "${CYAN}📦 Installing hooks...${NC}"
+echo -e "${GF_CYAN}📦 Installing hooks...${GF_NC}"
 
 for hook_file in "$SOURCE_HOOKS_DIR"/*; do
     if [ -f "$hook_file" ]; then
@@ -73,7 +73,7 @@ for hook_file in "$SOURCE_HOOKS_DIR"/*; do
         # Backup existing hook if it exists
         if [ -f "$target_hook" ]; then
             backup_file="$target_hook.backup.$(date +%Y%m%d-%H%M%S)"
-            echo -e "${YELLOW}⚠️  Backing up existing $hook_name to $(basename "$backup_file")${NC}"
+            echo -e "${GF_YELLOW}⚠️  Backing up existing $hook_name to $(basename "$backup_file")${GF_NC}"
             cp "$target_hook" "$backup_file"
         fi
         
@@ -85,26 +85,26 @@ for hook_file in "$SOURCE_HOOKS_DIR"/*; do
 done
 
 echo ""
-echo -e "${GREEN}🎉 Git hooks installed successfully!${NC}"
+echo -e "${GF_GREEN}🎉 Git hooks installed successfully!${GF_NC}"
 echo ""
-echo -e "${CYAN}📋 Installed hooks:${NC}"
+echo -e "${GF_CYAN}📋 Installed hooks:${GF_NC}"
 ls -la "$HOOKS_DIR" | grep -v "\.sample$" | grep -E "^-.*x.*" | awk '{print "   " $9}'
 
 echo ""
-echo -e "${YELLOW}💡 What these hooks do:${NC}"
-echo "   • ${CYAN}pre-commit${NC}: Runs safety checks before each commit"
+echo -e "${GF_YELLOW}💡 What these hooks do:${GF_NC}"
+echo "   • ${GF_CYAN}pre-commit${GF_NC}: Runs safety checks before each commit"
 echo "   • Prevents commits on protected branches (main/develop)"
 echo "   • Checks for sensitive files and large files"
 echo "   • Validates branch naming conventions"
 
 echo ""
-echo -e "${YELLOW}🔧 To disable hooks temporarily:${NC}"
+echo -e "${GF_YELLOW}🔧 To disable hooks temporarily:${GF_NC}"
 echo "   git commit --no-verify"
 
 echo ""
-echo -e "${YELLOW}🗑️  To uninstall hooks:${NC}"
+echo -e "${GF_YELLOW}🗑️  To uninstall hooks:${GF_NC}"
 echo "   rm $HOOKS_DIR/pre-commit"
 echo "   # (restore from .backup files if needed)"
 
 echo ""
-echo -e "${GREEN}✨ Your repository is now protected by Git Flow safety hooks!${NC}"
+echo -e "${GF_GREEN}✨ Your repository is now protected by Git Flow safety hooks!${GF_NC}"
