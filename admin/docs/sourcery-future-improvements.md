@@ -40,10 +40,15 @@ This document tracks minor Sourcery feedback and improvement opportunities ident
 6. ✅ GitHub API integration for detecting squash-merged branches
 7. ✅ Enhanced cleanup command for modern GitHub workflows
 
-### **Session 4: Documentation Organization (PR #XX - IN PROGRESS)**
+### **Session 4: Documentation Organization (PR #19 - MERGED)**
 8. ✅ Added TL;DR section to Docker seeding troubleshooting guide
 9. ✅ Added table of contents to Sourcery improvements document
 10. ✅ Implemented collapsible quick reference sections
+
+### **Session 5: Configuration & Cleanup Improvements (PR #20, #21 - MERGED)**
+11. ✅ Parameterized Docker seeding timeout via environment variables
+12. ✅ Extended squash merge detection to local branches
+13. ✅ Complete GitHub API integration for cleanup command
 
 ---
 
@@ -337,14 +342,118 @@ print(f'✅ Seeded {result["successful"]} Pokemon from Generations {GEN_RANGE}')
 
 ---
 
+### **Category: Performance & Optimization**
+
+#### 11. **Batch GitHub API Calls in Cleanup**
+**Sourcery Feedback**: "Consider batching GitHub API calls (for example with a single gh pr list using multiple --head filters) to reduce CLI invocations when checking many branches."
+
+**Current Status**: Individual API call per branch  
+**Priority**: 🟡 MEDIUM (Performance improvement)  
+**Implementation Ideas**:
+```bash
+# OLD: One call per branch
+for branch in $branches; do
+    gh pr list --head "$branch" --state merged
+done
+
+# NEW: Single batched call
+gh pr list --state merged --json headRefName,state | \
+    jq -r '.[] | select(.state=="MERGED") | .headRefName'
+```
+
+**Benefits**:
+- Faster cleanup execution (fewer API calls)
+- Reduced rate limiting risk
+- Better performance with many branches
+- Single network round-trip
+
+**Trade-offs**:
+- More complex query logic
+- Requires jq for JSON parsing
+- Less granular error handling per branch
+
+---
+
+#### 12. **Preflight Check for GitHub CLI**
+**Sourcery Feedback**: "Add a preflight check to verify the gh CLI is installed and authenticated before running the cleanup, and exit with a clear error if it's not available."
+
+**Current Status**: Assumes `gh` is available  
+**Priority**: 🟡 MEDIUM (Better error handling)  
+**Implementation Ideas**:
+```bash
+# Check if gh is installed
+if ! command -v gh &>/dev/null; then
+    echo "❌ GitHub CLI (gh) is not installed"
+    echo "Install: https://cli.github.com/"
+    exit 1
+fi
+
+# Check if authenticated
+if ! gh auth status &>/dev/null; then
+    echo "❌ Not authenticated with GitHub"
+    echo "Run: gh auth login"
+    exit 1
+fi
+```
+
+**Benefits**:
+- Clear error messages upfront
+- Prevents confusing failures mid-execution
+- Better user experience
+- Easier troubleshooting
+
+---
+
+#### 13. **Simplify Branch Deletion Loop**
+**Sourcery Feedback**: "Instead of building a multiline string for merged branches, you could delete each branch immediately inside the loop to simplify the variable handling."
+
+**Current Status**: Builds list, then deletes all  
+**Priority**: 🟢 LOW (Code simplification)  
+**Implementation Ideas**:
+```bash
+# OLD: Build list, then delete
+MERGED_BRANCHES=""
+for branch in $branches; do
+    if [merged]; then
+        MERGED_BRANCHES="$MERGED_BRANCHES\n$branch"
+    fi
+done
+echo "$MERGED_BRANCHES" | xargs git branch -D
+
+# NEW: Delete immediately
+for branch in $branches; do
+    if [merged]; then
+        git branch -D "$branch"
+    fi
+done
+```
+
+**Benefits**:
+- Simpler code logic
+- No multiline string handling
+- Immediate feedback per branch
+- Easier error handling
+
+**Trade-offs**:
+- Less atomic (can't review list before deletion)
+- Harder to implement --dry-run mode
+- Less clear summary of what was deleted
+
+**Recommendation**: Keep current approach for --yes confirmation pattern
+
+---
+
 ## 📊 Updated Implementation Priority Matrix
 
 | Enhancement | Impact | Effort | Priority | Target Version |
 |------------|--------|--------|----------|---------------|
 | Smaller PRs (Process) | Medium | Low | 🟢 LOW | Ongoing |
-| **Parameterize Seeding Timeout** | **Medium** | **Low** | **🟡 MEDIUM** | **1.x** |
+| ~~Parameterize Seeding Timeout~~ | ~~Medium~~ | ~~Low~~ | ✅ **DONE** (PR #20) | 1.x |
 | **Dynamic Generation Messages** | **Medium** | **Low** | **🟡 MEDIUM** | **1.x** |
-| **Streamline Troubleshooting Docs** | **Low** | **Low** | **🟢 LOW** | **1.x** |
+| **Batch GitHub API Calls** | **Medium** | **Medium** | **🟡 MEDIUM** | **1.x** |
+| **Preflight Check for gh CLI** | **Medium** | **Low** | **🟡 MEDIUM** | **1.x** |
+| Streamline Troubleshooting Docs | Low | Low | 🟢 LOW | 1.x |
+| Simplify Branch Deletion Loop | Low | Low | 🟢 LOW | 1.x |
 | Structured Logging | Medium | Medium | 🟢 LOW | 2.x |
 | Performance Metrics | Low | Low | 🟢 LOW | 2.x |
 | Custom Error Handlers | Low | High | 🟢 LOW | 3.x |
