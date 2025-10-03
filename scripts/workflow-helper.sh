@@ -355,12 +355,32 @@ case "$1" in
         
         # Clean up local branches
         echo "${CYAN}🔍 Checking local branches...${NC}"
-        MERGED_BRANCHES=$(git branch --merged | grep -E "(feat/|fix/|chore/|docs/)" | grep -v "\*" | tr -d ' ')
+        
+        # Get ALL local feature branches (not just merged ones, since squash merges don't show as merged)
+        ALL_LOCAL_BRANCHES=$(git branch | grep -E "(feat/|fix/|chore/|docs/)" | grep -v "\*" | sed 's|^[[:space:]]*||' | tr -d ' ')
+        
+        # Check each branch via GitHub API to see if its PR is merged
+        MERGED_BRANCHES=""
+        if [ -n "$ALL_LOCAL_BRANCHES" ]; then
+            echo "${CYAN}Checking PR status for local branches...${NC}"
+            for branch in $ALL_LOCAL_BRANCHES; do
+                # Check if there's a merged PR for this branch
+                PR_STATE=$(gh pr list --head "$branch" --state merged --json state --jq '.[0].state' 2>/dev/null || echo "")
+                if [ "$PR_STATE" = "MERGED" ]; then
+                    if [ -z "$MERGED_BRANCHES" ]; then
+                        MERGED_BRANCHES="$branch"
+                    else
+                        MERGED_BRANCHES="$MERGED_BRANCHES
+$branch"
+                    fi
+                fi
+            done
+        fi
         
         if [ -n "$MERGED_BRANCHES" ]; then
             echo "${YELLOW}Deleting local merged branches:${NC}"
             echo "$MERGED_BRANCHES"
-            echo "$MERGED_BRANCHES" | xargs git branch -d
+            echo "$MERGED_BRANCHES" | xargs git branch -D
             echo "${GREEN}✅ Local cleanup complete${NC}"
         else
             echo "${YELLOW}No local merged branches to clean up${NC}"
