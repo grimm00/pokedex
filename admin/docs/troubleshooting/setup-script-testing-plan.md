@@ -747,6 +747,74 @@ from routes import pokemon_routes, user_routes, auth_routes, cache_routes
 
 ---
 
+### **Issue #6: Widespread backend. prefix imports across backend files**
+
+**Problem Identified**:
+- Issue #5 fixed app.py, but 10 other backend files have same problem
+- All use `from backend.X import Y` style imports
+- Will fail when Flask runs from backend/ directory
+
+**Affected Files** (10 files):
+```
+backend/utils/pokemon_seeder.py
+backend/utils/seed_pokemon.py
+backend/services/pokeapi_client.py
+backend/routes/user_routes.py
+backend/routes/pokemon_routes.py
+backend/routes/cache_routes.py
+backend/routes/auth_routes.py
+backend/models/user.py
+backend/models/pokemon.py
+backend/models/audit_log.py
+```
+
+**Root Cause**: ✅ **IDENTIFIED**
+- Same as Issue #5 - imports assume execution from project root
+- After directory structure cleanup, all backend code runs from backend/
+- Need systematic fix across all backend files
+
+**Solution**: ✅ **FIXED**
+- Used sed to remove `backend.` prefix from ALL backend Python files
+- Fixed setup.sh instructions (2 locations)
+
+**Command Used**:
+```bash
+cd backend && find . -name "*.py" -type f -exec sed -i '' 's/from backend\./from /g' {} +
+```
+
+**Example Changes** (pokemon_seeder.py):
+```python
+# Before
+from backend.database import db
+from backend.models.pokemon import Pokemon
+from backend.models.audit_log import log_system_event, AuditAction
+from backend.services.pokeapi_client import PokeAPIClient, PokeAPIError
+
+# After
+from database import db
+from models.pokemon import Pokemon
+from models.audit_log import log_system_event, AuditAction
+from services.pokeapi_client import PokeAPIClient, PokeAPIError
+```
+
+**setup.sh Changes**:
+```bash
+# Line 393 & 409: Changed
+python -m backend.app
+# To:
+cd backend && python -m app
+```
+
+**Impact**:
+- All 10 backend files now use relative imports
+- Backend directory is fully self-contained
+- Setup instructions match actual execution context
+- Consistent with app.py fix from Issue #5
+
+**Status**: ✅ FIXED (all backend imports corrected)
+
+---
+
 ### **Testing Continues...**
 
 [Additional issues will be documented here as they occur]

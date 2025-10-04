@@ -6,10 +6,10 @@ Handles data transformation and seeding from PokeAPI to our database
 import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime, timezone
-from backend.database import db
-from backend.models.pokemon import Pokemon
-from backend.models.audit_log import log_system_event, AuditAction
-from backend.services.pokeapi_client import PokeAPIClient, PokeAPIError
+from database import db
+from models.pokemon import Pokemon
+from models.audit_log import log_system_event, AuditAction
+from services.pokeapi_client import PokeAPIClient, PokeAPIError
 
 # Configure logging
 logger = logging.getLogger(__name__)

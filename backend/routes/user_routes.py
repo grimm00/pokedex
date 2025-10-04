@@ -1,10 +1,10 @@
 from flask_restful import Resource, reqparse, abort
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.database import db
-from backend.models.user import User, UserPokemon
-from backend.models.pokemon import Pokemon
-from backend.utils.validators import validate_and_log_response, DataValidator
+from database import db
+from models.user import User, UserPokemon
+from models.pokemon import Pokemon
+from utils.validators import validate_and_log_response, DataValidator
 
 class UserList(Resource):
     """Handle GET /api/users and POST /api/users"""

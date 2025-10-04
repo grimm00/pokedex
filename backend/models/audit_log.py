@@ -3,7 +3,7 @@ Audit Log Model
 Tracks user actions and system events for security and compliance.
 """
 
-from backend.database import db
+from database import db
 from datetime import datetime, timezone
 from sqlalchemy import Index
 

@@ -390,7 +390,7 @@ show_completion_message() {
         echo -e "${CYAN}Option 1: Full-Stack (Recommended)${NC}"
         echo "  # Terminal 1 - Backend"
         echo "  source venv/bin/activate"
-        echo "  python -m backend.app"
+        echo "  cd backend && python -m app"
         echo ""
         echo "  # Terminal 2 - Frontend"
         echo "  cd frontend && npm run dev"
@@ -406,7 +406,7 @@ show_completion_message() {
     elif [ "$SETUP_BACKEND" = true ]; then
         echo -e "${BOLD}To start the backend:${NC}"
         echo "  source venv/bin/activate"
-        echo "  python -m backend.app"
+        echo "  cd backend && python -m app"
         echo ""
         echo -e "${BOLD}Access Points:${NC}"
         echo "  • Backend API: http://localhost:5000"

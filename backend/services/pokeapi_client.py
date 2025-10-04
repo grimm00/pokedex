@@ -8,8 +8,8 @@ import time
 import logging
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
-from backend.models.audit_log import log_system_event, AuditAction
-from backend.services.cache import pokeapi_cache, cache_manager
+from models.audit_log import log_system_event, AuditAction
+from services.cache import pokeapi_cache, cache_manager
 
 # Configure logging
 logger = logging.getLogger(__name__)
