@@ -320,21 +320,22 @@ setup_backend() {
     cd "$PROJECT_ROOT/backend"
     export FLASK_APP=app
     python -m flask db upgrade
-    cd "$PROJECT_ROOT"
     print_success "Database initialized"
     
-    # Seed Pokemon data
+    # Seed Pokemon data (run from backend directory for consistent context)
     print_step "Seeding Pokemon data (this may take a minute)..."
     python -c "
-from backend.app import app
-from backend.utils.pokemon_seeder import pokemon_seeder
+from app import app
+from utils.pokemon_seeder import pokemon_seeder
 with app.app_context():
     result = pokemon_seeder.seed_all_generations()
     print(f'✅ Seeded {result[\"successful\"]} Pokemon')
 " || {
     print_warning "Pokemon seeding failed or partially completed"
-    print_info "You can seed data later with: python -c \"from backend.app import app; from backend.utils.pokemon_seeder import pokemon_seeder; app.app_context().push(); pokemon_seeder.seed_all_generations()\""
+    print_info "You can seed data later with: cd backend && python -c \"from app import app; from utils.pokemon_seeder import pokemon_seeder; app.app_context().push(); pokemon_seeder.seed_all_generations()\""
 }
+    
+    cd "$PROJECT_ROOT"
     
     # Start Redis if not running
     if [ "$SKIP_REDIS" = false ] && command_exists redis-server; then

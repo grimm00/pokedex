@@ -628,6 +628,60 @@ fi
 
 ---
 
+### **Issue #4: Pokemon seeding runs from wrong directory**
+
+**Error**:
+```
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unable to open database file
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+```
+
+**Problem Identified**:
+- Database initialization runs from `backend/` directory (line 320-323) ✅
+- Script then returns to project root (line 323: `cd "$PROJECT_ROOT"`) ✅
+- Pokemon seeding runs from project root (line 328) ❌
+- But DATABASE_URL is `sqlite:///instance/pokehub_dev.db` (relative to backend/)
+- From root, this looks for `./instance/pokehub_dev.db` (doesn't exist)
+- From backend/, this looks for `./backend/instance/pokehub_dev.db` (exists!)
+
+**Root Cause**: ✅ **IDENTIFIED**
+- **Context Mismatch**: Seeding imports `backend.app` from root directory
+- Flask app expects to run from backend/ directory (where migrations are)
+- Database path is relative to Flask's execution context
+- Solution: Run seeding from backend/ directory like migrations
+
+**Solution**: ✅ **FIXED**
+- Run seeding from backend/ directory (same as migrations)
+- Keep consistent execution context for all Flask operations
+- Updated fallback instructions to also run from backend/
+
+**Code Changes**:
+```bash
+# Old (broken - runs from root)
+cd "$PROJECT_ROOT"
+python -c "
+from backend.app import app
+from backend.utils.pokemon_seeder import pokemon_seeder
+...
+
+# New (working - runs from backend/)
+cd "$PROJECT_ROOT/backend"
+python -c "
+from app import app  # Import from current directory
+from utils.pokemon_seeder import pokemon_seeder
+...
+cd "$PROJECT_ROOT"
+```
+
+**Impact**:
+- All Flask operations (migrations, seeding) now run from backend/
+- Database path resolution is consistent
+- Imports are simpler (no `backend.` prefix needed)
+
+**Status**: ✅ FIXED (updating script now)
+
+---
+
 ### **Testing Continues...**
 
 [Additional issues will be documented here as they occur]
