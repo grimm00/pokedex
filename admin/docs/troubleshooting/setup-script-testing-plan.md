@@ -682,6 +682,71 @@ cd "$PROJECT_ROOT"
 
 ---
 
+### **Issue #5: backend/app.py has incorrect imports**
+
+**Error**:
+```
+File "/private/tmp/pokehub-test/backend/app.py", line 10, in <module>
+    from backend.database import db
+ModuleNotFoundError: No module named 'backend'
+```
+
+**Problem Identified**:
+- `backend/app.py` uses `from backend.X import Y` style imports
+- When running from backend/ directory, Python can't find 'backend' module
+- These imports work from project root but fail from backend/
+- Need relative imports since app.py is already in backend/
+
+**Affected Lines** (6 imports):
+```python
+Line 10:  from backend.database import db
+Line 11:  from backend.services.security import (...)
+Line 15:  from backend.services.cache import cache_manager
+Line 162: from backend.models import pokemon, user
+Line 163: from backend.models.user import User
+Line 164: from backend.routes import pokemon_routes, user_routes, auth_routes, cache_routes
+```
+
+**Root Cause**: ✅ **IDENTIFIED**
+- Imports were written assuming execution from project root
+- After directory structure cleanup, backend should be self-contained
+- Flask operations now run from backend/ directory
+- Need to update imports to be relative to backend/
+
+**Solution**: ✅ **FIXING**
+- Remove `backend.` prefix from all imports in app.py
+- Use relative imports: `from database import db`
+- Makes backend/ directory properly self-contained
+
+**Code Changes**:
+```python
+# Old (broken from backend/)
+from backend.database import db
+from backend.services.security import (...)
+from backend.services.cache import cache_manager
+from backend.models import pokemon, user
+from backend.models.user import User
+from backend.routes import pokemon_routes, user_routes, auth_routes, cache_routes
+
+# New (works from backend/)
+from database import db
+from services.security import (...)
+from services.cache import cache_manager
+from models import pokemon, user
+from models.user import User
+from routes import pokemon_routes, user_routes, auth_routes, cache_routes
+```
+
+**Impact**:
+- backend/ directory is now self-contained
+- Can run Flask from backend/ without sys.path manipulation
+- Consistent with how migrations and seeding work
+- Simpler imports throughout backend code
+
+**Status**: ✅ FIXED (updating app.py now)
+
+---
+
 ### **Testing Continues...**
 
 [Additional issues will be documented here as they occur]

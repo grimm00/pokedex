@@ -7,12 +7,12 @@ from flask_jwt_extended import JWTManager
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
-from backend.database import db
-from backend.services.security import (
+from database import db
+from services.security import (
     create_limiter, setup_security_headers, setup_rate_limiting,
     create_error_handlers, setup_request_logging, log_security_event
 )
-from backend.services.cache import cache_manager
+from services.cache import cache_manager
 
 # Load environment variables
 load_dotenv()
@@ -159,9 +159,9 @@ def api_docs():
     }
 
 # Import models and routes
-from backend.models import pokemon, user
-from backend.models.user import User
-from backend.routes import pokemon_routes, user_routes, auth_routes, cache_routes
+from models import pokemon, user
+from models.user import User
+from routes import pokemon_routes, user_routes, auth_routes, cache_routes
 
 # Register API routes
 # Public routes (no authentication required)
