@@ -319,12 +319,12 @@ setup_backend() {
     print_step "Initializing database..."
     cd "$PROJECT_ROOT/backend"
     export FLASK_APP=app
-    python -m flask db upgrade
+    "$PROJECT_ROOT/venv/bin/python" -m flask db upgrade
     print_success "Database initialized"
     
     # Seed Pokemon data (run from backend directory for consistent context)
     print_step "Seeding Pokemon data (this may take a minute)..."
-    python -c "
+    "$PROJECT_ROOT/venv/bin/python" -c "
 from app import app
 from utils.pokemon_seeder import pokemon_seeder
 with app.app_context():
@@ -332,7 +332,7 @@ with app.app_context():
     print(f'✅ Seeded {result[\"successful\"]} Pokemon')
 " || {
     print_warning "Pokemon seeding failed or partially completed"
-    print_info "You can seed data later with: cd backend && python -c \"from app import app; from utils.pokemon_seeder import pokemon_seeder; app.app_context().push(); pokemon_seeder.seed_all_generations()\""
+    print_info "You can seed data later with: cd backend && $PROJECT_ROOT/venv/bin/python -c \"from app import app; from utils.pokemon_seeder import pokemon_seeder; app.app_context().push(); pokemon_seeder.seed_all_generations()\""
 }
     
     cd "$PROJECT_ROOT"

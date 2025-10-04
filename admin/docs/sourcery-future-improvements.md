@@ -17,6 +17,7 @@
   - [Session 5: Configuration & Cleanup](#session-5-configuration--cleanup-improvements-pr-20-21---merged)
   - [Session 6: Stale Artifacts Prevention](#session-6-stale-artifacts-prevention-pr-25---merged)
   - [Session 7: Batch GitHub API Calls](#session-7-batch-github-api-calls-pr-26---merged)
+  - [Session 8: Explicit venv Python Interpreter](#session-8-explicit-venv-python-interpreter-pr-28---merged)
 - [Future Improvement Opportunities](#-future-improvement-opportunities)
   - **Code Organization**
     - [1. Split Large Refactors into Smaller PRs](#1-split-large-refactors-into-smaller-prs)
@@ -37,6 +38,10 @@
     - [11. Batch GitHub API Calls in Cleanup](#11-batch-github-api-calls-in-cleanup) ✅ DONE
     - [12. Preflight Check for GitHub CLI](#12-preflight-check-for-github-cli)
     - [13. Simplify Branch Deletion Loop](#13-simplify-branch-deletion-loop)
+  - **Setup Script Improvements (PR #27)**
+    - [14. Use Explicit venv Python Interpreter](#14-use-explicit-venv-python-interpreter) ✅ DONE
+    - [15. Extract Reusable Helpers to Library](#15-extract-reusable-helpers-to-library)
+    - [16. Improve Directory Change Error Handling](#16-improve-directory-change-error-handling)
 - [Implementation Priority Matrix](#-updated-implementation-priority-matrix)
 - [Recommendation](#-recommendation)
 - [Notes for Future Sessions](#-notes-for-future-sessions)
@@ -84,6 +89,23 @@ This document tracks minor Sourcery feedback and improvement opportunities ident
 20. ✅ Implemented fallback for non-jq environments
 21. ✅ Integrated into workflow helper cleanup command
 22. ✅ Updated documentation (README.md, DEVELOPMENT.md)
+
+### **Session 8: Explicit venv Python Interpreter (PR #28 - MERGED)**
+23. ✅ Replaced `python` with explicit `venv/bin/python` for migrations
+24. ✅ Replaced `python` with explicit `venv/bin/python` for seeding
+25. ✅ Updated fallback instructions to use explicit interpreter
+26. ✅ Improved reliability - no PATH ambiguity
+
+**Changes Made**:
+- Database migrations: `python -m flask db upgrade` → `"$PROJECT_ROOT/venv/bin/python" -m flask db upgrade`
+- Pokemon seeding: `python -c "..."` → `"$PROJECT_ROOT/venv/bin/python" -c "..."`
+- Fallback instructions: Updated to use explicit venv path
+
+**Benefits**:
+- ✅ Explicit and predictable - no PATH ambiguity
+- ✅ Works even if activation fails silently
+- ✅ Clearer for debugging (shows exact interpreter)
+- ✅ More robust in CI/CD environments
 
 ---
 
@@ -527,15 +549,168 @@ done
 | Custom Error Handlers | Low | High | 🟢 LOW | 3.x |
 | Configuration Profiles | Medium | Medium | 🟢 LOW | 2.x |
 | Interactive Examples | Medium | Medium | 🟢 LOW | 2.x |
+| **Extract Setup Helpers** | **Medium** | **High** | **🟡 MEDIUM** | **1.x** |
+| **Improve cd Error Handling** | **Low** | **Medium** | **🟡 MEDIUM** | **1.x** |
 
 ### **Summary**
-- ✅ **Completed**: 18 enhancements (7 sessions, 11 PRs)
-- 🟡 **Medium Priority**: 1 enhancement
+- ✅ **Completed**: 22 enhancements (8 sessions, 12 PRs)
+- 🟡 **Medium Priority**: 3 enhancements (2 remaining from PR #27)
 - 🟢 **Low Priority**: 7 enhancements
-- **Total**: 26 Sourcery recommendations tracked
+- **Total**: 32 Sourcery recommendations tracked
 
 ---
 
-**Last Updated**: October 3, 2025  
+## 📝 Future Improvement Opportunities (Continued)
+
+### 14. Use Explicit venv Python Interpreter
+
+**Context**: PR #27 - setup.sh rewrite  
+**Priority**: 🟡 **MEDIUM**
+
+**Suggestion**:
+> For consistency, explicitly use the virtual‐environment's Python interpreter (e.g. venv/bin/python) for migrations and seeding instead of relying on python or python3 in PATH.
+
+**Current Code** (`setup.sh`):
+```bash
+source venv/bin/activate
+python -m flask db upgrade
+python -c "from app import app..."
+```
+
+**Proposed Improvement**:
+```bash
+# Don't rely on PATH activation
+venv/bin/python -m flask db upgrade
+venv/bin/python -c "from app import app..."
+```
+
+**Benefits**:
+- ✅ Explicit and predictable - no PATH ambiguity
+- ✅ Works even if activation fails silently
+- ✅ Clearer for debugging (shows exact interpreter)
+- ✅ More robust in CI/CD environments
+
+**Effort**: Low (simple search/replace)  
+**Impact**: Medium (improves reliability)
+
+---
+
+### 15. Extract Reusable Helpers to Library
+
+**Context**: PR #27 - setup.sh rewrite  
+**Priority**: 🟡 **MEDIUM**
+
+**Suggestion**:
+> The script is quite long—consider extracting reusable helpers (color definitions, version checks, command_exists) into a sourced library to keep setup.sh focused on high-level steps.
+
+**Current State**:
+- `setup.sh`: 439 lines
+- Contains: colors, helpers, version checks, setup functions
+- Mixed concerns: utilities + business logic
+
+**Proposed Structure**:
+```bash
+scripts/
+  setup/
+    setup-helpers.sh      # Colors, print functions, command_exists
+    setup-validators.sh   # Version checks, prerequisite validation
+    setup-backend.sh      # Backend setup logic
+    setup-frontend.sh     # Frontend setup logic
+
+setup.sh                  # Main orchestrator (< 100 lines)
+```
+
+**Example Refactor**:
+```bash
+# setup.sh (simplified)
+#!/bin/bash
+source scripts/setup/setup-helpers.sh
+source scripts/setup/setup-validators.sh
+
+validate_prerequisites
+setup_backend
+setup_frontend
+show_completion_message
+```
+
+**Benefits**:
+- ✅ Easier to maintain and test individual components
+- ✅ Reusable helpers for other scripts
+- ✅ Clearer separation of concerns
+- ✅ Shorter, more focused main script
+
+**Effort**: Medium (requires careful extraction)  
+**Impact**: High (improves maintainability)
+
+---
+
+### 16. Improve Directory Change Error Handling
+
+**Context**: PR #27 - setup.sh rewrite  
+**Priority**: 🟡 **MEDIUM**
+
+**Suggestion**:
+> In setup_frontend you cd into the frontend folder without error handling or pushd/popd; wrapping those directory changes in a subshell or checking for failures will prevent accidental context leaks.
+
+**Current Code** (`setup.sh`):
+```bash
+setup_frontend() {
+    cd "$PROJECT_ROOT/frontend"
+    npm install --silent
+    cd "$PROJECT_ROOT"
+}
+```
+
+**Issues**:
+- If `cd` fails, npm runs in wrong directory
+- No validation that directory exists
+- Manual cd back can be forgotten
+
+**Proposed Improvement (Option A - Subshell)**:
+```bash
+setup_frontend() {
+    (
+        cd "$PROJECT_ROOT/frontend" || {
+            print_error "Failed to enter frontend directory"
+            return 1
+        }
+        npm install --silent || {
+            print_error "npm install failed"
+            return 1
+        }
+    )
+}
+```
+
+**Proposed Improvement (Option B - pushd/popd)**:
+```bash
+setup_frontend() {
+    pushd "$PROJECT_ROOT/frontend" > /dev/null || {
+        print_error "Failed to enter frontend directory"
+        return 1
+    }
+    
+    npm install --silent || {
+        print_error "npm install failed"
+        popd > /dev/null
+        return 1
+    }
+    
+    popd > /dev/null
+}
+```
+
+**Benefits**:
+- ✅ Prevents accidental context leaks
+- ✅ Explicit error handling
+- ✅ Automatic cleanup (subshell) or explicit (pushd/popd)
+- ✅ Clearer failure modes
+
+**Effort**: Low (apply pattern to all cd commands)  
+**Impact**: Medium (prevents subtle bugs)
+
+---
+
+**Last Updated**: October 4, 2025  
 **Review Frequency**: Quarterly or as needed  
 **Owner**: Development Team
