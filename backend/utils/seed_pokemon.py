@@ -7,10 +7,10 @@ Command-line tool for seeding Pokemon data from PokeAPI
 import sys
 import argparse
 import logging
-from backend.app import app
-from backend.database import db
-from backend.utils.pokemon_seeder import pokemon_seeder
-from backend.services.pokeapi_client import pokeapi_client
+from app import app
+from database import db
+from utils.pokemon_seeder import pokemon_seeder
+from services.pokeapi_client import pokeapi_client
 
 # Configure logging
 logging.basicConfig(
@@ -133,9 +133,9 @@ def show_database_stats():
     """Show current database statistics"""
     with app.app_context():
         try:
-            from backend.models.pokemon import Pokemon
-            from backend.models.user import User
-            from backend.models.audit_log import AuditLog
+            from models.pokemon import Pokemon
+            from models.user import User
+            from models.audit_log import AuditLog
             
             pokemon_count = Pokemon.query.count()
             user_count = User.query.count()

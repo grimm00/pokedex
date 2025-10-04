@@ -1,10 +1,10 @@
 from flask_restful import Resource, reqparse, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.database import db
-from backend.models.pokemon import Pokemon
-from backend.models.user import UserPokemon
-from backend.services.cache import pokemon_cache, cache_manager
-from backend.utils.generation_config import get_generation_range, get_generation_data, get_generation_summary
+from database import db
+from models.pokemon import Pokemon
+from models.user import UserPokemon
+from services.cache import pokemon_cache, cache_manager
+from utils.generation_config import get_generation_range, get_generation_data, get_generation_summary
 import requests
 import os
 
@@ -334,7 +334,7 @@ class PokemonTypes(Resource):
     
     def get(self):
         """Get all unique Pokemon types from the database"""
-        from backend.database import db
+        from database import db
         
         # Query all Pokemon and extract unique types
         pokemon_list = Pokemon.query.all()

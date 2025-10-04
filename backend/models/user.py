@@ -1,4 +1,4 @@
-from backend.database import db
+from database import db
 from datetime import datetime, timezone
 import bcrypt
 
@@ -20,7 +20,7 @@ class User(db.Model):
     @property
     def favorites(self):
         """Get Pokemon objects that this user has favorited"""
-        from backend.models.pokemon import Pokemon
+        from models.pokemon import Pokemon
         return db.session.query(Pokemon).join(UserPokemon).filter(UserPokemon.user_id == self.id).all()
     
     def add_favorite(self, pokemon):
