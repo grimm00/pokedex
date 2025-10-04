@@ -1,0 +1,134 @@
+name: Validate Project Structure
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+
+jobs:
+  validate-structure:
+    name: Check for Stale Artifacts
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check for stale root artifacts
+        id: check-artifacts
+        run: |
+          echo "🔍 Checking for stale build artifacts in project root..."
+          echo ""
+          
+          # Define artifacts that shouldn't exist in root
+          STALE_ARTIFACTS=("dist" "build" ".next" ".nuxt")
+          FOUND_ARTIFACTS=()
+          
+          # Check each artifact
+          for artifact in "${STALE_ARTIFACTS[@]}"; do
+            if [ -d "$artifact" ]; then
+              echo "❌ Found stale artifact: $artifact/"
+              FOUND_ARTIFACTS+=("$artifact")
+            fi
+          done
+          
+          # Report results
+          if [ ${#FOUND_ARTIFACTS[@]} -gt 0 ]; then
+            echo ""
+            echo "❌ ERROR: Found ${#FOUND_ARTIFACTS[@]} stale artifact(s) in project root"
+            echo ""
+            echo "These directories should not exist after project structure cleanup:"
+            for artifact in "${FOUND_ARTIFACTS[@]}"; do
+              echo "  - $artifact/"
+            done
+            echo ""
+            echo "Expected locations:"
+            echo "  ✅ frontend/dist/  - Frontend production builds"
+            echo "  ✅ frontend/build/ - Alternative frontend output"
+            echo ""
+            echo "To fix:"
+            echo "  1. Run: ./scripts/utilities/cleanup-stale-artifacts.sh"
+            echo "  2. Or manually: rm -rf ${FOUND_ARTIFACTS[@]}"
+            echo ""
+            echo "See: admin/docs/troubleshooting/root-dist-directory-cleanup.md"
+            exit 1
+          else
+            echo "✅ No stale artifacts found - project structure is clean!"
+          fi
+      
+      - name: Verify expected structure
+        run: |
+          echo "🔍 Verifying expected project structure..."
+          echo ""
+          
+          # Check that expected directories exist
+          EXPECTED_DIRS=(
+            "frontend"
+            "backend"
+            "scripts"
+            "admin"
+            ".github/workflows"
+          )
+          
+          MISSING_DIRS=()
+          for dir in "${EXPECTED_DIRS[@]}"; do
+            if [ ! -d "$dir" ]; then
+              echo "❌ Missing expected directory: $dir/"
+              MISSING_DIRS+=("$dir")
+            else
+              echo "✅ Found: $dir/"
+            fi
+          done
+          
+          if [ ${#MISSING_DIRS[@]} -gt 0 ]; then
+            echo ""
+            echo "❌ ERROR: Missing ${#MISSING_DIRS[@]} expected director(ies)"
+            exit 1
+          else
+            echo ""
+            echo "✅ All expected directories present"
+          fi
+      
+      - name: Check for misplaced package files
+        run: |
+          echo "🔍 Checking for misplaced package files..."
+          echo ""
+          
+          # Check for misplaced package.json (should only be in frontend/)
+          if [ -f "package.json" ]; then
+            echo "❌ Found package.json in project root"
+            echo "   This should have been removed during structure cleanup"
+            echo ""
+            echo "Expected location: frontend/package.json"
+            echo "To fix: rm package.json"
+            exit 1
+          fi
+          
+          # Check for misplaced node_modules (should only be in frontend/)
+          if [ -d "node_modules" ]; then
+            echo "❌ Found node_modules/ in project root"
+            echo "   This should have been removed during structure cleanup"
+            echo ""
+            echo "Expected location: frontend/node_modules/"
+            echo "To fix: rm -rf node_modules/"
+            exit 1
+          fi
+          
+          echo "✅ No misplaced package files found"
+      
+      - name: Summary
+        if: success()
+        run: |
+          echo ""
+          echo "═══════════════════════════════════════════════════════"
+          echo "✅ Project Structure Validation: PASSED"
+          echo "═══════════════════════════════════════════════════════"
+          echo ""
+          echo "All checks passed:"
+          echo "  ✅ No stale build artifacts in root"
+          echo "  ✅ Expected directory structure present"
+          echo "  ✅ No misplaced package files"
+          echo ""
+          echo "Project structure is clean and properly organized!"
+

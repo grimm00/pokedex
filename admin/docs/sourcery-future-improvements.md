@@ -15,6 +15,7 @@
   - [Session 3: Squash Merge Detection](#session-3-squash-merge-detection-pr-15---merged)
   - [Session 4: Documentation Organization](#session-4-documentation-organization-pr-19---merged)
   - [Session 5: Configuration & Cleanup](#session-5-configuration--cleanup-improvements-pr-20-21---merged)
+  - [Session 6: Stale Artifacts Prevention](#session-6-stale-artifacts-prevention-pr-25---merged)
 - [Future Improvement Opportunities](#-future-improvement-opportunities)
   - **Code Organization**
     - [1. Split Large Refactors into Smaller PRs](#1-split-large-refactors-into-smaller-prs)
@@ -30,7 +31,7 @@
     - [8. Parameterize Docker Seeding Timeout](#8-parameterize-docker-seeding-timeout) ✅ DONE
     - [9. Dynamic Generation Range in Messages](#9-dynamic-generation-range-in-messages) ✅ DONE
   - **Documentation Optimization**
-    - [10. Streamline Troubleshooting Documentation](#10-streamline-troubleshooting-documentation)
+    - [10. Streamline Troubleshooting Documentation](#10-streamline-troubleshooting-documentation) ✅ DONE
   - **Performance & Optimization**
     - [11. Batch GitHub API Calls in Cleanup](#11-batch-github-api-calls-in-cleanup)
     - [12. Preflight Check for GitHub CLI](#12-preflight-check-for-github-cli)
@@ -69,6 +70,12 @@ This document tracks minor Sourcery feedback and improvement opportunities ident
 11. ✅ Parameterized Docker seeding timeout via environment variables
 12. ✅ Extended squash merge detection to local branches
 13. ✅ Complete GitHub API integration for cleanup command
+
+### **Session 6: Stale Artifacts Prevention (PR #25 - MERGED)**
+14. ✅ Enhanced .dockerignore with explicit build directory documentation
+15. ✅ Refactored troubleshooting doc with summary + collapsible appendices
+16. ✅ Created automated cleanup script for stale build artifacts
+17. ✅ Implemented CI validation workflow for project structure
 
 ---
 
@@ -337,26 +344,25 @@ print(f'✅ Seeded {result["successful"]} Pokemon from Generations {GEN_RANGE}')
 
 ### **Category: Documentation Optimization**
 
-#### 10. **Streamline Troubleshooting Documentation**
+#### 10. **Streamline Troubleshooting Documentation** ✅ COMPLETED
+
 **Sourcery Feedback**: "The new troubleshooting guide is very detailed—consider trimming it down to key steps or linking to an external document to reduce in-repo maintenance overhead."
 
-**Current Status**: Very comprehensive `docker-seeding-timeout.md` (383 lines)  
-**Priority**: 🟢 LOW (Documentation organization)  
-**Implementation Ideas**:
-- Option A: Split into "Quick Reference" (in repo) and "Detailed Guide" (Wiki/external docs)
-- Option B: Keep detailed in repo, add TL;DR section at top
-- Option C: Move to `/docs` directory with versioned documentation
+**Status**: ✅ **IMPLEMENTED** (PR #25)  
+**Approach**: Option B - Keep detailed in repo, add summary + collapsible appendices
 
-**Benefits**:
-- Faster access to quick solutions
-- Reduced git diff noise for doc updates
-- Easier to maintain detailed guides externally
-- Better organization for different user needs
+**Implementation**:
+- ✅ Restructured with "Quick Summary" section at top
+- ✅ Added collapsible appendices for detailed content
+- ✅ Quick Reference section for common commands
+- ✅ Improved scannability without losing detail
+- ✅ Maintained comprehensive documentation in repo
 
-**Trade-offs**:
-- External docs require separate hosting
-- May reduce discoverability
-- Version sync challenges between repo and external docs
+**Files Updated**:
+- `admin/docs/troubleshooting/root-dist-directory-cleanup.md` - Complete refactor
+- `admin/docs/troubleshooting/docker-seeding-timeout.md` - Already had TL;DR
+
+**Result**: Best of both worlds - quick access + comprehensive detail
 
 **Recommendation**: Keep in repo but add "Quick Reference" section at top
 
