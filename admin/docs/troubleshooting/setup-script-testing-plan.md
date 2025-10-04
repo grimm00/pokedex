@@ -515,6 +515,55 @@ git branch
 
 ---
 
+### **Issue #2: Missing migrations directory**
+
+**Error**:
+```
+▶ Initializing database...
+Error: Path doesn't exist: migrations.  Please use the 'init' command to create a new scripts folder.
+```
+
+**Problem Identified**:
+- Flask-Migrate looking for `migrations/` in project root
+- Migrations directory is actually in `backend/migrations/`
+- Flask command needs to be run from backend directory or with proper path
+
+**Investigation**:
+```bash
+# Check migrations location
+find . -name "migrations" -type d
+# Result: ./backend/migrations (not ./migrations)
+```
+
+**Root Cause**: ✅ **IDENTIFIED**
+- Flask-Migrate expects migrations in the same directory as the app
+- Need to either:
+  1. Run Flask commands from backend directory, OR
+  2. Set FLASK_APP to point to backend.app with proper config
+
+**Solution**: ✅ **FIXED**
+- Changed to run Flask commands from backend directory
+- Before: `python -m flask --app backend.app db upgrade` (from root)
+- After: `cd backend && python -m flask db upgrade && cd ..` (from backend)
+- This ensures Flask-Migrate finds the migrations directory
+
+**Code Changes**:
+```bash
+# Old (broken)
+export FLASK_APP=backend.app
+python -m flask --app backend.app db upgrade
+
+# New (working)
+cd "$PROJECT_ROOT/backend"
+export FLASK_APP=app
+python -m flask db upgrade
+cd "$PROJECT_ROOT"
+```
+
+**Status**: ✅ FIXED (updating script now)
+
+---
+
 ### **Testing Continues...**
 
 [Additional issues will be documented here as they occur]

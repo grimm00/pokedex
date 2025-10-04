@@ -299,8 +299,10 @@ setup_backend() {
     
     # Initialize database
     print_step "Initializing database..."
-    export FLASK_APP=backend.app
-    python -m flask --app backend.app db upgrade
+    cd "$PROJECT_ROOT/backend"
+    export FLASK_APP=app
+    python -m flask db upgrade
+    cd "$PROJECT_ROOT"
     print_success "Database initialized"
     
     # Seed Pokemon data
