@@ -8,8 +8,8 @@
 
 ## 📑 Table of Contents
 
-- [Overview](#-overview)
-- [Completed Improvements](#-completed-improvements)
+- [Overview](#overview)
+- [Completed Improvements](#completed-improvements)
   - [Session 1: Core Sourcery Recommendations](#session-1-core-sourcery-recommendations-pr-10---merged)
   - [Session 2: Enhanced Usability](#session-2-enhanced-usability-pr-11---merged)
   - [Session 3: Squash Merge Detection](#session-3-squash-merge-detection-pr-15---merged)
@@ -18,7 +18,7 @@
   - [Session 6: Stale Artifacts Prevention](#session-6-stale-artifacts-prevention-pr-25---merged)
   - [Session 7: Batch GitHub API Calls](#session-7-batch-github-api-calls-pr-26---merged)
   - [Session 8: Explicit venv Python Interpreter](#session-8-explicit-venv-python-interpreter-pr-28---merged)
-- [Future Improvement Opportunities](#-future-improvement-opportunities)
+- [Future Improvement Opportunities](#future-improvement-opportunities)
   - **Code Organization**
     - [1. Split Large Refactors into Smaller PRs](#1-split-large-refactors-into-smaller-prs)
   - **Advanced Features**
@@ -42,9 +42,9 @@
     - [14. Use Explicit venv Python Interpreter](#14-use-explicit-venv-python-interpreter) ✅ DONE
     - [15. Extract Reusable Helpers to Library](#15-extract-reusable-helpers-to-library)
     - [16. Improve Directory Change Error Handling](#16-improve-directory-change-error-handling)
-- [Implementation Priority Matrix](#-updated-implementation-priority-matrix)
-- [Recommendation](#-recommendation)
-- [Notes for Future Sessions](#-notes-for-future-sessions)
+- [Implementation Priority Matrix](#implementation-priority-matrix)
+- [Recommendation](#recommendation)
+- [Notes for Future Sessions](#notes-for-future-sessions)
 
 ---
 
@@ -110,6 +110,11 @@ This document tracks minor Sourcery feedback and improvement opportunities ident
 ---
 
 ## 🔮 Future Improvement Opportunities
+
+> **📝 Note**: Each recommendation includes:
+> - 🔗 **Direct links** to relevant PRs and code sections
+> - 📦 **Collapsible details** for code examples (click to expand)
+> - 🎯 **Implementation phase** for planning and prioritization
 
 ### **Category: Code Organization**
 
@@ -597,18 +602,21 @@ venv/bin/python -c "from app import app..."
 
 ### 15. Extract Reusable Helpers to Library
 
-**Context**: PR #27 - setup.sh rewrite  
-**Priority**: 🟡 **MEDIUM**
+**Context**: [PR #27](https://github.com/grimm00/pokehub/pull/27) - setup.sh rewrite  
+**Priority**: 🟡 **MEDIUM**  
+**Implementation Phase**: 🎯 **Sprint 1.1** (Q1 2026)
 
-**Suggestion**:
+**Sourcery Feedback**:
 > The script is quite long—consider extracting reusable helpers (color definitions, version checks, command_exists) into a sourced library to keep setup.sh focused on high-level steps.
 
 **Current State**:
-- `setup.sh`: 439 lines
+- [`setup.sh`](https://github.com/grimm00/pokehub/blob/develop/setup.sh): 439 lines
 - Contains: colors, helpers, version checks, setup functions
 - Mixed concerns: utilities + business logic
 
-**Proposed Structure**:
+<details>
+<summary><b>📋 Proposed Structure (click to expand)</b></summary>
+
 ```bash
 scripts/
   setup/
@@ -633,7 +641,9 @@ setup_frontend
 show_completion_message
 ```
 
-**Benefits**:
+</details>
+
+**Key Benefits**:
 - ✅ Easier to maintain and test individual components
 - ✅ Reusable helpers for other scripts
 - ✅ Clearer separation of concerns
@@ -646,13 +656,14 @@ show_completion_message
 
 ### 16. Improve Directory Change Error Handling
 
-**Context**: PR #27 - setup.sh rewrite  
-**Priority**: 🟡 **MEDIUM**
+**Context**: [PR #27](https://github.com/grimm00/pokehub/pull/27) - setup.sh rewrite  
+**Priority**: 🟡 **MEDIUM**  
+**Implementation Phase**: 🎯 **Sprint 1.1** (Q1 2026)
 
-**Suggestion**:
+**Sourcery Feedback**:
 > In setup_frontend you cd into the frontend folder without error handling or pushd/popd; wrapping those directory changes in a subshell or checking for failures will prevent accidental context leaks.
 
-**Current Code** (`setup.sh`):
+**Current Code** ([`setup.sh:354-366`](https://github.com/grimm00/pokehub/blob/develop/setup.sh#L354-L366)):
 ```bash
 setup_frontend() {
     cd "$PROJECT_ROOT/frontend"
@@ -666,7 +677,10 @@ setup_frontend() {
 - No validation that directory exists
 - Manual cd back can be forgotten
 
-**Proposed Improvement (Option A - Subshell)**:
+<details>
+<summary><b>💡 Proposed Solutions (click to expand)</b></summary>
+
+**Option A - Subshell (Recommended)**:
 ```bash
 setup_frontend() {
     (
@@ -682,7 +696,7 @@ setup_frontend() {
 }
 ```
 
-**Proposed Improvement (Option B - pushd/popd)**:
+**Option B - pushd/popd**:
 ```bash
 setup_frontend() {
     pushd "$PROJECT_ROOT/frontend" > /dev/null || {
@@ -700,7 +714,9 @@ setup_frontend() {
 }
 ```
 
-**Benefits**:
+</details>
+
+**Key Benefits**:
 - ✅ Prevents accidental context leaks
 - ✅ Explicit error handling
 - ✅ Automatic cleanup (subshell) or explicit (pushd/popd)
