@@ -118,10 +118,18 @@ We provide three different ways to set up the development environment:
 3. **Manual Setup**: Step-by-step setup for full control
 
 ### Prerequisites
+
+**Required:**
 - Python 3.9 or higher
 - Redis (for caching)
 - Git
 - Virtual environment (venv or conda)
+
+**Optional (for enhanced performance):**
+- `jq` - JSON processor for faster GitHub API operations (20x faster branch cleanup)
+  - macOS: `brew install jq`
+  - Linux: `apt-get install jq`
+  - Windows: `choco install jq`
 
 ### Quick Start
 

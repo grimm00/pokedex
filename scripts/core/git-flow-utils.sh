@@ -193,6 +193,31 @@ gf_check_dependencies() {
     return 0
 }
 
+# Check if jq is installed (for GitHub API batching)
+# Usage: gf_check_jq [error|warning]
+# Returns: 0 if jq is available, 1 if not
+gf_check_jq() {
+    local msg_type="${1:-error}"  # error or warning
+    
+    if ! gf_command_exists "jq"; then
+        if [ "$msg_type" = "error" ]; then
+            gf_print_status "ERROR" "jq is required for GitHub API operations"
+            echo ""
+            echo -e "${GF_CYAN}Install jq:${GF_NC}"
+            echo "  macOS:   brew install jq"
+            echo "  Linux:   apt-get install jq"
+            echo "  Windows: choco install jq"
+            echo ""
+            echo "More info: https://stedolan.github.io/jq/"
+            return 1
+        elif [ "$msg_type" = "warning" ]; then
+            gf_print_status "WARNING" "jq not found, using slower individual API calls"
+            return 1
+        fi
+    fi
+    return 0
+}
+
 # ============================================================================
 # GIT ERROR HANDLING
 # ============================================================================
@@ -502,7 +527,7 @@ gf_init_git_flow_utils() {
 
 # Export functions and variables for use by other scripts
 export -f gf_print_status gf_print_section gf_print_header
-export -f gf_command_exists gf_check_dependencies
+export -f gf_command_exists gf_check_dependencies gf_check_jq
 export -f gf_get_current_branch gf_is_git_repo gf_get_project_root
 export -f gf_branch_exists gf_remote_branch_exists
 export -f gf_is_protected_branch gf_is_valid_branch_name

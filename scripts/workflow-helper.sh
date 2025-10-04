@@ -47,6 +47,90 @@ fi
 # Ensure we're in the project directory
 cd "$PROJECT_DIR"
 
+# ============================================================================
+# GITHUB API BATCHING FUNCTIONS
+# ============================================================================
+
+# Get merged branches using batched GitHub API call
+# This is significantly faster than checking each branch individually
+# Usage: get_merged_branches_batched "$branches_to_check"
+# Returns: Newline-separated list of merged branch names
+get_merged_branches_batched() {
+    local branches_to_check="$1"
+    
+    # Validate input
+    if [ -z "$branches_to_check" ]; then
+        return 0
+    fi
+    
+    # Get ALL merged PRs in one API call
+    local merged_prs
+    merged_prs=$(gh pr list --state merged --json headRefName,state \
+        --jq '.[] | select(.state=="MERGED") | .headRefName' 2>/dev/null)
+    
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "${RED}❌ Failed to fetch merged PRs from GitHub (exit code: $exit_code)${NC}" >&2
+        echo "${YELLOW}💡 Possible causes:${NC}" >&2
+        echo "   - GitHub CLI not authenticated (run: gh auth login)" >&2
+        echo "   - Network connectivity issues" >&2
+        echo "   - GitHub API rate limiting" >&2
+        return 1
+    fi
+    
+    # Filter branches against merged PRs
+    local merged_branches=""
+    for branch in $branches_to_check; do
+        if echo "$merged_prs" | grep -q "^${branch}$"; then
+            if [ -z "$merged_branches" ]; then
+                merged_branches="$branch"
+            else
+                merged_branches="$merged_branches
+$branch"
+            fi
+        fi
+    done
+    
+    echo "$merged_branches"
+    return 0
+}
+
+# Get merged branches using individual API calls (fallback method)
+# This is slower but doesn't require jq
+# Usage: get_merged_branches_individual "$branches_to_check"
+# Returns: Newline-separated list of merged branch names
+get_merged_branches_individual() {
+    local branches_to_check="$1"
+    
+    # Validate input
+    if [ -z "$branches_to_check" ]; then
+        return 0
+    fi
+    
+    local merged_branches=""
+    for branch in $branches_to_check; do
+        # Check if there's a merged PR for this branch
+        local pr_state
+        pr_state=$(gh pr list --head "$branch" --state merged --json state --jq '.[0].state' 2>/dev/null || echo "")
+        
+        if [ "$pr_state" = "MERGED" ]; then
+            if [ -z "$merged_branches" ]; then
+                merged_branches="$branch"
+            else
+                merged_branches="$merged_branches
+$branch"
+            fi
+        fi
+    done
+    
+    echo "$merged_branches"
+    return 0
+}
+
+# ============================================================================
+# HELPER FUNCTIONS
+# ============================================================================
+
 print_header() {
     echo "${PURPLE}🚀 Pokehub Workflow Helper${NC}"
     echo "${CYAN}═══════════════════════════════════════${NC}"
@@ -359,22 +443,19 @@ case "$1" in
         # Get ALL local feature branches (not just merged ones, since squash merges don't show as merged)
         ALL_LOCAL_BRANCHES=$(git branch | grep -E "(feat/|fix/|chore/|docs/)" | grep -v "\*" | sed 's|^[[:space:]]*||' | tr -d ' ')
         
-        # Check each branch via GitHub API to see if its PR is merged
+        # Check merged status using batched or individual API calls
         MERGED_BRANCHES=""
         if [ -n "$ALL_LOCAL_BRANCHES" ]; then
             echo "${CYAN}Checking PR status for local branches...${NC}"
-            for branch in $ALL_LOCAL_BRANCHES; do
-                # Check if there's a merged PR for this branch
-                PR_STATE=$(gh pr list --head "$branch" --state merged --json state --jq '.[0].state' 2>/dev/null || echo "")
-                if [ "$PR_STATE" = "MERGED" ]; then
-                    if [ -z "$MERGED_BRANCHES" ]; then
-                        MERGED_BRANCHES="$branch"
-                    else
-                        MERGED_BRANCHES="$MERGED_BRANCHES
-$branch"
-                    fi
-                fi
-            done
+            
+            # Try batched approach if jq is available
+            if gf_check_jq "warning" >/dev/null 2>&1; then
+                echo "${GREEN}🚀 Using batched GitHub API calls (faster)${NC}"
+                MERGED_BRANCHES=$(get_merged_branches_batched "$ALL_LOCAL_BRANCHES")
+            else
+                echo "${YELLOW}⚠️  Using individual API calls (slower - install jq for better performance)${NC}"
+                MERGED_BRANCHES=$(get_merged_branches_individual "$ALL_LOCAL_BRANCHES")
+            fi
         fi
         
         if [ -n "$MERGED_BRANCHES" ]; then
@@ -395,22 +476,19 @@ $branch"
         # Get ALL remote feature branches (not just merged ones, since squash merges don't show as merged)
         ALL_REMOTE_BRANCHES=$(git branch -r | grep -E "origin/(feat/|fix/|chore/|docs/)" | sed 's|origin/||' | sed 's|^[[:space:]]*||' | tr -d ' ')
         
-        # Check each branch via GitHub API to see if its PR is merged
+        # Check merged status using batched or individual API calls
         REMOTE_MERGED_BRANCHES=""
         if [ -n "$ALL_REMOTE_BRANCHES" ]; then
             echo "${CYAN}Checking PR status for remote branches...${NC}"
-            for branch in $ALL_REMOTE_BRANCHES; do
-                # Check if there's a merged PR for this branch
-                PR_STATE=$(gh pr list --head "$branch" --state merged --json state --jq '.[0].state' 2>/dev/null || echo "")
-                if [ "$PR_STATE" = "MERGED" ]; then
-                    if [ -z "$REMOTE_MERGED_BRANCHES" ]; then
-                        REMOTE_MERGED_BRANCHES="$branch"
-                    else
-                        REMOTE_MERGED_BRANCHES="$REMOTE_MERGED_BRANCHES
-$branch"
-                    fi
-                fi
-            done
+            
+            # Try batched approach if jq is available
+            if gf_check_jq "warning" >/dev/null 2>&1; then
+                echo "${GREEN}🚀 Using batched GitHub API calls (faster)${NC}"
+                REMOTE_MERGED_BRANCHES=$(get_merged_branches_batched "$ALL_REMOTE_BRANCHES")
+            else
+                echo "${YELLOW}⚠️  Using individual API calls (slower - install jq for better performance)${NC}"
+                REMOTE_MERGED_BRANCHES=$(get_merged_branches_individual "$ALL_REMOTE_BRANCHES")
+            fi
         fi
         
         if [ -n "$REMOTE_MERGED_BRANCHES" ]; then
