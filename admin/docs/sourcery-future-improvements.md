@@ -602,7 +602,7 @@ venv/bin/python -c "from app import app..."
 
 ### 15. Extract Reusable Helpers to Library
 
-**Context**: [PR #27](https://github.com/grimm00/pokehub/pull/27) - setup.sh rewrite  
+**Context**: [PR #27](https://github.com/grimm00/pokedex/pull/27) - setup.sh rewrite  
 **Priority**: 🟡 **MEDIUM**  
 **Implementation Phase**: 🎯 **Sprint 1.1** (Q1 2026)
 
@@ -610,7 +610,7 @@ venv/bin/python -c "from app import app..."
 > The script is quite long—consider extracting reusable helpers (color definitions, version checks, command_exists) into a sourced library to keep setup.sh focused on high-level steps.
 
 **Current State**:
-- [`setup.sh`](https://github.com/grimm00/pokehub/blob/develop/setup.sh): 439 lines
+- [`setup.sh`](https://github.com/grimm00/pokedex/blob/develop/setup.sh): 439 lines
 - Contains: colors, helpers, version checks, setup functions
 - Mixed concerns: utilities + business logic
 
@@ -656,14 +656,14 @@ show_completion_message
 
 ### 16. Improve Directory Change Error Handling
 
-**Context**: [PR #27](https://github.com/grimm00/pokehub/pull/27) - setup.sh rewrite  
+**Context**: [PR #27](https://github.com/grimm00/pokedex/pull/27) - setup.sh rewrite  
 **Priority**: 🟡 **MEDIUM**  
 **Implementation Phase**: 🎯 **Sprint 1.1** (Q1 2026)
 
 **Sourcery Feedback**:
 > In setup_frontend you cd into the frontend folder without error handling or pushd/popd; wrapping those directory changes in a subshell or checking for failures will prevent accidental context leaks.
 
-**Current Code** ([`setup.sh:354-366`](https://github.com/grimm00/pokehub/blob/develop/setup.sh#L354-L366)):
+**Current Code** ([`setup.sh:354-366`](https://github.com/grimm00/pokedex/blob/develop/setup.sh#L354-L366)):
 ```bash
 setup_frontend() {
     cd "$PROJECT_ROOT/frontend"
