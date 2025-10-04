@@ -32,10 +32,13 @@ venv/
 env/
 __pycache__/
 *.pyc
-dist/
-build/
-frontend/dist/
-frontend/build/
+
+# Build output directories (exclude from Docker context)
+# Note: These should never exist in project root after structure cleanup
+dist/                # Root dist/ (stale artifacts - see troubleshooting/root-dist-directory-cleanup.md)
+build/               # Root build/ (stale artifacts)
+frontend/dist/       # Frontend production builds (regenerated in container)
+frontend/build/      # Frontend alternative build output
 
 # Logs and temporary files
 *.log
