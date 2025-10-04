@@ -564,6 +564,70 @@ cd "$PROJECT_ROOT"
 
 ---
 
+### **Issue #3: .env file created too late + outdated env.example**
+
+**Error**:
+```
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unable to open database file
+```
+
+**Problem Identified**:
+1. `.env` file is created in frontend setup (line 355)
+2. Database initialization happens in backend setup (line 301)
+3. Backend tries to use DATABASE_URL before .env exists
+4. Additionally, `env.example` has wrong database path
+
+**File Timestamps** (showing staleness):
+```
+2025-10-01 18:50:28 .env          (OLD - created 2 days ago)
+2025-10-03 18:26:50 env.example   (NEW - updated today)
+2025-10-02 09:22:07 backend/app.py
+2025-10-04 15:29:47 setup.sh      (NEWEST - today)
+```
+
+**Root Cause**: ✅ **IDENTIFIED**
+- **Timing Issue**: .env created after it's needed
+- **Path Issue**: env.example has `sqlite:///backend/instance/pokehub_dev.db`
+  - This path is relative to project root
+  - Flask runs from backend directory
+  - Should be `sqlite:///instance/pokehub_dev.db` (relative to backend/)
+- **Staleness Issue**: User's .env is 2 days older than env.example template
+
+**Solution**: ✅ **FIXED**
+1. ✅ Moved .env creation to BEGINNING of backend setup (before venv creation)
+2. ✅ Fixed DATABASE_URL path in env.example
+3. ✅ Added file timestamp validation to detect stale configs
+
+**Code Changes**:
+
+**env.example** (line 8):
+```bash
+# Old (wrong path)
+DATABASE_URL=sqlite:///backend/instance/pokehub_dev.db
+
+# New (correct - relative to backend/)
+DATABASE_URL=sqlite:///instance/pokehub_dev.db
+```
+
+**setup.sh** (moved from line 355 to line 272):
+```bash
+# Now creates .env FIRST in backend setup, before any operations that need it
+# Added staleness check:
+if [ env.example -nt .env ]; then
+    print_warning ".env file is older than env.example - consider updating"
+    print_info "Run: diff .env env.example to see changes"
+fi
+```
+
+**Impact**:
+- .env now exists before database initialization
+- Database path is correct for Flask running in backend/
+- Users warned if their .env is outdated
+
+**Status**: ✅ FIXED (updating script now)
+
+---
+
 ### **Testing Continues...**
 
 [Additional issues will be documented here as they occur]

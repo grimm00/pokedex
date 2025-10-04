@@ -269,6 +269,24 @@ setup_backend() {
     print_header "🐍 Backend Setup (Python/Flask)"
     echo ""
     
+    # Create .env file FIRST (needed for all subsequent steps)
+    if [ ! -f ".env" ]; then
+        print_step "Creating .env file from template..."
+        cp env.example .env
+        print_success ".env file created"
+        print_warning "Please update .env with your actual configuration values"
+    else
+        print_info ".env file already exists"
+        
+        # Check if env.example is newer than .env (indicates stale config)
+        if [ env.example -nt .env ]; then
+            print_warning ".env file is older than env.example - consider updating"
+            print_info "Run: diff .env env.example to see changes"
+        fi
+    fi
+    
+    echo ""
+    
     # Create virtual environment
     if [ ! -d "venv" ]; then
         print_step "Creating virtual environment..."
@@ -351,15 +369,9 @@ setup_environment() {
     print_header "🔧 Environment Configuration"
     echo ""
     
-    # Create .env file if it doesn't exist
-    if [ ! -f ".env" ]; then
-        print_step "Creating .env file from template..."
-        cp env.example .env
-        print_success ".env file created"
-        print_warning "Please update .env with your actual configuration values"
-    else
-        print_info ".env file already exists"
-    fi
+    # .env file is now created at the beginning of backend setup
+    # This section kept for any future environment-specific configuration
+    print_info "Environment configuration complete (handled in backend setup)"
     
     echo ""
 }
