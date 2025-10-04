@@ -8,8 +8,8 @@
 
 ## 📑 Table of Contents
 
-- [Overview](#-overview)
-- [Completed Improvements](#-completed-improvements)
+- [Overview](#overview)
+- [Completed Improvements](#completed-improvements)
   - [Session 1: Core Sourcery Recommendations](#session-1-core-sourcery-recommendations-pr-10---merged)
   - [Session 2: Enhanced Usability](#session-2-enhanced-usability-pr-11---merged)
   - [Session 3: Squash Merge Detection](#session-3-squash-merge-detection-pr-15---merged)
@@ -18,7 +18,7 @@
   - [Session 6: Stale Artifacts Prevention](#session-6-stale-artifacts-prevention-pr-25---merged)
   - [Session 7: Batch GitHub API Calls](#session-7-batch-github-api-calls-pr-26---merged)
   - [Session 8: Explicit venv Python Interpreter](#session-8-explicit-venv-python-interpreter-pr-28---merged)
-- [Future Improvement Opportunities](#-future-improvement-opportunities)
+- [Future Improvement Opportunities](#future-improvement-opportunities)
   - **Code Organization**
     - [1. Split Large Refactors into Smaller PRs](#1-split-large-refactors-into-smaller-prs)
   - **Advanced Features**
@@ -42,9 +42,9 @@
     - [14. Use Explicit venv Python Interpreter](#14-use-explicit-venv-python-interpreter) ✅ DONE
     - [15. Extract Reusable Helpers to Library](#15-extract-reusable-helpers-to-library)
     - [16. Improve Directory Change Error Handling](#16-improve-directory-change-error-handling)
-- [Implementation Priority Matrix](#-updated-implementation-priority-matrix)
-- [Recommendation](#-recommendation)
-- [Notes for Future Sessions](#-notes-for-future-sessions)
+- [Implementation Priority Matrix](#updated-implementation-priority-matrix)
+- [Recommendation](#recommendation)
+- [Notes for Future Sessions](#notes-for-future-sessions)
 
 ---
 
