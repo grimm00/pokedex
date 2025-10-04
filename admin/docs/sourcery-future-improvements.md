@@ -17,6 +17,7 @@
   - [Session 5: Configuration & Cleanup](#session-5-configuration--cleanup-improvements-pr-20-21---merged)
   - [Session 6: Stale Artifacts Prevention](#session-6-stale-artifacts-prevention-pr-25---merged)
   - [Session 7: Batch GitHub API Calls](#session-7-batch-github-api-calls-pr-26---merged)
+  - [Session 8: Explicit venv Python Interpreter](#session-8-explicit-venv-python-interpreter-pr-28---merged)
 - [Future Improvement Opportunities](#-future-improvement-opportunities)
   - **Code Organization**
     - [1. Split Large Refactors into Smaller PRs](#1-split-large-refactors-into-smaller-prs)
@@ -38,7 +39,7 @@
     - [12. Preflight Check for GitHub CLI](#12-preflight-check-for-github-cli)
     - [13. Simplify Branch Deletion Loop](#13-simplify-branch-deletion-loop)
   - **Setup Script Improvements (PR #27)**
-    - [14. Use Explicit venv Python Interpreter](#14-use-explicit-venv-python-interpreter)
+    - [14. Use Explicit venv Python Interpreter](#14-use-explicit-venv-python-interpreter) ✅ DONE
     - [15. Extract Reusable Helpers to Library](#15-extract-reusable-helpers-to-library)
     - [16. Improve Directory Change Error Handling](#16-improve-directory-change-error-handling)
 - [Implementation Priority Matrix](#-updated-implementation-priority-matrix)
@@ -88,6 +89,23 @@ This document tracks minor Sourcery feedback and improvement opportunities ident
 20. ✅ Implemented fallback for non-jq environments
 21. ✅ Integrated into workflow helper cleanup command
 22. ✅ Updated documentation (README.md, DEVELOPMENT.md)
+
+### **Session 8: Explicit venv Python Interpreter (PR #28 - MERGED)**
+23. ✅ Replaced `python` with explicit `venv/bin/python` for migrations
+24. ✅ Replaced `python` with explicit `venv/bin/python` for seeding
+25. ✅ Updated fallback instructions to use explicit interpreter
+26. ✅ Improved reliability - no PATH ambiguity
+
+**Changes Made**:
+- Database migrations: `python -m flask db upgrade` → `"$PROJECT_ROOT/venv/bin/python" -m flask db upgrade`
+- Pokemon seeding: `python -c "..."` → `"$PROJECT_ROOT/venv/bin/python" -c "..."`
+- Fallback instructions: Updated to use explicit venv path
+
+**Benefits**:
+- ✅ Explicit and predictable - no PATH ambiguity
+- ✅ Works even if activation fails silently
+- ✅ Clearer for debugging (shows exact interpreter)
+- ✅ More robust in CI/CD environments
 
 ---
 
@@ -531,15 +549,14 @@ done
 | Custom Error Handlers | Low | High | 🟢 LOW | 3.x |
 | Configuration Profiles | Medium | Medium | 🟢 LOW | 2.x |
 | Interactive Examples | Medium | Medium | 🟢 LOW | 2.x |
-| **Use Explicit venv Python** | **Low** | **Medium** | **🟡 MEDIUM** | **1.x** |
 | **Extract Setup Helpers** | **Medium** | **High** | **🟡 MEDIUM** | **1.x** |
 | **Improve cd Error Handling** | **Low** | **Medium** | **🟡 MEDIUM** | **1.x** |
 
 ### **Summary**
-- ✅ **Completed**: 18 enhancements (7 sessions, 11 PRs)
-- 🟡 **Medium Priority**: 4 enhancements (3 new from PR #27)
+- ✅ **Completed**: 22 enhancements (8 sessions, 12 PRs)
+- 🟡 **Medium Priority**: 3 enhancements (2 remaining from PR #27)
 - 🟢 **Low Priority**: 7 enhancements
-- **Total**: 29 Sourcery recommendations tracked
+- **Total**: 32 Sourcery recommendations tracked
 
 ---
 
