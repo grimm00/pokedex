@@ -42,7 +42,7 @@
     - [14. Use Explicit venv Python Interpreter](#14-use-explicit-venv-python-interpreter) ✅ DONE
     - [15. Extract Reusable Helpers to Library](#15-extract-reusable-helpers-to-library)
     - [16. Improve Directory Change Error Handling](#16-improve-directory-change-error-handling)
-- [Implementation Priority Matrix](#updated-implementation-priority-matrix)
+- [Implementation Priority Matrix](#implementation-priority-matrix)
 - [Recommendation](#recommendation)
 - [Notes for Future Sessions](#notes-for-future-sessions)
 
