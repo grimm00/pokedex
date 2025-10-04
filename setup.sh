@@ -289,7 +289,7 @@ setup_backend() {
     
     # Install dependencies
     print_step "Installing Python dependencies..."
-    pip install -r requirements.txt --quiet
+    pip install -r backend/requirements.txt --quiet
     print_success "Python dependencies installed"
     
     # Create backend instance directory
